@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/monumentListFragment">
+
+    <fragment
+        android:id="@+id/monumentListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.MonumentListFragment"
+        tools:layout="@layout/fragment_monument_list">
+        <action
+            android:id="@+id/action_monumentListFragment_to_monumentDetailFragment"
+            app:destination="@id/monumentDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/monumentDetailFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.MonumentDetailFragment"
+        tools:layout="@layout/fragment_monument_detail" >
+
+        <argument
+            android:name="monumentId"
+            app:argType="long" />
+    </fragment>
+
+</navigation>
