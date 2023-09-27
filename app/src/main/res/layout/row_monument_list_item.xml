@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_weight="20">
+
+        <ImageView
+            android:id="@+id/iv_monument_item_image"
+            android:layout_width="74dp"
+            android:layout_height="74dp"
+            android:background="@color/black" />
+
+        <TextView
+            android:id="@+id/tv_monument_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="12dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Monument name" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_monument_item_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="10dp"
+        android:layout_weight="1"
+        android:src="@drawable/baseline_favorite_border_24" />
+
+</LinearLayout>
