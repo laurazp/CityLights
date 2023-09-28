@@ -11,7 +11,7 @@ import com.luridevlabs.citylights.model.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
+import java.lang.Exception
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
@@ -28,7 +28,7 @@ class MonumentsViewModel (
         return monumentMutableLiveData
     }
 
-    fun getMonumentDetailLiveData() : LiveData<MonumentDetailState> {
+    fun getMonumentDetailLiveData(): LiveData<MonumentDetailState> {
         return monumentDetailMutableLiveData
     }
 
@@ -36,8 +36,9 @@ class MonumentsViewModel (
         monumentMutableLiveData.value = ResourceState.Loading()
 
         viewModelScope.launch(Dispatchers.IO) {
+
             try {
-                //TODO: mirar error
+                //TODO: mirar error (dentro del try falla)
                 val data = monumentsUseCase.execute()
 
                 withContext(Dispatchers.Main) {
@@ -54,7 +55,6 @@ class MonumentsViewModel (
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-
                 val data = monumentsDetailUseCase.execute(monumentId)
 
                 withContext(Dispatchers.Main) {
@@ -62,7 +62,8 @@ class MonumentsViewModel (
                     monumentDetailMutableLiveData.value = ResourceState.Success(data)
                 }
             } catch (e: Exception) {
-                monumentDetailMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                monumentDetailMutableLiveData.value =
+                    ResourceState.Error(e.localizedMessage.orEmpty())
             }
         }
     }

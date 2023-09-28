@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.model.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
@@ -38,7 +40,7 @@ class MonumentListFragment : Fragment() {
         initViewModel()
         initUI()
 
-        //monumentsViewModel.fetchMonuments()
+        monumentsViewModel.fetchMonuments()
     }
 
     private fun initViewModel() {
@@ -69,6 +71,7 @@ class MonumentListFragment : Fragment() {
         binding.rvMonumentList.layoutManager = LinearLayoutManager(requireContext())
 
         monumentListAdapter.onClickListener = { monument ->
+
             findNavController().navigate(
                 //R.id.action_monumentListFragment_to_monumentDetailFragment
                 MonumentListFragmentDirections.actionMonumentListFragmentToMonumentDetailFragment(monument.monumentId)

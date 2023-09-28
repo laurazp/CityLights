@@ -11,35 +11,22 @@ data class MonumentsResponse(
 @Keep
 data class Monument(
     @SerializedName("id") val monumentId: Long,
-    val title: String,
-    val description: String,
-    val estilo: String,
-    val address: String,
-    val horario: String,
-    val datacion: String,
-    val pois: String,
-    val datos: String,
-    val price: String,
-    val visita: String,
-    val image: String,
-    val top: String,
-    val foursquare: String,
-    val lastUpdated: String,
-    val geometry: Geometry,
-    val links: List<Link>,
-    val uri: String,
-    val sameAs: String
-)
+    @SerializedName("title") val title: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("estilo") val style: String,
+    @SerializedName("address") val address: String,
+    @SerializedName("horario") val hours: String,
+    @SerializedName("datacion") val data: String,
+    @SerializedName("pois") val pois: String,
+    @SerializedName("price") val price: String,
+    @SerializedName("visita") val visitInfo: String,
+    @SerializedName("image") val image: String,
+    @SerializedName("geometry") val geometry: Geometry
+    )
 
 @Keep
 data class Geometry(
-    val type: String,
     val coordinates: List<Double>
 )
 
-@Keep
-data class Link(
-    val description: String,
-    val url: String
-)
 

@@ -6,9 +6,11 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface CityLightsService {
-    @GET("monumento?rf=html&srsname=utm30n&start=0&rows=20&distance=500&locale=es")
+
+    @GET("monumento.json?rows=100")
+
     suspend fun getMonuments(): MonumentsResponse
 
-    @GET("monumento/monumentId")
+    @GET("monumento/{monumentId}.json")
     suspend fun getMonument(@Path("monumentId") monumentId: Long): Monument
 }
