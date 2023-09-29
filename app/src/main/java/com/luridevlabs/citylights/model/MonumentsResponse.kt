@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 
 data class MonumentsResponse(
-    @SerializedName("result") val monuments: List<Monument>
+    @SerializedName("result") val monuments: List<ApiMonument>
 )
 
 @Keep
-data class Monument(
+data class ApiMonument(
     @SerializedName("id") val monumentId: Long,
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String,

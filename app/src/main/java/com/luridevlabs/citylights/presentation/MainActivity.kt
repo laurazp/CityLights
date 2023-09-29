@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 map_menu_item -> {
                     loadMapFragment()
-
                     true
                 }
                 R.id.favorites_menu_item -> {
