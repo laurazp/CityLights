@@ -1,13 +1,14 @@
 package com.luridevlabs.citylights.data.monument.remote
 
 import com.luridevlabs.citylights.data.remote.CityLightsService
+import com.luridevlabs.citylights.model.ApiMonument
 import com.luridevlabs.citylights.model.Monument
 
 class MonumentsRemoteImpl (
     private val cityLightsService: CityLightsService
 ) {
 
-    suspend fun getMonuments(): List<Monument> {
+    suspend fun getMonuments(): List<ApiMonument> {
         return cityLightsService.getMonuments().monuments
     }
 
