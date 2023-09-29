@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-
 }
 
 android {
@@ -51,6 +50,8 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.5.0")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.bumptech.glide:okhttp3-integration:4.7.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("com.google.android.gms:play-services-maps:18.1.0")
 

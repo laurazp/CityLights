@@ -1,11 +1,11 @@
-package com.luridevlabs.citylights.data
+package com.luridevlabs.citylights.data.monument
 
 import com.luridevlabs.citylights.model.ApiMonument
 import com.luridevlabs.citylights.model.Monument
 
 class MonumentResponseToMonumentMapper {
 
-    fun getMonument(monument: ApiMonument, isFavorite: Boolean): Monument {
+    fun mapMonument(monument: ApiMonument, isFavorite: Boolean): Monument {
         val mappedMonument = Monument(
             monument.monumentId,
             monument.title,

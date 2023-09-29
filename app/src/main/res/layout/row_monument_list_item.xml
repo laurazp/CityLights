@@ -18,6 +18,7 @@
             android:id="@+id/iv_monument_item_image"
             android:layout_width="74dp"
             android:layout_height="74dp"
+            android:scaleType="centerCrop"
             android:background="@color/black" />
 
         <TextView

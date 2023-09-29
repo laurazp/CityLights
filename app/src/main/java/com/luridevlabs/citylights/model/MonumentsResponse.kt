@@ -3,7 +3,6 @@ package com.luridevlabs.citylights.model
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-
 data class MonumentsResponse(
     @SerializedName("result") val monuments: List<ApiMonument>
 )

@@ -33,6 +33,7 @@ class MonumentListAdapter : RecyclerView.Adapter<MonumentListAdapter.MonumentLis
 
         Glide.with(holder.monumentImageView)
             .load(item.image)
+            .centerCrop()
             .into(holder.monumentImageView)
     }
 

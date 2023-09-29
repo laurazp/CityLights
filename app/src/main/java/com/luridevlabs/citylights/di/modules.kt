@@ -1,7 +1,7 @@
 package com.luridevlabs.citylights.di
 
+import com.luridevlabs.citylights.data.monument.MonumentResponseToMonumentMapper
 import com.luridevlabs.citylights.data.monument.MonumentsDataImpl
-import com.luridevlabs.citylights.data.monument.local.MonumentsLocalImpl
 import com.luridevlabs.citylights.data.monument.remote.MonumentsRemoteImpl
 import com.luridevlabs.citylights.data.remote.ApiClient
 import com.luridevlabs.citylights.data.remote.CityLightsService
@@ -19,8 +19,9 @@ val baseModule = module {
 val monumentsModule = module {
     factory { MonumentsRemoteImpl(get()) }
     //factory { MonumentsLocalImpl(get()) }
-    factory<MonumentsRepository> { MonumentsDataImpl(get()) }
+    factory<MonumentsRepository> { MonumentsDataImpl(get(), get()) }
 
+    factory { MonumentResponseToMonumentMapper() }
     factory { GetMonumentsUseCase(get()) }
     factory { GetMonumentDetailUseCase(get()) }
 

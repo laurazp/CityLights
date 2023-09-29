@@ -17,8 +17,8 @@ typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
 
 class MonumentsViewModel (
-    private val monumentsUseCase: GetMonumentsUseCase,
-    private val monumentsDetailUseCase: GetMonumentDetailUseCase
+    private val getMonumentsUseCase: GetMonumentsUseCase,
+    private val getMonumentsDetailUseCase: GetMonumentDetailUseCase,
 ) : ViewModel() {
 
     private val monumentMutableLiveData = MutableLiveData<MonumentListState>()
@@ -36,12 +36,11 @@ class MonumentsViewModel (
         monumentMutableLiveData.value = ResourceState.Loading()
 
         viewModelScope.launch(Dispatchers.IO) {
-
             try {
-                //TODO: mirar error (dentro del try falla)
-                val data = monumentsUseCase.execute()
+                val data = getMonumentsUseCase.execute()
 
                 withContext(Dispatchers.Main) {
+                    //val monuments = mappedMonumentsUseCase.getMappedMonuments(data)
                     monumentMutableLiveData.value = ResourceState.Success(data)
                 }
             } catch (e: Exception) {
@@ -55,7 +54,7 @@ class MonumentsViewModel (
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data = monumentsDetailUseCase.execute(monumentId)
+                val data = getMonumentsDetailUseCase.execute(monumentId)
 
                 withContext(Dispatchers.Main) {
 

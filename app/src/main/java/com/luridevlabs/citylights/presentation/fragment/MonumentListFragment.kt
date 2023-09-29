@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.model.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
@@ -24,7 +22,6 @@ class MonumentListFragment : Fragment() {
     }
 
     private val monumentListAdapter = MonumentListAdapter()
-
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
