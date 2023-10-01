@@ -3,11 +3,6 @@ package com.luridevlabs.citylights.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.R.id.map_menu_item
 import com.luridevlabs.citylights.databinding.ActivityMainBinding
@@ -17,14 +12,13 @@ import com.luridevlabs.citylights.presentation.fragment.MapFragment
 import com.luridevlabs.citylights.presentation.fragment.MonumentListFragment
 import java.lang.IllegalArgumentException
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity: AppCompatActivity() {
 
-    private val binding: ActivityMainBinding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setMenu()
@@ -43,7 +37,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     true
                 }
                 map_menu_item -> {
-                    loadMapFragment()
+                    loadFragment(MapFragment())
                     true
                 }
                 R.id.favorites_menu_item -> {
@@ -62,23 +56,4 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             .addToBackStack(null)
             .commit()
     }
-
-    private fun loadMapFragment() {
-        val mapFragment = SupportMapFragment.newInstance()
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.fcv_main_container, mapFragment)
-            .commit()
-
-        mapFragment.getMapAsync(this)
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(LatLng(0.0, 0.0))
-                .title("Marker")
-        )
-    }
-
 }
