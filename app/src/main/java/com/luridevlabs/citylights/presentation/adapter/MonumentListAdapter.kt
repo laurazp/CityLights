@@ -1,12 +1,13 @@
 package com.luridevlabs.citylights.presentation.adapter
 
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
 import com.luridevlabs.citylights.model.Monument
+
 
 class MonumentListAdapter : RecyclerView.Adapter<MonumentListAdapter.MonumentListViewHolder>() {
 
@@ -32,10 +33,14 @@ class MonumentListAdapter : RecyclerView.Adapter<MonumentListAdapter.MonumentLis
 
         holder.nameTextView.text = item.title
 
+        val imageUrl = if (item.image != null) "${item.image}?w=360" else null
+
         Glide.with(holder.monumentImageView)
-            .load(item.image)
-            .placeholder(R.drawable.church_icon) //TODO: revisar placeholder
-            .error(R.drawable.church_icon)
+            .load(imageUrl)
+            .centerCrop()
+            .placeholder(com.luridevlabs.citylights.R.drawable.church_icon)
+            .error(com.luridevlabs.citylights.R.drawable.church_icon)
+            .fallback(ColorDrawable(android.graphics.Color.BLACK))
             .into(holder.monumentImageView)
     }
 

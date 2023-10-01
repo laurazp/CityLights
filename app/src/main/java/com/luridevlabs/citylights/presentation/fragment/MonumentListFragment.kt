@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.model.ResourceState
@@ -41,19 +42,6 @@ class MonumentListFragment : Fragment() {
         initComposeUI()
     }
 
-    private fun initComposeUI() {
-        binding.cvListComposeView.setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MonumentsList(monumentsViewModel)
-                }
-            }
-        }
-    }
-
     private fun initContent() {
         monumentsViewModel.getMonumentListLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMonumentListState(state)
@@ -76,6 +64,19 @@ class MonumentListFragment : Fragment() {
             is ResourceState.Error -> {
                 binding.pbMonumentList.visibility = View.GONE
                 showErrorDialog(state.error)
+            }
+        }
+    }
+
+    private fun initComposeUI() {
+        binding.cvListComposeView.setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    MonumentsList(monumentsViewModel)
+                }
             }
         }
     }

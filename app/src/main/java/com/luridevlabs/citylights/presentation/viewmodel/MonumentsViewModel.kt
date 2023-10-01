@@ -44,12 +44,6 @@ open class MonumentsViewModel (
             try {
                 val data = getMonumentListUseCase.execute()
 
-                data.forEach { monument ->
-                    println(monument.title)
-                    println(monument.image)
-                    println("------------")
-                }
-
                 withContext(Dispatchers.Main) {
                     monumentListMutableLiveData.value = ResourceState.Success(data)
                 }

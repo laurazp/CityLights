@@ -1,15 +1,22 @@
 package com.luridevlabs.citylights.presentation.fragment
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
@@ -33,7 +40,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         binding = FragmentMapBinding.inflate(layoutInflater)
         return binding.root
 
-        //TODO: permisos aquí??
+        //requestLocationPermissions()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,8 +83,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
 
         markersList.forEach { marker ->
             googleMap.addMarker(marker)
-
-            //.icon(BitmapDescriptorFactory.fromResource(com.luridevlabs.citylights.R.drawable.icon)
         }
     }
 
@@ -92,9 +97,50 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                 .position(monumentCoordinates)
                 .title(monument.title)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+
             markersList.add(markerOptions)
         }
     }
+
+    /*private fun requestLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                REQUEST_CODE
+            );
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                        Utils.PERMISSION_ACCESS_BACKGROUND_LOCATION
+                    );
+                }
+            }
+        }
+    }*/
 
     private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
