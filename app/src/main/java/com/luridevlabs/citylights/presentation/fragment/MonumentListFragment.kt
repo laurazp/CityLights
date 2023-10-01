@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.luridevlabs.citylights.databinding.FragmentHomeBinding
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.model.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
+import com.luridevlabs.citylights.presentation.compose.MonumentsList
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -35,7 +37,21 @@ class MonumentListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initContent()
-        initUI()
+        //initUI()
+        initComposeUI()
+    }
+
+    private fun initComposeUI() {
+        binding.cvListComposeView.setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MonumentsList(monumentsViewModel)
+                }
+            }
+        }
     }
 
     private fun initContent() {
@@ -64,7 +80,7 @@ class MonumentListFragment : Fragment() {
         }
     }
 
-    private fun initUI() {
+    /*private fun initUI() {
         binding.rvMonumentList.adapter = monumentListAdapter
         binding.rvMonumentList.layoutManager = LinearLayoutManager(requireContext())
 
@@ -75,7 +91,7 @@ class MonumentListFragment : Fragment() {
                 MonumentListFragmentDirections.actionMonumentListFragmentToMonumentDetailFragment(monument.monumentId)
             )
         }
-    }
+    }*/
 
     private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())

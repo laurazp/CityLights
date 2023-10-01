@@ -6,7 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".presentation.fragment.MonumentListFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/cv_list_compose_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--<androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_monument_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +22,7 @@
         tools:listitem="@layout/row_monument_list_item"
         tools:itemCount="5"
         android:padding="12dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false" />-->
 
     <ProgressBar
         android:id="@+id/pb_monument_list"

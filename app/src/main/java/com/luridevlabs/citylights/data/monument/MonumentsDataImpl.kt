@@ -10,7 +10,7 @@ class MonumentsDataImpl (
     private val apiMonumentToMonumentMapper: MonumentResponseToMonumentMapper
 ) : MonumentsRepository {
 
-    override suspend fun getMonuments(): List<Monument> {
+    override suspend fun getMonuments(page: Int): List<Monument> {
         val apiMonuments = monumentsRemoteImpl.getMonuments()
         val monumentList: MutableList<Monument> = mutableListOf()
 

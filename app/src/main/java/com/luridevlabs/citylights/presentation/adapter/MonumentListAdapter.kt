@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
 import com.luridevlabs.citylights.model.Monument
 
@@ -33,7 +34,8 @@ class MonumentListAdapter : RecyclerView.Adapter<MonumentListAdapter.MonumentLis
 
         Glide.with(holder.monumentImageView)
             .load(item.image)
-            .centerCrop()
+            .placeholder(R.drawable.church_icon) //TODO: revisar placeholder
+            .error(R.drawable.church_icon)
             .into(holder.monumentImageView)
     }
 
