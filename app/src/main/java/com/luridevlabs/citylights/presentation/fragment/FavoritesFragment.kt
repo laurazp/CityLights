@@ -9,14 +9,13 @@ import com.luridevlabs.citylights.databinding.FragmentFavoritesBinding
 
 class FavoritesFragment : Fragment() {
 
-    private val binding: FragmentFavoritesBinding by lazy {
-        FragmentFavoritesBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: FragmentFavoritesBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        binding = FragmentFavoritesBinding.inflate(layoutInflater)
         return binding.root
     }
 }

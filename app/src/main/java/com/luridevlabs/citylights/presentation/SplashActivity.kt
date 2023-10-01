@@ -12,11 +12,11 @@ import kotlinx.coroutines.withContext
 
 class SplashActivity : AppCompatActivity() {
 
-    private val binding: ActivitySplashBinding by lazy {
-        ActivitySplashBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: ActivitySplashBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         lifecycleScope.launch {

@@ -7,7 +7,7 @@ import com.luridevlabs.citylights.data.remote.ApiClient
 import com.luridevlabs.citylights.data.remote.CityLightsService
 import com.luridevlabs.citylights.domain.MonumentsRepository
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
-import com.luridevlabs.citylights.domain.usecase.GetMonumentsUseCase
+import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -22,7 +22,7 @@ val monumentsModule = module {
     factory<MonumentsRepository> { MonumentsDataImpl(get(), get()) }
 
     factory { MonumentResponseToMonumentMapper() }
-    factory { GetMonumentsUseCase(get()) }
+    factory { GetMonumentListUseCase(get()) }
     factory { GetMonumentDetailUseCase(get()) }
 
     viewModel { MonumentsViewModel(get(), get()) }

@@ -9,14 +9,13 @@ import com.luridevlabs.citylights.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    private val binding: FragmentHomeBinding by lazy {
-        FragmentHomeBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentHomeBinding.inflate(layoutInflater)
         return binding.root
     }
 }

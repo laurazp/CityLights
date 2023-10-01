@@ -16,7 +16,6 @@ class MonumentsDataImpl (
 
         apiMonuments.forEach { apiMonument ->
             val mappedMonument = apiMonumentToMonumentMapper.mapMonument(apiMonument, isFavorite = false)
-            println(mappedMonument.title)
             monumentList.add(mappedMonument)
         }
         return monumentList

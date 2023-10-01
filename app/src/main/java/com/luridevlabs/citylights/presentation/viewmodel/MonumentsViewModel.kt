@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
-import com.luridevlabs.citylights.domain.usecase.GetMonumentsUseCase
+import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.model.ResourceState
 import kotlinx.coroutines.Dispatchers
@@ -17,15 +17,15 @@ typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
 
 class MonumentsViewModel (
-    private val getMonumentsUseCase: GetMonumentsUseCase,
-    private val getMonumentsDetailUseCase: GetMonumentDetailUseCase,
+    private val getMonumentListUseCase: GetMonumentListUseCase,
+    private val getMonumentDetailUseCase: GetMonumentDetailUseCase,
 ) : ViewModel() {
 
-    private val monumentMutableLiveData = MutableLiveData<MonumentListState>()
+    private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
 
-    fun getMonumentLiveData(): LiveData<MonumentListState> {
-        return monumentMutableLiveData
+    fun getMonumentListLiveData(): LiveData<MonumentListState> {
+        return monumentListMutableLiveData
     }
 
     fun getMonumentDetailLiveData(): LiveData<MonumentDetailState> {
@@ -33,18 +33,17 @@ class MonumentsViewModel (
     }
 
     fun fetchMonuments() {
-        monumentMutableLiveData.value = ResourceState.Loading()
+        monumentListMutableLiveData.value = ResourceState.Loading()
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data = getMonumentsUseCase.execute()
+                val data = getMonumentListUseCase.execute()
 
                 withContext(Dispatchers.Main) {
-                    //val monuments = mappedMonumentsUseCase.getMappedMonuments(data)
-                    monumentMutableLiveData.value = ResourceState.Success(data)
+                    monumentListMutableLiveData.value = ResourceState.Success(data)
                 }
             } catch (e: Exception) {
-                monumentMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                monumentListMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
             }
         }
     }
@@ -54,7 +53,7 @@ class MonumentsViewModel (
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data = getMonumentsDetailUseCase.execute(monumentId)
+                val data = getMonumentDetailUseCase.execute(monumentId)
 
                 withContext(Dispatchers.Main) {
 

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMonumentDetailBinding
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.model.ResourceState
@@ -18,9 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MonumentDetailFragment : Fragment() {
 
-    private val binding: FragmentMonumentDetailBinding by lazy {
-        FragmentMonumentDetailBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: FragmentMonumentDetailBinding
 
     private val args: MonumentDetailFragmentArgs by navArgs()
 
@@ -32,20 +29,26 @@ class MonumentDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentMonumentDetailBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViewModel()
+        initContent()
         monumentsViewModel.fetchMonument(args.monumentId)
     }
 
-    private fun initViewModel() {
+    private fun initContent() {
 
         monumentsViewModel.getMonumentDetailLiveData().observe(viewLifecycleOwner) { state ->
-            handleMonumentDetailState(state)
+            if (state != null) handleMonumentDetailState(state)
+        }
+
+        //TODO: comprobar !!!
+        if (monumentsViewModel.getMonumentDetailLiveData().value == null) {
+            monumentsViewModel.fetchMonument(args.monumentId)
         }
     }
 

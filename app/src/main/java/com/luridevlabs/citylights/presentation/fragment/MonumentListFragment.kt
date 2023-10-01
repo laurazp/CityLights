@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.luridevlabs.citylights.databinding.FragmentHomeBinding
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.model.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
@@ -17,9 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MonumentListFragment : Fragment() {
 
-    private val binding: FragmentMonumentListBinding by lazy {
-        FragmentMonumentListBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: FragmentMonumentListBinding
 
     private val monumentListAdapter = MonumentListAdapter()
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
@@ -28,22 +27,24 @@ class MonumentListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentMonumentListBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViewModel()
+        initContent()
         initUI()
-
-        monumentsViewModel.fetchMonuments()
     }
 
-    private fun initViewModel() {
+    private fun initContent() {
+        monumentsViewModel.getMonumentListLiveData().observe(viewLifecycleOwner) { state ->
+            if (state != null) handleMonumentListState(state)
+        }
 
-        monumentsViewModel.getMonumentLiveData().observe(viewLifecycleOwner) { state ->
-            handleMonumentListState(state)
+        if (monumentsViewModel.getMonumentListLiveData().value == null) {
+            monumentsViewModel.fetchMonuments()
         }
     }
 
