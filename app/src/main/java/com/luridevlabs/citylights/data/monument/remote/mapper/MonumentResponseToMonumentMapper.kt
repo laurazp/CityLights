@@ -1,6 +1,7 @@
 package com.luridevlabs.citylights.data.monument.remote.mapper
 
 import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
+import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
 
 class MonumentResponseToMonumentMapper {
@@ -9,16 +10,16 @@ class MonumentResponseToMonumentMapper {
         val mappedMonument = Monument(
             monument.monumentId,
             monument.title,
-            monument.description,
-            monument.style,
-            monument.address,
-            monument.hours,
-            monument.data,
-            monument.pois,
-            monument.geometry,
-            monument.price,
-            monument.visitInfo,
-            monument.image,
+            monument.description.orEmpty(),
+            monument.style.orEmpty(),
+            monument.address.orEmpty(),
+            monument.hours.orEmpty(),
+            monument.data.orEmpty(),
+            monument.pois.orEmpty(),
+            monument.geometry ?: Geometry(listOf(0.0, 0.0)),
+            monument.price.orEmpty(),
+            monument.visitInfo.orEmpty(),
+            monument.image.orEmpty(),
             isFavorite
         )
         return mappedMonument
