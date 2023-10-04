@@ -9,7 +9,7 @@ import com.luridevlabs.citylights.domain.usecase.GetComposeMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.model.ResourceState
+import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

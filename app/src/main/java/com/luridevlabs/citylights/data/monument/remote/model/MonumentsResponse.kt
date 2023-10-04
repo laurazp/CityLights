@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.model
+package com.luridevlabs.citylights.data.monument.remote.model
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

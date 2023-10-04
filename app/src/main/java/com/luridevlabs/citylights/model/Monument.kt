@@ -1,5 +1,7 @@
 package com.luridevlabs.citylights.model
 
+import com.luridevlabs.citylights.data.monument.remote.model.Geometry
+
 data class Monument(
     val monumentId: Long,
     val title: String,

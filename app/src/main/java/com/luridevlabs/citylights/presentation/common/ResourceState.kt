@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.model
+package com.luridevlabs.citylights.presentation.common
 
 sealed class ResourceState<T> {
     class Loading<T> : ResourceState<T>()

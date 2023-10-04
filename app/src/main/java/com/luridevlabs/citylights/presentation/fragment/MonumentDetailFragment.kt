@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.databinding.FragmentMonumentDetailBinding
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.model.ResourceState
+import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentDetailState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel

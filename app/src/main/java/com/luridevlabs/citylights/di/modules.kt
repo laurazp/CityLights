@@ -1,7 +1,7 @@
 package com.luridevlabs.citylights.di
 
 import com.luridevlabs.citylights.data.MonumentsPaging
-import com.luridevlabs.citylights.data.monument.MonumentResponseToMonumentMapper
+import com.luridevlabs.citylights.data.monument.remote.mapper.MonumentResponseToMonumentMapper
 import com.luridevlabs.citylights.data.monument.MonumentsDataImpl
 import com.luridevlabs.citylights.data.monument.remote.MonumentsRemoteImpl
 import com.luridevlabs.citylights.data.remote.ApiClient

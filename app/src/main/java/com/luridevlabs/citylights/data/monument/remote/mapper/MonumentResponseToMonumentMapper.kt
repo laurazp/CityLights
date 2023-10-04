@@ -1,6 +1,6 @@
-package com.luridevlabs.citylights.data.monument
+package com.luridevlabs.citylights.data.monument.remote.mapper
 
-import com.luridevlabs.citylights.model.ApiMonument
+import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.model.Monument
 
 class MonumentResponseToMonumentMapper {

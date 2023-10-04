@@ -1,7 +1,7 @@
 package com.luridevlabs.citylights.data.monument.remote
 
+import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.data.remote.CityLightsService
-import com.luridevlabs.citylights.model.ApiMonument
 import com.luridevlabs.citylights.model.Monument
 
 class MonumentsRemoteImpl (
