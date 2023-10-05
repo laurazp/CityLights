@@ -8,7 +8,7 @@ class MonumentResponseToMonumentMapper {
 
     fun mapMonument(monument: ApiMonument, isFavorite: Boolean): Monument {
         val mappedMonument = Monument(
-            monument.monumentId,
+            monument.monumentId.toString(),
             monument.title,
             monument.description.orEmpty(),
             monument.style.orEmpty(),

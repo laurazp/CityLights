@@ -22,7 +22,7 @@ class MonumentsDataImpl (
         return monumentList
     }
 
-    override suspend fun getMonument(monumentId: Long): Monument {
+    override suspend fun getMonument(monumentId: String): Monument {
         return monumentsRemoteImpl.getMonument(monumentId)
     }
 

@@ -23,7 +23,7 @@ class MonumentDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentDetailBinding
 
-    private val args: MonumentDetailFragmentArgs by navArgs()
+    //private val args: MonumentDetailFragmentArgs by navArgs()
 
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
@@ -41,7 +41,7 @@ class MonumentDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initContent()
-        monumentsViewModel.fetchMonument(args.monumentId)
+        //monumentsViewModel.fetchMonument(args.monumentId)
     }
 
     private fun initContent() {
@@ -52,7 +52,7 @@ class MonumentDetailFragment : Fragment() {
 
         //TODO: comprobar !!!
         if (monumentsViewModel.getMonumentDetailLiveData().value == null) {
-            monumentsViewModel.fetchMonument(args.monumentId)
+            //monumentsViewModel.fetchMonument(args.monumentId)
         }
     }
 

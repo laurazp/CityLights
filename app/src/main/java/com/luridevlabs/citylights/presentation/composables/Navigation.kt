@@ -15,15 +15,15 @@ fun Navigation(monumentsViewModel: MonumentsViewModel) {
         navController = navController,
         startDestination = "monumentList") {
         composable("monumentList") {
-            MonumentList(monumentsViewModel, navController)
+            MonumentList(navController, monumentsViewModel)
         }
         composable(
-            route = "monumentDetail" + "/{monumentId}",
+            route = "monumentDetail/{monumentId}",
             arguments = listOf(navArgument("monumentId") {
-                type = NavType.LongType
-                defaultValue = 1})
+                type = NavType.StringType
+            })
         ) { backStackEntry ->
-            val monumentId = backStackEntry.arguments?.getLong("monumentId")
+            val monumentId = backStackEntry.arguments?.getString("monumentId")
             requireNotNull(monumentId)
             MonumentDetail(monumentId, monumentsViewModel)
         }

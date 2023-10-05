@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
@@ -35,14 +37,15 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun MonumentDetail(
-    monumentId: Long,
+    monumentId: String,
     viewModel: MonumentsViewModel
 ) {
     val context = LocalContext.current
-
     val scope = rememberCoroutineScope()
-    val monument = remember(monumentId) {
-        viewModel.fetchMonument(monumentId)
+    val selectedMonument = remember {
+        //TODO: cómo recuperar el monumento seleccionado a partir del id???
+        //viewModel.fetchMonument(monumentId)
+        //viewModel.selectedMonument
     }
 
     Scaffold(
@@ -63,7 +66,7 @@ fun MonumentDetail(
                     hoursView,
                 //TODO: añadir el resto de info
                 ) = createRefs()
-                AsyncImage(
+                /*AsyncImage(
                     model = monument.image,
                     placeholder = painterResource(R.drawable.church_icon),
                     error = painterResource(R.drawable.church_icon),
@@ -77,9 +80,9 @@ fun MonumentDetail(
                             bottom.linkTo(parent.bottom, 4.dp)
                             start.linkTo(parent.start, 4.dp)
                         }
-                )
+                )*/
                 Text(
-                    text = monument.title,
+                    text = monumentId,
                     modifier = Modifier
                         .constrainAs(titleView) {
                             top.linkTo(parent.top)
@@ -92,8 +95,8 @@ fun MonumentDetail(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = monument.description ?: "", //TODO: gestionar nulos!
+                /*Text(
+                    text = monument.description,
                     modifier = Modifier.constrainAs(descriptionView) {
                         top.linkTo(photoView.top)
                         start.linkTo(photoView.end, 16.dp)
@@ -115,7 +118,7 @@ fun MonumentDetail(
                         text = monument.hours ?: "",
                         style = MaterialTheme.typography.titleSmall
                     )
-                }
+                }*/
 
                 /*Icon(
                     imageVector = ImageVector.vectorResource(
@@ -142,7 +145,7 @@ fun MonumentDetail(
     }
 }
 
-suspend fun getMonument(monumentId: Long, context: Context, viewModel: MonumentsViewModel) {
+suspend fun getMonument(monumentId: String, context: Context, viewModel: MonumentsViewModel) {
     viewModel.monumentsList.first {
         monumentId == monumentId
     }

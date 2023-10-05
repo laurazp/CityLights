@@ -12,5 +12,5 @@ interface CityLightsService {
     suspend fun getMonuments(): MonumentsResponse
 
     @GET("monumento/{monumentId}.json")
-    suspend fun getMonument(@Path("monumentId") monumentId: Long): Monument
+    suspend fun getMonument(@Path("monumentId") monumentId: String): Monument
 }

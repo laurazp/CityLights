@@ -12,6 +12,8 @@ import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
@@ -28,6 +30,7 @@ open class MonumentsViewModel (
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
+    lateinit var selectedMonument: Monument
 
     fun getMonumentListLiveData(): LiveData<MonumentListState> {
         return monumentListMutableLiveData
@@ -53,12 +56,13 @@ open class MonumentsViewModel (
         }
     }
 
-    fun fetchMonument(monumentId: Long) {
+    fun fetchMonument(monumentId: String) {
         monumentDetailMutableLiveData.value = ResourceState.Loading()
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val data = getMonumentDetailUseCase.execute(monumentId)
+                selectedMonument = data
 
                 withContext(Dispatchers.Main) {
                     monumentDetailMutableLiveData.value = ResourceState.Success(data)

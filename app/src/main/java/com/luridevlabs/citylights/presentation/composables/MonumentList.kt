@@ -1,7 +1,6 @@
 package com.luridevlabs.citylights.presentation.composables
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +46,6 @@ import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.presentation.fragment.MonumentListFragmentDirections
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,8 +54,8 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentList(
-    viewModel: MonumentsViewModel,
-    navController: NavController
+    navController: NavController,
+    viewModel: MonumentsViewModel
 ) {
     val monuments = viewModel.monumentsList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
@@ -123,18 +121,18 @@ fun MonumentList(
                         navController,
                         monument = item,
                         modifier = Modifier.fillMaxWidth()
-                            //.clickable { navController.navigate("monumentDetail/${item.monumentId}") }
                     ) { currentMonument ->
                         scope.launch {
                             withContext(Dispatchers.Main) {
-                                //TODO: navegar al detail
-                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
-
+                                //TODO: borrar una vez que funcione !!!
                                 Toast.makeText(
                                     context,
                                     "Monumento: ${currentMonument.title}",
                                     Toast.LENGTH_LONG
                                 ).show()
+
+                                //TODO: navegar al detail !!!
+                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
                             }
                         }
                     }
@@ -147,11 +145,11 @@ fun MonumentList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentListItem(
-    @PreviewParameter(MonumentPreviewParameter::class)
-    navController: NavController,
+    //@PreviewParameter(MonumentPreviewParameter::class)
+    navController: NavController, //TODO: hace falta???
     monument: Monument,
     modifier: Modifier = Modifier,
-    onClick: (Monument) -> Unit = {},
+    onClick: (Monument) -> Unit = {}, //TODO: esto para qué???
 ) {
     ElevatedCard(
         modifier = modifier
@@ -163,9 +161,7 @@ fun MonumentListItem(
         ConstraintLayout(modifier = modifier.padding(4.dp)) {
             val (
                 nameView,
-                genderView,
-                speciesView,
-                photoView,
+                photoView
             ) = createRefs()
             AsyncImage(
                 model = monument.image,
@@ -205,7 +201,7 @@ class MonumentPreviewParameter : PreviewParameterProvider<Monument> {
     override val values: Sequence<Monument>
         get() = sequenceOf(
             Monument(
-                monumentId = 1,
+                monumentId = "1",
                 title = "name bla bla",
                 address = "status bla bla",
                 style = "species bla bla",

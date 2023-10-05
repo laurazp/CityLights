@@ -7,7 +7,7 @@ class GetMonumentDetailUseCase (
     private val monumentsRepository: MonumentsRepository
 ) {
 
-    suspend fun execute(monumentId: Long) : Monument {
+    suspend fun execute(monumentId: String) : Monument {
         return monumentsRepository.getMonument(monumentId)
     }
 }
