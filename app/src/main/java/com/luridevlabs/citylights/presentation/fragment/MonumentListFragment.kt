@@ -13,7 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
-import com.luridevlabs.citylights.presentation.compose.MonumentsList
+import com.luridevlabs.citylights.presentation.composables.Navigation
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -37,7 +37,6 @@ class MonumentListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initContent()
-        //initUI()
         initComposeUI()
     }
 
@@ -72,29 +71,13 @@ class MonumentListFragment : Fragment() {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                    onClick = {
-                        //TODO: navegación??
-                    }
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    MonumentsList(monumentsViewModel)
+                    Navigation(monumentsViewModel)
                 }
             }
         }
     }
-
-    /*private fun initUI() {
-        binding.rvMonumentList.adapter = monumentListAdapter
-        binding.rvMonumentList.layoutManager = LinearLayoutManager(requireContext())
-
-        monumentListAdapter.onClickListener = { monument ->
-
-            findNavController().navigate(
-                //R.id.action_monumentListFragment_to_monumentDetailFragment
-                MonumentListFragmentDirections.actionMonumentListFragmentToMonumentDetailFragment(monument.monumentId)
-            )
-        }
-    }*/
 
     private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())

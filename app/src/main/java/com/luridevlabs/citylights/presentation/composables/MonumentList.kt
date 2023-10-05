@@ -1,6 +1,7 @@
-package com.luridevlabs.citylights.presentation.compose
+package com.luridevlabs.citylights.presentation.composables
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,21 +34,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
-import com.luridevlabs.citylights.model.Geometry
+import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.fragment.MonumentListFragmentDirections
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,8 +55,9 @@ import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonumentsList(
-    viewModel: MonumentsViewModel
+fun MonumentList(
+    viewModel: MonumentsViewModel,
+    navController: NavController
 ) {
     val monuments = viewModel.monumentsList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
@@ -118,13 +119,17 @@ fun MonumentsList(
                 key = monuments.itemKey { monument -> monument.monumentId }
             ) { monumentIndex ->
                 monuments[monumentIndex]?.let { item ->
-                    MonumentItem(
+                    MonumentListItem(
+                        navController,
                         monument = item,
                         modifier = Modifier.fillMaxWidth()
+                            //.clickable { navController.navigate("monumentDetail/${item.monumentId}") }
                     ) { currentMonument ->
                         scope.launch {
                             withContext(Dispatchers.Main) {
                                 //TODO: navegar al detail
+                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
+
                                 Toast.makeText(
                                     context,
                                     "Monumento: ${currentMonument.title}",
@@ -140,10 +145,10 @@ fun MonumentsList(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun MonumentItem(
+fun MonumentListItem(
     @PreviewParameter(MonumentPreviewParameter::class)
+    navController: NavController,
     monument: Monument,
     modifier: Modifier = Modifier,
     onClick: (Monument) -> Unit = {},
@@ -191,35 +196,6 @@ fun MonumentItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            /*Text(
-                text = monument.description,
-                modifier = Modifier.constrainAs(speciesView){
-                    top.linkTo(photoView.top)
-                    start.linkTo(photoView.end, 16.dp)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
-                style = MaterialTheme.typography.titleMedium
-            )
-            Icon(
-                imageVector = ImageVector.vectorResource(id =
-                if (character.gender.lowercase() == "male")
-                    R.drawable.ic_male
-                else
-                    R.drawable.ic_female
-                ),
-                contentDescription = null,
-                tint = if (character.gender.lowercase() == "male")
-                    Color.Blue
-                else
-                    Color.Magenta,
-                modifier = Modifier.constrainAs(genderView){
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    width = Dimension.value(64.dp)
-                    height = Dimension.value(64.dp)
-                }
-            )*/
         }
     }
     Spacer(modifier = Modifier.height(4.dp))

@@ -61,7 +61,6 @@ open class MonumentsViewModel (
                 val data = getMonumentDetailUseCase.execute(monumentId)
 
                 withContext(Dispatchers.Main) {
-
                     monumentDetailMutableLiveData.value = ResourceState.Success(data)
                 }
             } catch (e: Exception) {
