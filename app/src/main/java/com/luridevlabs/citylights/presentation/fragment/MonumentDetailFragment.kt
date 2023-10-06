@@ -86,6 +86,7 @@ class MonumentDetailFragment : Fragment() {
         }
     }*/
 
+    //TODO: borrar si se usa Compose Navigation !!!
     private fun initComposeUI(monument: Monument) {
         binding.cvDetailComposeView.setContent {
             MaterialTheme {
@@ -96,7 +97,7 @@ class MonumentDetailFragment : Fragment() {
                         //TODO: aquí qué va??
                     }
                 ) {
-                    monument?.let { MonumentDetail(monumentId = it.monumentId, viewModel = monumentsViewModel) }
+                    //monument?.let { MonumentDetail(monumentId = it.monumentId, viewModel = monumentsViewModel) }
                 }
             }
         }

@@ -25,7 +25,7 @@ fun Navigation(monumentsViewModel: MonumentsViewModel) {
         ) { backStackEntry ->
             val monumentId = backStackEntry.arguments?.getString("monumentId")
             requireNotNull(monumentId)
-            MonumentDetail(monumentId, monumentsViewModel)
+            MonumentDetail(navController, monumentId, monumentsViewModel)
         }
     }
 }
