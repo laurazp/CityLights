@@ -51,6 +51,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     implementation("io.insert-koin:koin-android:3.5.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.0")
+    implementation("io.insert-koin:koin-core:3.5.0")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.github.bumptech.glide:okhttp3-integration:4.7.1")
@@ -67,8 +69,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-service:2.6.2")
 
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
     //Compose
     implementation("androidx.activity:activity-compose:1.7.2")
@@ -76,7 +78,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.paging:paging-compose:3.2.1")
-    implementation("androidx.navigation:navigation-compose:2.7.3")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation ("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -84,6 +86,9 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.google.maps.android:maps-compose:2.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.compose.runtime.livedata:runtime-livedata:1.1.0-alpha05")
+
 
     implementation("com.airbnb.android:lottie:6.1.0")
 

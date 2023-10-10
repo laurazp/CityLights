@@ -24,9 +24,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
@@ -35,13 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.luridevlabs.citylights.R
+import com.luridevlabs.citylights.model.Monument
+import org.koin.androidx.compose.koinViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.flow.first
 
@@ -49,16 +52,15 @@ import kotlinx.coroutines.flow.first
 @Composable
 fun MonumentDetail(
     navController: NavController,
-    monumentId: String,
-    viewModel: MonumentsViewModel
+    monumentId: String
 ) {
+    val monumentViewModel: MonumentsViewModel = koinViewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val selectedMonument = remember {
-        //TODO: cómo recuperar el monumento seleccionado a partir del id???
-        //viewModel.fetchMonument(monumentId)
-        //viewModel.selectedMonument
-    }
+
+
+
+    //TODO: var selectedMonument = monumentViewModel.monumentDetailMutableLiveData.
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -96,7 +98,7 @@ fun MonumentDetail(
                     .padding(6.dp)
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
                 Box(
                     modifier = Modifier
@@ -106,7 +108,7 @@ fun MonumentDetail(
                         .height(500.dp)
                 )
                 Text(
-                    text = monumentId,
+                    text = "",
                     modifier = Modifier
                         .padding(6.dp),
                     style = MaterialTheme.typography.titleLarge,
@@ -199,9 +201,17 @@ fun MonumentDetail(
                     .fillMaxWidth()
                     .height(350.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
             ) {
-                MapView()
+                Box(modifier = Modifier
+                    .padding(6.dp))
+                {
+                    Box(modifier = Modifier
+                        .clip(shape = RoundedCornerShape(12.dp)))
+                    {
+                        MapView()
+                    }
+                }
             }
         }
     }
@@ -214,21 +224,11 @@ fun MapView() {
         modifier = Modifier.fillMaxSize(),
         uiSettings = MapUiSettings(zoomControlsEnabled = true),
         properties = MapProperties(
-            /*mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
-                context, R.raw.style_json
-            )*/
+            mapType = MapType.HYBRID
         ),
         cameraPositionState = CameraPositionState(
             CameraPosition(
-                LatLng(41.65, -0.877), 12f, 0f, 0f)
+                LatLng(41.65, -0.877), 16f, 0f, 0f)
         )
     )
-}
-
-
-//TODO: borrar si no sirve
-suspend fun getMonument(monumentId: String, context: Context, viewModel: MonumentsViewModel) {
-    val monument = viewModel.monumentsList.first {
-        monumentId == monumentId
-    }
 }

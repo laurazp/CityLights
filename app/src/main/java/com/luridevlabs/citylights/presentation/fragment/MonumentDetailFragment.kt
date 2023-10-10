@@ -40,11 +40,11 @@ class MonumentDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initContent()
+        //initContent()
         //monumentsViewModel.fetchMonument(args.monumentId)
     }
 
-    private fun initContent() {
+    /*private fun initContent() {
 
         monumentsViewModel.getMonumentDetailLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMonumentDetailState(state)
@@ -64,14 +64,15 @@ class MonumentDetailFragment : Fragment() {
             is ResourceState.Success -> {
                 binding.pbMonumentDetail.visibility = View.GONE
                 //initUI(state.result)
-                initComposeUI(state.result)
+                initComposeUI(state.result) //TODO: modificar con el monument en la vista???
+                monument = state.result
             }
             is ResourceState.Error -> {
                 binding.pbMonumentDetail.visibility = View.GONE
                 showErrorDialog(state.error)
             }
         }
-    }
+    }*/
 
     /*private fun initUI(monument: Monument) {
         binding.tvMonumentDetailTitle.text = monument.title
@@ -92,12 +93,10 @@ class MonumentDetailFragment : Fragment() {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                    onClick = {
-                        //TODO: aquí qué va??
-                    }
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     //monument?.let { MonumentDetail(monumentId = it.monumentId, viewModel = monumentsViewModel) }
+
                 }
             }
         }
@@ -116,7 +115,7 @@ class MonumentDetailFragment : Fragment() {
         )*/
     }
 
-    private fun showErrorDialog(error: String) {
+   /* private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Error")
             .setMessage(error)
@@ -124,6 +123,6 @@ class MonumentDetailFragment : Fragment() {
             .setNegativeButton("Reintentar") { dialog, witch ->
                 monumentsViewModel.fetchMonuments()
             }
-    }
+    }*/
 
 }

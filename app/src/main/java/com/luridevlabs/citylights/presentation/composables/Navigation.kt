@@ -9,13 +9,13 @@ import androidx.navigation.navArgument
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 
 @Composable
-fun Navigation(monumentsViewModel: MonumentsViewModel) {
+fun Navigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = "monumentList") {
         composable("monumentList") {
-            MonumentList(navController, monumentsViewModel)
+            MonumentList(navController)
         }
         composable(
             route = "monumentDetail/{monumentId}",
@@ -25,7 +25,7 @@ fun Navigation(monumentsViewModel: MonumentsViewModel) {
         ) { backStackEntry ->
             val monumentId = backStackEntry.arguments?.getString("monumentId")
             requireNotNull(monumentId)
-            MonumentDetail(navController, monumentId, monumentsViewModel)
+            MonumentDetail(navController, monumentId)
         }
     }
 }

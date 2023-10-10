@@ -2,6 +2,7 @@ package com.luridevlabs.citylights.presentation.composables
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,11 +31,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -50,14 +52,15 @@ import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentList(
-    navController: NavController,
-    viewModel: MonumentsViewModel
+    navController: NavController
 ) {
-    val monuments = viewModel.monumentsList.collectAsLazyPagingItems()
+    val monumentViewModel: MonumentsViewModel = koinViewModel()
+    val monuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var isSearching by remember {
@@ -78,7 +81,7 @@ fun MonumentList(
                     if (!isSearching) {
                         Text(
                             text = "",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onSecondary
                         )
                     } else {
                         TextField(
@@ -96,11 +99,13 @@ fun MonumentList(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 actions = {
-                    IconButton(onClick = { isSearching = !isSearching }) {
+                    IconButton(onClick = {
+                        isSearching = !isSearching
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }
@@ -111,6 +116,7 @@ fun MonumentList(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+
         ) {
             items(
                 count = monuments.itemCount,
@@ -124,14 +130,6 @@ fun MonumentList(
                     ) { currentMonument ->
                         scope.launch {
                             withContext(Dispatchers.Main) {
-                                //TODO: borrar una vez que funcione !!!
-                                Toast.makeText(
-                                    context,
-                                    "Monumento: ${currentMonument.title}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-
-                                //TODO: navegar al detail !!!
                                 navController.navigate("monumentDetail/${currentMonument.monumentId}")
                             }
                         }
@@ -145,7 +143,6 @@ fun MonumentList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentListItem(
-    //@PreviewParameter(MonumentPreviewParameter::class)
     navController: NavController, //TODO: hace falta???
     monument: Monument,
     modifier: Modifier = Modifier,
@@ -161,7 +158,8 @@ fun MonumentListItem(
         ConstraintLayout(modifier = modifier.padding(4.dp)) {
             val (
                 nameView,
-                photoView
+                photoView,
+                favoriteView
             ) = createRefs()
             AsyncImage(
                 model = monument.image,
@@ -185,12 +183,31 @@ fun MonumentListItem(
                         top.linkTo(parent.top)
                         start.linkTo(photoView.end, 8.dp)
                         bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
+                        end.linkTo(favoriteView.start)
                         width = Dimension.fillToConstraints
                     },
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
+            )
+            Icon(
+                imageVector = ImageVector.vectorResource(
+                    id =
+                    if (monument.isFavorite)
+                        R.drawable.baseline_favorite_24
+                    else
+                        R.drawable.baseline_favorite_border_24
+                ),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .constrainAs(favoriteView) {
+                        start.linkTo(nameView.end, 8.dp)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(nameView.bottom)
+                        width = Dimension.value(20.dp)
+                        height = Dimension.fillToConstraints
+                    }
             )
         }
     }
