@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
@@ -17,6 +16,13 @@ import com.luridevlabs.citylights.presentation.composables.Navigation
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.luridevlabs.citylights.presentation.composables.Navigation
+
+/**
+ * Como la navegación y las clases más globales están realizadas en vista clásica
+ * pero quería implementar también algunas pantallas mediante funciones Composables,
+ * he incluido este Fragment como contenedor para la ComposeView donde los implementaré.
+ */
 
 /**
  * Como la navegación y las clases más globales están realizadas en vista clásica
@@ -26,9 +32,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class MonumentListFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentListBinding
-
-    private val monumentListAdapter = MonumentListAdapter()
-    private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +74,9 @@ class MonumentListFragment : Fragment() {
         }
     }*/
 
+        initComposeUI()
+    }
+
     private fun initComposeUI() {
         binding.cvListComposeView.setContent {
             MaterialTheme {
@@ -92,5 +98,4 @@ class MonumentListFragment : Fragment() {
             .setNegativeButton("Reintentar") { dialog, witch ->
                 monumentsViewModel.fetchMonuments()
             }
-    }*/
-}
+

@@ -210,4 +210,3 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             .setMessage(R.string.locationMessage)
             .setPositiveButton(R.string.acceptButtonText, null)
     }
-}

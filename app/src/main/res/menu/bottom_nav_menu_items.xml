@@ -13,7 +13,7 @@
         android:title="@string/map_menu_item_title"
         android:icon="@drawable/baseline_location_24"/>
     <item
-        android:id="@+id/favorites_menu_item"
-        android:title="@string/favorites_menu_item_title"
+        android:id="@+id/myLists_menu_item"
+        android:title="@string/myLists_menu_item_title"
         android:icon="@drawable/baseline_favorite_24"/>
 </menu>

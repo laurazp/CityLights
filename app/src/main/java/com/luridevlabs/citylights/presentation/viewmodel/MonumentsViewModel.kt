@@ -9,6 +9,7 @@ import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.model.MonumentList
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,7 @@ import kotlin.Exception
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
+typealias MyListsState = ResourceState<List<Monument>>
 
 open class MonumentsViewModel (
     private val getMonumentListUseCase: GetMonumentListUseCase,
@@ -26,11 +28,25 @@ open class MonumentsViewModel (
 ) : ViewModel() {
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
+    private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
+    private val monumentDetailMutableLiveData = MutableLiveData<Monument>()
+
     val monumentDetailMutableLiveData = MutableLiveData<Monument>()
     val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
+    private val myListsMutableLiveData = MutableLiveData<MyListsState>()
+    private lateinit var favoritesList: MutableList<Monument>
+    private lateinit var personalLists: MutableList<MonumentList>
 
     fun getMonumentListLiveData(): LiveData<MonumentListState> {
         return monumentListMutableLiveData
+    }
+
+    fun getMonumentDetailLiveData(): LiveData<MonumentDetailState> {
+        return monumentDetailMutableLiveData
+    }
+
+    fun getMyListsLiveData(): LiveData<MonumentListState> {
+        return myListsMutableLiveData
     }
 
     /**
@@ -65,5 +81,9 @@ open class MonumentsViewModel (
             }
 
         }
+    }
+
+    fun fetchMyLists() {
+        //TODO("Not yet implemented")
     }
 }
