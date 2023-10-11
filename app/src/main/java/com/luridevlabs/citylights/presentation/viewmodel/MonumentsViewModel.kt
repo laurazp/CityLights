@@ -29,9 +29,11 @@ open class MonumentsViewModel (
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
+    private val monumentDetailMutableLiveData = MutableLiveData<Monument>()
 
     val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
     private val myListsMutableLiveData = MutableLiveData<MyListsState>()
+    private lateinit var favoritesList: MutableList<Monument>
     private lateinit var personalLists: MutableList<MonumentList>
 
     fun getMonumentListLiveData(): LiveData<MonumentListState> {
@@ -43,10 +45,12 @@ open class MonumentsViewModel (
     }
 
     fun getMyListsLiveData(): LiveData<MonumentListState> {
+        return myListsMutableLiveData
     }
 
     /**
      * Mantengo esta función fetchMonuments() sin paginado para obtener todos los monumentos
+     * del tirón y pintarlos en el mapa.
      */
     fun fetchMonuments() {
         monumentListMutableLiveData.value = ResourceState.Loading()
@@ -81,7 +85,7 @@ open class MonumentsViewModel (
             }
         }
     }
-}
+
     fun fetchMyLists() {
         //TODO("Not yet implemented")
     }
