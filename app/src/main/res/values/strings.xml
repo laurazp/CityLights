@@ -7,7 +7,16 @@
     <string name="home_menu_item_title">Home</string>
     <string name="monuments_menu_item_title">Monuments</string>
     <string name="map_menu_item_title">Map</string>
-    <string name="favorites_menu_item_title">Favorites</string>
+    <string name="myLists_menu_item_title">My lists</string>
     <string name="map_fragment">Map</string>
+    <string name="locationMessage">To enjoy the full map functionality go to Settings and activate Location permissions whenever you want.</string>
+    <string name="enableLocationMessage">Please turn on location.</string>
+    <string name="locationTitle">Location</string>
+    <string name="acceptButtonText">Accept</string>
+    <string name="tryAgainButtonText">Try again</string>
+    <string name="errorTitle">Error</string>
+    <string name="add_new_list">Add new list</string>
+    <string name="todo_list">ToDo List</string>
+    <string name="favorites_list">Favorites List</string>
 
 </resources>

@@ -9,11 +9,11 @@ import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
 import com.luridevlabs.citylights.model.Monument
 
 
-class MonumentListAdapter : RecyclerView.Adapter<MonumentListAdapter.MonumentListViewHolder>() {
+class MyListsAdapter : RecyclerView.Adapter<MyListsAdapter.MonumentListViewHolder>() {
 
     private var monumentList: List<Monument> = emptyList()
 
-    var onClickListener: (Monument) -> Unit = {}
+    private var onClickListener: (Monument) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonumentListViewHolder {
         val binding = RowMonumentListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

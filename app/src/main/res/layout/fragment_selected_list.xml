@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragment.MonumentListFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.myLists.SelectedListFragment">
 
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/cv_list_compose_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_selected_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/row_monument_list_item"
+        tools:itemCount="3"
+        android:padding="12dp"
+        android:clipToPadding="false" />
 
     <ProgressBar
-        android:id="@+id/pb_monument_list"
+        android:id="@+id/pb_selected_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"

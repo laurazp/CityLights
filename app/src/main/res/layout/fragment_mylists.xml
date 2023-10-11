@@ -4,24 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragment.MonumentListFragment">
+    tools:context=".presentation.fragment.MyListsFragment">
 
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/cv_list_compose_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_my_lists_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/row_my_lists_item"
+        tools:itemCount="3"
+        android:padding="12dp"
+        android:clipToPadding="false" />
 
     <ProgressBar
-        android:id="@+id/pb_monument_list"
+        android:id="@+id/pb_myLists_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_myLists_addList_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_add_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_new_list"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

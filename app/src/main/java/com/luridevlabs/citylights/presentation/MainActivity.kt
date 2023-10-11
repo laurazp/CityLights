@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.R.id.map_menu_item
 import com.luridevlabs.citylights.databinding.ActivityMainBinding
-import com.luridevlabs.citylights.presentation.fragment.FavoritesFragment
+import com.luridevlabs.citylights.presentation.fragment.MyListsFragment
 import com.luridevlabs.citylights.presentation.fragment.HomeFragment
 import com.luridevlabs.citylights.presentation.fragment.MapFragment
 import com.luridevlabs.citylights.presentation.fragment.MonumentListFragment
@@ -40,8 +40,8 @@ class MainActivity: AppCompatActivity() {
                     loadFragment(MapFragment())
                     true
                 }
-                R.id.favorites_menu_item -> {
-                    loadFragment(FavoritesFragment())
+                R.id.myLists_menu_item -> {
+                    loadFragment(MyListsFragment())
                     true
                 }
                 else -> throw IllegalArgumentException("Invalid position")
