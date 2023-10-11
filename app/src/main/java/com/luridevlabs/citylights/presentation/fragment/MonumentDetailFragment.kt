@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.databinding.FragmentMonumentDetailBinding
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.common.ResourceState
+import com.luridevlabs.citylights.presentation.composables.MonumentDetail
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentDetailState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -19,7 +23,7 @@ class MonumentDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentDetailBinding
 
-    private val args: MonumentDetailFragmentArgs by navArgs()
+    //private val args: MonumentDetailFragmentArgs by navArgs()
 
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
@@ -36,11 +40,11 @@ class MonumentDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initContent()
-        monumentsViewModel.fetchMonument(args.monumentId)
+        //initContent()
+        //monumentsViewModel.fetchMonument(args.monumentId)
     }
 
-    private fun initContent() {
+    /*private fun initContent() {
 
         monumentsViewModel.getMonumentDetailLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMonumentDetailState(state)
@@ -48,7 +52,7 @@ class MonumentDetailFragment : Fragment() {
 
         //TODO: comprobar !!!
         if (monumentsViewModel.getMonumentDetailLiveData().value == null) {
-            monumentsViewModel.fetchMonument(args.monumentId)
+            //monumentsViewModel.fetchMonument(args.monumentId)
         }
     }
 
@@ -59,16 +63,18 @@ class MonumentDetailFragment : Fragment() {
             }
             is ResourceState.Success -> {
                 binding.pbMonumentDetail.visibility = View.GONE
-                initUI(state.result)
+                //initUI(state.result)
+                initComposeUI(state.result) //TODO: modificar con el monument en la vista???
+                monument = state.result
             }
             is ResourceState.Error -> {
                 binding.pbMonumentDetail.visibility = View.GONE
                 showErrorDialog(state.error)
             }
         }
-    }
+    }*/
 
-    private fun initUI(monument: Monument) {
+    /*private fun initUI(monument: Monument) {
         binding.tvMonumentDetailTitle.text = monument.title
         //TODO: add all the fields
 
@@ -78,6 +84,21 @@ class MonumentDetailFragment : Fragment() {
 
         binding.ibMonumentDetailFavorite.setOnClickListener {
             toggleFavoriteMonument()
+        }
+    }*/
+
+    //TODO: borrar si se usa Compose Navigation !!!
+    private fun initComposeUI(monument: Monument) {
+        binding.cvDetailComposeView.setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    //monument?.let { MonumentDetail(monumentId = it.monumentId, viewModel = monumentsViewModel) }
+
+                }
+            }
         }
     }
 
@@ -94,7 +115,7 @@ class MonumentDetailFragment : Fragment() {
         )*/
     }
 
-    private fun showErrorDialog(error: String) {
+   /* private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Error")
             .setMessage(error)
@@ -102,6 +123,6 @@ class MonumentDetailFragment : Fragment() {
             .setNegativeButton("Reintentar") { dialog, witch ->
                 monumentsViewModel.fetchMonuments()
             }
-    }
+    }*/
 
 }

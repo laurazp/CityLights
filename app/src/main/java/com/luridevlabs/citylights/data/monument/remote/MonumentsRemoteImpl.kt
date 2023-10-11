@@ -12,7 +12,7 @@ class MonumentsRemoteImpl (
         return cityLightsService.getMonuments().monuments
     }
 
-    suspend fun getMonument(monumentId: Long): Monument {
+    suspend fun getMonument(monumentId: String): Monument {
         return cityLightsService.getMonument(monumentId)
     }
 }

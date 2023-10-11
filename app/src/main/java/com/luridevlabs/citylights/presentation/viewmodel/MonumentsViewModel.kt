@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.luridevlabs.citylights.domain.usecase.GetComposeMonumentListUseCase
+import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.model.Monument
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
+import kotlin.Exception
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
@@ -24,13 +24,14 @@ typealias MyListsState = ResourceState<List<Monument>>
 open class MonumentsViewModel (
     private val getMonumentListUseCase: GetMonumentListUseCase,
     private val getMonumentDetailUseCase: GetMonumentDetailUseCase,
-    private val getComposeMonumentListUseCase: GetComposeMonumentListUseCase
+    private val getComposeMonumentListUseCase: GetMonumentPagingListUseCase
 ) : ViewModel() {
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     private val monumentDetailMutableLiveData = MutableLiveData<Monument>()
 
+    val monumentDetailMutableLiveData = MutableLiveData<Monument>()
     val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
     private val myListsMutableLiveData = MutableLiveData<MyListsState>()
     private lateinit var favoritesList: MutableList<Monument>
@@ -68,21 +69,17 @@ open class MonumentsViewModel (
         }
     }
 
-    fun fetchMonument(monumentId: Long) {
-        monumentDetailMutableLiveData.value = ResourceState.Loading()
+    fun fetchMonument(monumentId: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val data = getMonumentDetailUseCase.execute(monumentId)
 
-                withContext(Dispatchers.Main) {
+            val monument = getMonumentDetailUseCase.execute(monumentId)
+            monumentDetailMutableLiveData.value = monument
 
-                    monumentDetailMutableLiveData.value = ResourceState.Success(data)
-                }
-            } catch (e: Exception) {
-                monumentDetailMutableLiveData.value =
-                    ResourceState.Error(e.localizedMessage.orEmpty())
+            withContext(Dispatchers.Main) {
+
             }
+
         }
     }
 
