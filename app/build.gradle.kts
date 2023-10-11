@@ -73,7 +73,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
     //Compose
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
@@ -87,8 +87,7 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.google.maps.android:maps-compose:2.0.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation("androidx.compose.runtime.livedata:runtime-livedata:1.1.0-alpha05")
-
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.3")
 
     implementation("com.airbnb.android:lottie:6.1.0")
 
