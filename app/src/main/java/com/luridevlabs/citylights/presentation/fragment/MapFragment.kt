@@ -20,12 +20,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMapBinding
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.model.ResourceState
+import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -37,7 +38,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     private var markersList: MutableList<MarkerOptions> = mutableListOf()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val permissionId = 2
-    private lateinit var googleMap: GoogleMap
+    private var userLocation = LatLng(0.0, 0.0)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +47,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         binding = FragmentMapBinding.inflate(layoutInflater)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        getLocation()
+        getUserLocation()
 
         return binding.root
     }
@@ -88,19 +89,24 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
 
         markersList.forEach { marker ->
             googleMap.addMarker(marker)
         }
+
+        googleMap.setLatLngBoundsForCameraTarget(LatLngBounds(
+            LatLng(41.65, -0.877),
+            LatLng(41.65, -0.877)))
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f))
+
     }
 
     private fun getMarkersFromData(data: List<Monument>) {
 
         data.forEach { monument ->
             val monumentCoordinates = LatLng(
-                monument.geometry?.coordinates?.get(0) ?: 0.0,
-                monument.geometry?.coordinates?.get(1) ?: 0.0
+                monument.geometry?.coordinates?.get(1) ?: 0.0,
+                monument.geometry?.coordinates?.get(0) ?: 0.0
             )
             val markerOptions = MarkerOptions()
                 .position(monumentCoordinates)
@@ -111,89 +117,66 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         }
     }
 
-    /*private fun requestLocationPermissions() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ),
-                REQUEST_CODE
-            );
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                        Utils.PERMISSION_ACCESS_BACKGROUND_LOCATION
-                    );
-                }
-            }
-        }
-    }*/
-
     private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Error")
             .setMessage(error)
-            .setPositiveButton("Aceptar", null)
-            .setNegativeButton("Reintentar") { dialog, witch ->
+            .setPositiveButton("Accept", null)
+            .setNegativeButton("Try again") { dialog, witch ->
                 //TODO: volver a cargar markers
                 //monumentsViewModel.fetchMonuments()
             }
     }
 
-    private fun getLocation() {
+    private fun getUserLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 if (ActivityCompat.checkSelfPermission(
                         requireContext(),
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                        Manifest.permission.ACCESS_FINE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                         requireContext(),
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                        Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     return
                 }
-                fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
-                    val location: Location? = task.result
-                    if (location != null) {
-                        //val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
-                        //val list: MutableList<Address>? =
-                        //    geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                        //TODO: ¿?
-                        val zaragozaLatLng = LatLng(location.latitude, location.longitude)
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(zaragozaLatLng))
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15f))
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        // your last known location is stored in `location`
+                        this.userLocation = LatLng(location.latitude, location.longitude)
+                        println(this.userLocation)
                     }
                 }
+
+                /*fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
+                    val location: Location? = task.result
+                    if (location != null) {
+
+
+
+
+                        val priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+                        val cancellationTokenSource = CancellationTokenSource()
+
+                        fusedLocationClient.getCurrentLocation(priority, cancellationTokenSource.token)
+                            .addOnSuccessListener { location ->
+                                this.userLocation = LatLng(location.latitude, location.longitude)
+                                println(this.userLocation)
+                            }
+                            .addOnFailureListener { exception ->
+                                println("Oops location failed with exception: $exception")
+                            }
+
+
+                    }
+                }*/
             } else {
                 Toast.makeText(requireContext(), "Please turn on location", Toast.LENGTH_LONG).show()
                 //TODO: ¿?
                 requestPermissions()
-                //val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                //startActivity(intent)
             }
         } else {
             requestPermissions()
@@ -207,6 +190,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             LocationManager.NETWORK_PROVIDER
         )
     }
+
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -221,6 +205,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         }
         return false
     }
+
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             requireActivity(),
@@ -232,7 +217,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         )
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -240,7 +224,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     ) {
         if (requestCode == permissionId) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                getLocation()
+                getUserLocation()
             }
         }
     }

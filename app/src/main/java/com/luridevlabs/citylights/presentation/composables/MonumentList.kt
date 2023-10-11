@@ -1,7 +1,8 @@
-package com.luridevlabs.citylights.presentation.compose
+package com.luridevlabs.citylights.presentation.composables
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,35 +31,36 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
-import com.luridevlabs.citylights.model.Geometry
+import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonumentsList(
-    viewModel: MonumentsViewModel
+fun MonumentList(
+    navController: NavController
 ) {
-    val monuments = viewModel.monumentsList.collectAsLazyPagingItems()
+    val monumentViewModel: MonumentsViewModel = koinViewModel()
+    val monuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var isSearching by remember {
@@ -79,7 +81,7 @@ fun MonumentsList(
                     if (!isSearching) {
                         Text(
                             text = "",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onSecondary
                         )
                     } else {
                         TextField(
@@ -97,11 +99,13 @@ fun MonumentsList(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 actions = {
-                    IconButton(onClick = { isSearching = !isSearching }) {
+                    IconButton(onClick = {
+                        isSearching = !isSearching
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }
@@ -112,24 +116,21 @@ fun MonumentsList(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+
         ) {
             items(
                 count = monuments.itemCount,
                 key = monuments.itemKey { monument -> monument.monumentId }
             ) { monumentIndex ->
                 monuments[monumentIndex]?.let { item ->
-                    MonumentItem(
+                    MonumentListItem(
+                        navController,
                         monument = item,
                         modifier = Modifier.fillMaxWidth()
                     ) { currentMonument ->
                         scope.launch {
                             withContext(Dispatchers.Main) {
-                                //TODO: navegar al detail
-                                Toast.makeText(
-                                    context,
-                                    "Monumento: ${currentMonument.title}",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
                             }
                         }
                     }
@@ -140,13 +141,12 @@ fun MonumentsList(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun MonumentItem(
-    @PreviewParameter(MonumentPreviewParameter::class)
+fun MonumentListItem(
+    navController: NavController, //TODO: hace falta???
     monument: Monument,
     modifier: Modifier = Modifier,
-    onClick: (Monument) -> Unit = {},
+    onClick: (Monument) -> Unit = {}, //TODO: esto para qué???
 ) {
     ElevatedCard(
         modifier = modifier
@@ -158,9 +158,8 @@ fun MonumentItem(
         ConstraintLayout(modifier = modifier.padding(4.dp)) {
             val (
                 nameView,
-                genderView,
-                speciesView,
                 photoView,
+                favoriteView
             ) = createRefs()
             AsyncImage(
                 model = monument.image,
@@ -184,42 +183,32 @@ fun MonumentItem(
                         top.linkTo(parent.top)
                         start.linkTo(photoView.end, 8.dp)
                         bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
+                        end.linkTo(favoriteView.start)
                         width = Dimension.fillToConstraints
                     },
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            /*Text(
-                text = monument.description,
-                modifier = Modifier.constrainAs(speciesView){
-                    top.linkTo(photoView.top)
-                    start.linkTo(photoView.end, 16.dp)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
-                style = MaterialTheme.typography.titleMedium
-            )
             Icon(
-                imageVector = ImageVector.vectorResource(id =
-                if (character.gender.lowercase() == "male")
-                    R.drawable.ic_male
-                else
-                    R.drawable.ic_female
+                imageVector = ImageVector.vectorResource(
+                    id =
+                    if (monument.isFavorite)
+                        R.drawable.baseline_favorite_24
+                    else
+                        R.drawable.baseline_favorite_border_24
                 ),
                 contentDescription = null,
-                tint = if (character.gender.lowercase() == "male")
-                    Color.Blue
-                else
-                    Color.Magenta,
-                modifier = Modifier.constrainAs(genderView){
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    width = Dimension.value(64.dp)
-                    height = Dimension.value(64.dp)
-                }
-            )*/
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .constrainAs(favoriteView) {
+                        start.linkTo(nameView.end, 8.dp)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(nameView.bottom)
+                        width = Dimension.value(20.dp)
+                        height = Dimension.fillToConstraints
+                    }
+            )
         }
     }
     Spacer(modifier = Modifier.height(4.dp))
@@ -229,7 +218,7 @@ class MonumentPreviewParameter : PreviewParameterProvider<Monument> {
     override val values: Sequence<Monument>
         get() = sequenceOf(
             Monument(
-                monumentId = 1,
+                monumentId = "1",
                 title = "name bla bla",
                 address = "status bla bla",
                 style = "species bla bla",

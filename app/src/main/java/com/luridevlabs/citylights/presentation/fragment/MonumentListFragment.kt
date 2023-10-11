@@ -9,16 +9,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
-import com.luridevlabs.citylights.model.ResourceState
+import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
-import com.luridevlabs.citylights.presentation.compose.MonumentsList
+import com.luridevlabs.citylights.presentation.composables.Navigation
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
+/**
+ * Como la navegación y las clases más globales están realizadas en vista clásica
+ * pero quería implementar también algunas pantallas mediante funciones Composables,
+ * he incluido este Fragment como contenedor para la ComposeView donde los implementaré.
+ */
 class MonumentListFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentListBinding
@@ -37,12 +41,11 @@ class MonumentListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initContent()
-        //initUI()
+        //initContent()
         initComposeUI()
     }
 
-    private fun initContent() {
+    /*private fun initContent() {
         monumentsViewModel.getMonumentListLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMonumentListState(state)
         }
@@ -50,9 +53,9 @@ class MonumentListFragment : Fragment() {
         if (monumentsViewModel.getMonumentListLiveData().value == null) {
             monumentsViewModel.fetchMonuments()
         }
-    }
+    }*/
 
-    private fun handleMonumentListState(state: MonumentListState) {
+    /*private fun handleMonumentListState(state: MonumentListState) {
         when(state) {
             is ResourceState.Loading -> {
                 binding.pbMonumentList.visibility = View.VISIBLE
@@ -66,35 +69,22 @@ class MonumentListFragment : Fragment() {
                 showErrorDialog(state.error)
             }
         }
-    }
+    }*/
 
     private fun initComposeUI() {
         binding.cvListComposeView.setContent {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    MonumentsList(monumentsViewModel)
+                    Navigation()
                 }
             }
         }
     }
 
-    /*private fun initUI() {
-        binding.rvMonumentList.adapter = monumentListAdapter
-        binding.rvMonumentList.layoutManager = LinearLayoutManager(requireContext())
-
-        monumentListAdapter.onClickListener = { monument ->
-
-            findNavController().navigate(
-                //R.id.action_monumentListFragment_to_monumentDetailFragment
-                MonumentListFragmentDirections.actionMonumentListFragmentToMonumentDetailFragment(monument.monumentId)
-            )
-        }
-    }*/
-
-    private fun showErrorDialog(error: String) {
+    /*private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Error")
             .setMessage(error)
@@ -102,5 +92,5 @@ class MonumentListFragment : Fragment() {
             .setNegativeButton("Reintentar") { dialog, witch ->
                 monumentsViewModel.fetchMonuments()
             }
-    }
+    }*/
 }

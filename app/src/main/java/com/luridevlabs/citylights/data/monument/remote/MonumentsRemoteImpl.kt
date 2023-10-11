@@ -1,7 +1,7 @@
 package com.luridevlabs.citylights.data.monument.remote
 
+import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.data.remote.CityLightsService
-import com.luridevlabs.citylights.model.ApiMonument
 import com.luridevlabs.citylights.model.Monument
 
 class MonumentsRemoteImpl (
@@ -12,7 +12,7 @@ class MonumentsRemoteImpl (
         return cityLightsService.getMonuments().monuments
     }
 
-    suspend fun getMonument(monumentId: Long): Monument {
+    suspend fun getMonument(monumentId: String): Monument {
         return cityLightsService.getMonument(monumentId)
     }
 }
