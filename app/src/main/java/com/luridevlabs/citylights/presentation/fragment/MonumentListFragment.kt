@@ -10,12 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
-import com.luridevlabs.citylights.presentation.common.ResourceState
-import com.luridevlabs.citylights.presentation.adapter.MonumentListAdapter
-import com.luridevlabs.citylights.presentation.composables.Navigation
-import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
-import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.luridevlabs.citylights.presentation.composables.Navigation
 
 /**
@@ -74,8 +68,8 @@ class MonumentListFragment : Fragment() {
         }
     }*/
 
-        initComposeUI()
-    }
+        //initComposeUI()
+
 
     private fun initComposeUI() {
         binding.cvListComposeView.setContent {
@@ -97,5 +91,6 @@ class MonumentListFragment : Fragment() {
             .setPositiveButton("Aceptar", null)
             .setNegativeButton("Reintentar") { dialog, witch ->
                 monumentsViewModel.fetchMonuments()
-            }
+            }*/
 
+}

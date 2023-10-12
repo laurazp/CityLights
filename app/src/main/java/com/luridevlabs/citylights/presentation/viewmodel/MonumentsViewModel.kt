@@ -29,10 +29,8 @@ open class MonumentsViewModel (
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
-    private val monumentDetailMutableLiveData = MutableLiveData<Monument>()
-
-    val monumentDetailMutableLiveData = MutableLiveData<Monument>()
     val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
+
     private val myListsMutableLiveData = MutableLiveData<MyListsState>()
     private lateinit var favoritesList: MutableList<Monument>
     private lateinit var personalLists: MutableList<MonumentList>
@@ -70,16 +68,18 @@ open class MonumentsViewModel (
     }
 
     fun fetchMonument(monumentId: String) {
+        monumentDetailMutableLiveData.value = ResourceState.Loading()
 
         viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val monument = getMonumentDetailUseCase.execute(monumentId)
 
-            val monument = getMonumentDetailUseCase.execute(monumentId)
-            monumentDetailMutableLiveData.value = monument
-
-            withContext(Dispatchers.Main) {
-
+                withContext(Dispatchers.Main) {
+                    monumentDetailMutableLiveData.value = ResourceState.Success(monument)
+                }
+            } catch (e: Exception) {
+                monumentDetailMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
             }
-
         }
     }
 

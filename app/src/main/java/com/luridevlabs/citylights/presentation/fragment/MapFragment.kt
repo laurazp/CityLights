@@ -3,15 +3,14 @@ package com.luridevlabs.citylights.presentation.fragment
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -19,7 +18,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
@@ -35,14 +33,32 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentMapBinding
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
     private var markersList: MutableList<MarkerOptions> = mutableListOf()
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val REQUEST_LOCATION_PERMISSION = 1
-    private var userLocation = LatLng(0.0, 0.0)
+    private var googleMap: GoogleMap? = null
+    //private lateinit var fusedLocationClient: FusedLocationProviderClient
+    //private val REQUEST_LOCATION_PERMISSION = 1
+    //private var userLocation = LatLng(0.0, 0.0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!checkPermissions()) {
-            requestPermissions()
+
+        when (checkPermission()) {
+            PackageManager.PERMISSION_GRANTED -> {
+                if (!isLocationEnabled()) {
+                    //deniedMapButtons()
+                    //clearMap()
+                } else {
+                    //activateMapButtons()
+                    //clearMap()
+                }
+            }
+
+            PackageManager.PERMISSION_DENIED -> {
+                requestPermission()
+                //TODO: revisar
+                /*if (checkPermissionDialog) {
+                    requestPermission()
+                }*/
+            }
         }
     }
 
@@ -57,10 +73,53 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkPermission()
+
         initContent()
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.fcv_map_container) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.fcv_map_container) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        centerMap()
+    }
+
+    private fun centerMap() {
+        when (checkPermission()) {
+            PackageManager.PERMISSION_GRANTED -> {
+                var currentLatLng: LatLng
+                val fusedLocationClient =
+                    LocationServices.getFusedLocationProviderClient(requireContext())
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (!isLocationEnabled() || location == null) {
+                        //TODO: deniedMapButtons()
+                        googleMap?.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(41.65, -0.877), //Coordenadas del centro de Zaragoza
+                                13f
+                            )
+                        )
+                    } else {
+                        //TODO: activateMapButtons()
+                        googleMap?.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(location.latitude, location.longitude),
+                                18f
+                            )
+                        )
+                    }
+                }
+            }
+
+            PackageManager.PERMISSION_DENIED -> {
+                //TODO: deniedMapButtons()
+                googleMap?.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(41.65, -0.877), //Coordenadas del centro de Zaragoza
+                        13f
+                    )
+                )
+            }
+        }
     }
 
     private fun initContent() {
@@ -74,14 +133,16 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     }
 
     private fun handleMonumentListState(state: MonumentListState) {
-        when(state) {
+        when (state) {
             is ResourceState.Loading -> {
                 binding.pbMapProgressBar.visibility = View.VISIBLE
             }
+
             is ResourceState.Success -> {
                 binding.pbMapProgressBar.visibility = View.GONE
                 getMarkersFromData(state.result)
             }
+
             is ResourceState.Error -> {
                 binding.pbMapProgressBar.visibility = View.GONE
                 showErrorDialog(state.error)
@@ -90,21 +151,25 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
 
         markersList.forEach { marker ->
             googleMap.addMarker(marker)
         }
 
-        if (checkPermissions() && isLocationEnabled()) {
+        /*if (checkPermissions() && isLocationEnabled()) {
             //TODO: show user location
             println("location enabled")
         } else {
             println("location disabled")
-            googleMap.setLatLngBoundsForCameraTarget(LatLngBounds(
-                LatLng(41.65, -0.877),
-                LatLng(41.65, -0.877)))
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f))
-        }
+            googleMap.setLatLngBoundsForCameraTarget(
+                LatLngBounds(
+                    LatLng(41.65, -0.877),
+                    LatLng(41.65, -0.877)
+                )
+            )
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f)) //moveCamera
+        }*/
     }
 
     private fun getMarkersFromData(data: List<Monument>) {
@@ -133,34 +198,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             }
     }
 
-    private fun getUserLocation() {
-        if (checkPermissions()) {
-
-        } else {
-            requestPermissions()
-        }
-
-        if (isLocationEnabled()) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                fusedLocationClient =
-                    LocationServices.getFusedLocationProviderClient(requireActivity())
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        this.userLocation = LatLng(location.latitude, location.longitude)
-                        println(this.userLocation)
-                    }
-                }
-            }
-        } else {
-            showLocationDisabledDialog()
-            //Toast.makeText(requireContext(), R.string.enableLocationMessage, Toast.LENGTH_LONG).show()
-        }
-    }
-
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -169,40 +206,27 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         )
     }
 
-    private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
-    }
-
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            REQUEST_LOCATION_PERMISSION
+    private fun checkPermission(): Int {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
         )
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                getUserLocation()
-            } else {
-                requestPermissions()
+    private fun requestPermission() {
+        geoLocationRequestContract.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    private val geoLocationRequestContract =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            /**
+             * We just send message when permission is not accepted show this message always,
+             * except denied for ever
+             **/
+            if (!granted) {
+                //TODO: showInfoPermissionDialog()
             }
         }
-    }
 
     private fun showLocationDisabledDialog() {
         MaterialAlertDialogBuilder(requireContext())
@@ -210,3 +234,4 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             .setMessage(R.string.locationMessage)
             .setPositiveButton(R.string.acceptButtonText, null)
     }
+}
