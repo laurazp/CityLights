@@ -3,25 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/monumentListFragment">
+    app:startDestination="@id/personalListsFragment">
 
     <fragment
-        android:id="@+id/monumentListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.MonumentListFragment"
+        android:id="@+id/personalListsFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.PersonalListsFragment"
         tools:layout="@layout/fragment_monument_list">
         <action
-            android:id="@+id/action_monumentListFragment_to_monumentDetailFragment"
-            app:destination="@id/monumentDetailFragment" />
+            android:id="@+id/action_personalListsFragment_to_selectedListFragment"
+            app:destination="@id/selectedListFragment" />
+        <action
+            android:id="@+id/action_personalListsFragment_to_addNewListFragment"
+            app:destination="@id/addNewListFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/monumentDetailFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.MonumentDetailFragment"
+        android:id="@+id/selectedListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.SelectedListFragment"
         tools:layout="@layout/fragment_monument_detail" >
 
         <argument
-            android:name="monumentId"
-            app:argType="long" />
+            android:name="listName"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addNewListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.AddNewListFragment"
+        tools:layout="@layout/fragment_add_new_list">
     </fragment>
 
 </navigation>
