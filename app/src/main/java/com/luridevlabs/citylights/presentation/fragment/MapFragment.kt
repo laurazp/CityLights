@@ -80,43 +80,28 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         //centerMap()
     }
 
-    private fun centerMap() {
-        when (checkPermission()) {
-            PackageManager.PERMISSION_GRANTED -> {
-                var currentLatLng: LatLng
-                val fusedLocationClient =
-                    LocationServices.getFusedLocationProviderClient(requireContext())
-                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                    if (!isLocationEnabled() || location == null) {
-                        //TODO: deniedMapButtons()
-                        googleMap?.moveCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(41.65, -0.877), //Coordenadas del centro de Zaragoza
-                                13f
-                            )
-                        )
-                    } else {
-                        //TODO: activateMapButtons()
-                        googleMap?.moveCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(location.latitude, location.longitude),
-                                3f
-                            )
-                        )
-                    }
-                }
-            }
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
 
-            PackageManager.PERMISSION_DENIED -> {
-                //TODO: deniedMapButtons()
-                googleMap?.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(41.65, -0.877), //Coordenadas del centro de Zaragoza
-                        13f
-                    )
-                )
-            }
+        markersList.forEach { marker ->
+            googleMap.addMarker(marker)
         }
+
+        centerMap()
+
+        /*if (checkPermissions() && isLocationEnabled()) {
+            //TODO: show user location
+            println("location enabled")
+        } else {
+            println("location disabled")
+            googleMap.setLatLngBoundsForCameraTarget(
+                LatLngBounds(
+                    LatLng(41.65, -0.877),
+                    LatLng(41.65, -0.877)
+                )
+            )
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f)) //moveCamera
+        }*/
     }
 
     private fun initContent() {
@@ -147,30 +132,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
-
-        markersList.forEach { marker ->
-            googleMap.addMarker(marker)
-        }
-
-        centerMap()
-
-        /*if (checkPermissions() && isLocationEnabled()) {
-            //TODO: show user location
-            println("location enabled")
-        } else {
-            println("location disabled")
-            googleMap.setLatLngBoundsForCameraTarget(
-                LatLngBounds(
-                    LatLng(41.65, -0.877),
-                    LatLng(41.65, -0.877)
-                )
-            )
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f)) //moveCamera
-        }*/
-    }
-
     private fun getMarkersFromData(data: List<Monument>) {
 
         data.forEach { monument ->
@@ -185,15 +146,43 @@ class MapFragment: Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showErrorDialog(error: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.errorTitle)
-            .setMessage(error)
-            .setPositiveButton(R.string.acceptButtonText, null)
-            .setNegativeButton(R.string.tryAgainButtonText) { dialog, _ ->
-                monumentsViewModel.fetchMonuments()
-                //TODO: cerrar diálogo ??
+    private fun centerMap() {
+        when (checkPermission()) {
+            PackageManager.PERMISSION_GRANTED -> {
+                //var currentLatLng: LatLng
+                val fusedLocationClient =
+                    LocationServices.getFusedLocationProviderClient(requireContext())
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (!isLocationEnabled() || location == null) {
+                        //TODO: deniedMapButtons()
+                        googleMap?.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(41.65, -0.877), //Coordenadas del centro de Zaragoza
+                                13f
+                            )
+                        )
+                    } else {
+                        //TODO: activateMapButtons()
+                        googleMap?.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(location.latitude, location.longitude),
+                                6f
+                            )
+                        )
+                    }
+                }
             }
+
+            PackageManager.PERMISSION_DENIED -> {
+                //TODO: deniedMapButtons()
+                googleMap?.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(41.65, -0.877), //Coordenadas del centro de Zaragoza
+                        13f
+                    )
+                )
+            }
+        }
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -225,6 +214,17 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                 //TODO: showInfoPermissionDialog()
             }
         }
+
+    private fun showErrorDialog(error: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.errorTitle)
+            .setMessage(error)
+            .setPositiveButton(R.string.acceptButtonText, null)
+            .setNegativeButton(R.string.tryAgainButtonText) { dialog, _ ->
+                monumentsViewModel.fetchMonuments()
+                //TODO: cerrar diálogo ??
+            }
+    }
 
     private fun showLocationDisabledDialog() {
         MaterialAlertDialogBuilder(requireContext())
