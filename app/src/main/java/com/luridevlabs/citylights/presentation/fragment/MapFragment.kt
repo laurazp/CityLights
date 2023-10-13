@@ -34,9 +34,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
     private var markersList: MutableList<MarkerOptions> = mutableListOf()
     private var googleMap: GoogleMap? = null
-    //private lateinit var fusedLocationClient: FusedLocationProviderClient
-    //private val REQUEST_LOCATION_PERMISSION = 1
-    //private var userLocation = LatLng(0.0, 0.0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,14 +70,14 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        checkPermission()
+        //checkPermission()
 
         initContent()
 
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.fcv_map_container) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        centerMap()
+        //centerMap()
     }
 
     private fun centerMap() {
@@ -103,7 +100,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                         googleMap?.moveCamera(
                             CameraUpdateFactory.newLatLngZoom(
                                 LatLng(location.latitude, location.longitude),
-                                18f
+                                3f
                             )
                         )
                     }
@@ -157,6 +154,8 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             googleMap.addMarker(marker)
         }
 
+        centerMap()
+
         /*if (checkPermissions() && isLocationEnabled()) {
             //TODO: show user location
             println("location enabled")
@@ -175,16 +174,14 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     private fun getMarkersFromData(data: List<Monument>) {
 
         data.forEach { monument ->
-            val monumentCoordinates = LatLng(
-                monument.geometry.coordinates[1],
-                monument.geometry.coordinates[0]
-            )
-            val markerOptions = MarkerOptions()
-                .position(monumentCoordinates)
-                .title(monument.title)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+            if (monument.position != LatLng(0.0, 0.0)) {
+                val markerOptions = MarkerOptions()
+                    .position(monument.position)
+                    .title(monument.title)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
 
-            markersList.add(markerOptions)
+                markersList.add(markerOptions)
+            }
         }
     }
 
@@ -193,8 +190,9 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             .setTitle(R.string.errorTitle)
             .setMessage(error)
             .setPositiveButton(R.string.acceptButtonText, null)
-            .setNegativeButton(R.string.tryAgainButtonText) { dialog, witch ->
+            .setNegativeButton(R.string.tryAgainButtonText) { dialog, _ ->
                 monumentsViewModel.fetchMonuments()
+                //TODO: cerrar diálogo ??
             }
     }
 
