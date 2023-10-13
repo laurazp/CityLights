@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.data.remote
 
+import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.data.monument.remote.model.MonumentsResponse
 import com.luridevlabs.citylights.model.Monument
 import retrofit2.http.GET
@@ -11,6 +12,6 @@ interface CityLightsService {
 
     suspend fun getMonuments(): MonumentsResponse
 
-    @GET("monumento/{monumentId}.json")
-    suspend fun getMonument(@Path("monumentId") monumentId: String): Monument
+    @GET("monumento/{monumentId}.json?srsname=wgs84")
+    suspend fun getMonument(@Path("monumentId") monumentId: String): ApiMonument
 }

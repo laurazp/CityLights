@@ -95,7 +95,7 @@ fun MonumentList(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
                 actions = {
                     IconButton(onClick = {
                         isSearching = !isSearching
@@ -114,7 +114,6 @@ fun MonumentList(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-
         ) {
             items(
                 count = monuments.itemCount,
@@ -122,7 +121,7 @@ fun MonumentList(
             ) { monumentIndex ->
                 monuments[monumentIndex]?.let { item ->
                     MonumentListItem(
-                        navController,
+                        //navController,
                         monument = item,
                         modifier = Modifier.fillMaxWidth()
                     ) { currentMonument ->
@@ -141,7 +140,7 @@ fun MonumentList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentListItem(
-    navController: NavController, //TODO: hace falta???
+    //navController: NavController,
     monument: Monument,
     modifier: Modifier = Modifier,
     onClick: (Monument) -> Unit = {}, //TODO: esto para qué???
@@ -150,7 +149,7 @@ fun MonumentListItem(
         modifier = modifier
             .padding(horizontal = 6.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         onClick = { onClick(monument) }
     ) {
         ConstraintLayout(modifier = modifier.padding(4.dp)) {
@@ -197,7 +196,7 @@ fun MonumentListItem(
                         R.drawable.baseline_favorite_border_24
                 ),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .constrainAs(favoriteView) {
                         start.linkTo(nameView.end, 8.dp)

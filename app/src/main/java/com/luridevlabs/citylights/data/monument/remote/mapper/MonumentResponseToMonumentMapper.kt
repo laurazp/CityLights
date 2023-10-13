@@ -6,8 +6,8 @@ import com.luridevlabs.citylights.model.Monument
 
 class MonumentResponseToMonumentMapper {
 
-    fun mapMonument(monument: ApiMonument, isFavorite: Boolean): Monument {
-        val mappedMonument = Monument(
+    fun mapMonument(monument: ApiMonument): Monument {
+        return Monument(
             monument.monumentId.toString(),
             monument.title,
             monument.description.orEmpty(),
@@ -20,8 +20,7 @@ class MonumentResponseToMonumentMapper {
             monument.price.orEmpty(),
             monument.visitInfo.orEmpty(),
             monument.image.orEmpty(),
-            isFavorite
+            isFavorite = false
         )
-        return mappedMonument
     }
 }

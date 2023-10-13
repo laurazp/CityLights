@@ -19,9 +19,9 @@ val baseModule = module {
 }
 
 val monumentsModule = module {
-    factory { MonumentsRemoteImpl(get()) }
+    factory { MonumentsRemoteImpl(get(), get()) }
     //factory { MonumentsLocalImpl(get()) }
-    factory<MonumentsRepository> { MonumentsDataImpl(get(), get()) }
+    factory<MonumentsRepository> { MonumentsDataImpl(get()) }
 
     factory { MonumentResponseToMonumentMapper() }
     factory { MonumentsPaging(get()) }

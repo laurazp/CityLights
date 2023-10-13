@@ -1,8 +1,8 @@
 package com.luridevlabs.citylights.presentation.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,14 +26,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -41,10 +46,15 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberMarkerState
+import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.common.ResourceState
+import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import org.koin.androidx.compose.koinViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +95,7 @@ fun MonumentDetail(
 
         when (selectedMonumentState) {
             is ResourceState.Loading -> {
-                //TODO:
+                //TODO: add progress bar
             }
 
             is ResourceState.Success -> {
@@ -107,95 +117,127 @@ fun MonumentDetail(
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .background(Color.White, shape = RectangleShape)
-                                .fillMaxWidth()
-                                .height(500.dp)
-                        )
-                        Text(
-                            text = selectedMonument.title,
-                            modifier = Modifier
-                                .padding(6.dp),
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        /*AsyncImage(
-                        model = monument.image,
-                        placeholder = painterResource(R.drawable.church_icon),
-                        error = painterResource(R.drawable.church_icon),
-                        contentDescription = monument.title,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .size(70.dp)
-                            .constrainAs(photoView) {
-                                top.linkTo(parent.top, 4.dp)
-                                bottom.linkTo(parent.bottom, 4.dp)
-                                start.linkTo(parent.start, 4.dp)
-                            }
-                    )*/
-                        /*Text(
-                            text = monumentId,
-                            modifier = Modifier
-                                .constrainAs(titleView) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(photoView.end, 8.dp)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                    width = Dimension.fillToConstraints
-                                },
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )*/
-                        /*Text(
-                    text = monument.description,
-                    modifier = Modifier.constrainAs(descriptionView) {
-                        top.linkTo(photoView.top)
-                        start.linkTo(photoView.end, 16.dp)
-                        end.linkTo(parent.end)
-                        width = Dimension.fillToConstraints
-                    },
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Row(modifier = Modifier.constrainAs(hoursView) {
-                    top.linkTo(photoView.top)
-                    start.linkTo(photoView.end, 16.dp)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },) {
-                    Text(text = "Hours",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = monument.hours ?: "",
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                }*/
+                        ConstraintLayout(modifier = Modifier.padding(8.dp)) {
+                            val (
+                                photoView,
+                                titleView,
+                                descriptionView,
+                                styleView,
+                                addressView,
+                                hoursView
+                            //TODO: añadir todos los campos
+                            ) = createRefs()
 
-                        /*Icon(
-                    imageVector = ImageVector.vectorResource(
-                        id =
-                        if (character.gender.lowercase() == "male")
-                            R.drawable.ic_male
+                            AsyncImage(
+                                model = selectedMonument.image,
+                                placeholder = painterResource(R.drawable.church_icon),
+                                error = painterResource(R.drawable.church_icon),
+                                contentDescription = selectedMonument.title,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .fillMaxWidth()
+                                    .constrainAs(photoView) {
+                                        top.linkTo(parent.top)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                    }
+                            )
+                            Text(
+                                text = selectedMonument.title,
+                                modifier = Modifier
+                                    .constrainAs(titleView) {
+                                        top.linkTo(photoView.bottom, 8.dp)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                    }
+                                    .padding(6.dp),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = selectedMonument.description,
+                                modifier = Modifier
+                                    .constrainAs(descriptionView) {
+                                        top.linkTo(titleView.bottom, 8.dp)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                    },
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Justify
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .constrainAs(styleView) {
+                                        top.linkTo(descriptionView.bottom, 12.dp)
+                                        start.linkTo(parent.start)
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Style:  ",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = selectedMonument.style.capitalizeLowercase(),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .constrainAs(addressView) {
+                                    top.linkTo(styleView.bottom, 12.dp)
+                                    start.linkTo(parent.start)
+                                },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Address:  ",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = selectedMonument.address,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .constrainAs(hoursView) {
+                                        top.linkTo(addressView.bottom, 12.dp)
+                                        start.linkTo(parent.start)
+                                    },
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Text(
+                                    text = "Hours:  ",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = selectedMonument.hours,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            //TODO: Add favorites icon
+                            /*Icon(
+                        imageVector = ImageVector.vectorResource(
+                            id =
+                            if (character.gender.lowercase() == "male")
+                                R.drawable.ic_male
+                            else
+                                R.drawable.ic_female
+                        ),
+                        contentDescription = null,
+                        tint = if (character.gender.lowercase() == "male")
+                            Color.Blue
                         else
-                            R.drawable.ic_female
-                    ),
-                    contentDescription = null,
-                    tint = if (character.gender.lowercase() == "male")
-                        Color.Blue
-                    else
-                        Color.Magenta,
-                    modifier = Modifier.constrainAs(genderView) {
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
-                        width = Dimension.value(64.dp)
-                        height = Dimension.value(64.dp)
-                    }
-                )*/
+                            Color.Magenta,
+                        modifier = Modifier.constrainAs(genderView) {
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                            width = Dimension.value(64.dp)
+                            height = Dimension.value(64.dp)
+                        }
+                    )*/
+                        }
                     }
                     Spacer(
                         modifier = Modifier
@@ -213,31 +255,30 @@ fun MonumentDetail(
                         Box(
                             modifier = Modifier
                                 .padding(6.dp)
+                                .clip(shape = RoundedCornerShape(12.dp))
                         )
                         {
-                            Box(
-                                modifier = Modifier
-                                    .clip(shape = RoundedCornerShape(12.dp))
-                            )
-                            {
-                                DetailMapView()
-                            }
+                            DetailMapView(selectedMonument)
                         }
                     }
+
                 }
             }
 
             is ResourceState.Error -> {
-                //TODO
+                //TODO:
             }
+
             else -> {}
         }
     }
 }
 
 @Composable
-fun DetailMapView() {
-    val context = LocalContext.current
+fun DetailMapView(monument: Monument) {
+    val markerPosition =
+        LatLng(monument.geometry.coordinates[1], monument.geometry.coordinates[0])
+    //val context = LocalContext.current
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         uiSettings = MapUiSettings(zoomControlsEnabled = true),
@@ -246,8 +287,18 @@ fun DetailMapView() {
         ),
         cameraPositionState = CameraPositionState(
             CameraPosition(
-                LatLng(41.65, -0.877), 16f, 0f, 0f
+                LatLng(monument.geometry.coordinates[1], monument.geometry.coordinates[0]),
+                16f,
+                0f,
+                0f
             )
         )
-    )
+    ) {
+        //TODO: mostrar pin en el mapa
+        Marker(
+            state = rememberMarkerState(position = markerPosition),
+            title = monument.title,
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
+        )
+    }
 }
