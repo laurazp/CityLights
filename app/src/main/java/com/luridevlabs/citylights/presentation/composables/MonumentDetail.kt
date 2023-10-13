@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,14 +27,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -40,7 +42,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -54,7 +55,6 @@ import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import org.koin.androidx.compose.koinViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +64,7 @@ fun MonumentDetail(
 ) {
     val monumentViewModel: MonumentsViewModel = koinViewModel()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    //val scope = rememberCoroutineScope()
 
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
     monumentViewModel.fetchMonument(monumentId)
@@ -106,7 +106,6 @@ fun MonumentDetail(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
-                        //.padding(horizontal = 6.dp, vertical = 8.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     //InfoCard
@@ -143,17 +142,44 @@ fun MonumentDetail(
                                         end.linkTo(parent.end)
                                     }
                             )
-                            Text(
-                                text = selectedMonument.title,
+                            Row (
                                 modifier = Modifier
                                     .constrainAs(titleView) {
                                         top.linkTo(photoView.bottom, 8.dp)
                                         start.linkTo(parent.start)
                                         end.linkTo(parent.end)
-                                    }
-                                    .padding(6.dp),
-                                style = MaterialTheme.typography.titleLarge
-                            )
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                                //TODO: separar del título !!!
+                                //horizontalArrangement = Arrangement.End
+                            ) {
+                                Text(
+                                    text = selectedMonument.title,
+                                    modifier = Modifier
+                                        .padding(6.dp),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                IconButton(
+                                    onClick = {
+                                        //TODO: Add favorite when onClick
+                                        Toast.makeText(context, "Add to favorites!", Toast.LENGTH_LONG).show()
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(
+                                            id =
+                                            if (selectedMonument.isFavorite)
+                                                R.drawable.baseline_favorite_24
+                                            else
+                                                R.drawable.baseline_favorite_border_24
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .width(24.dp)
+                                            .height(24.dp)
+                                    )
+                                }
+                            }
                             Text(
                                 text = selectedMonument.description,
                                 modifier = Modifier
@@ -174,7 +200,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Style:  ",
+                                    text = "Estilo:  ",
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -191,7 +217,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Address:  ",
+                                    text = "Dirección:  ",
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -208,7 +234,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.Top
                             ) {
                                 Text(
-                                    text = "Hours:  ",
+                                    text = "Horario:  ",
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -216,27 +242,7 @@ fun MonumentDetail(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
-                            //TODO: Add favorites icon
-                            /*Icon(
-                        imageVector = ImageVector.vectorResource(
-                            id =
-                            if (character.gender.lowercase() == "male")
-                                R.drawable.ic_male
-                            else
-                                R.drawable.ic_female
-                        ),
-                        contentDescription = null,
-                        tint = if (character.gender.lowercase() == "male")
-                            Color.Blue
-                        else
-                            Color.Magenta,
-                        modifier = Modifier.constrainAs(genderView) {
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            width = Dimension.value(64.dp)
-                            height = Dimension.value(64.dp)
-                        }
-                    )*/
+                            //TODO: Add all the fields
                         }
                     }
                     Spacer(

@@ -19,15 +19,11 @@ import com.luridevlabs.citylights.presentation.viewmodel.MonumentDetailState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
+//TODO: Eliminar ???
 class MonumentDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentDetailBinding
-
-    //private val args: MonumentDetailFragmentArgs by navArgs()
-
-    private val monumentsViewModel: MonumentsViewModel by activityViewModel()
-
-    private var monument: Monument? = null
+    //private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,20 +33,12 @@ class MonumentDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        //initContent()
-        //monumentsViewModel.fetchMonument(args.monumentId)
-    }
-
     /*private fun initContent() {
 
         monumentsViewModel.getMonumentDetailLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMonumentDetailState(state)
         }
 
-        //TODO: comprobar !!!
         if (monumentsViewModel.getMonumentDetailLiveData().value == null) {
             //monumentsViewModel.fetchMonument(args.monumentId)
         }
@@ -64,7 +52,7 @@ class MonumentDetailFragment : Fragment() {
             is ResourceState.Success -> {
                 binding.pbMonumentDetail.visibility = View.GONE
                 //initUI(state.result)
-                initComposeUI(state.result) //TODO: modificar con el monument en la vista???
+                initComposeUI(state.result)
                 monument = state.result
             }
             is ResourceState.Error -> {
@@ -76,7 +64,6 @@ class MonumentDetailFragment : Fragment() {
 
     /*private fun initUI(monument: Monument) {
         binding.tvMonumentDetailTitle.text = monument.title
-        //TODO: add all the fields
 
         Glide.with(requireContext())
             .load(monument.image)
@@ -86,21 +73,6 @@ class MonumentDetailFragment : Fragment() {
             toggleFavoriteMonument()
         }
     }*/
-
-    //TODO: borrar si se usa Compose Navigation !!!
-    private fun initComposeUI(monument: Monument) {
-        binding.cvDetailComposeView.setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    //monument?.let { MonumentDetail(monumentId = it.monumentId, viewModel = monumentsViewModel) }
-
-                }
-            }
-        }
-    }
 
     private fun toggleFavoriteMonument() {
         /*val isFavorite = monument?.isFavorite ?: false
