@@ -3,7 +3,7 @@ package com.luridevlabs.citylights.model
 import com.google.android.gms.maps.model.LatLng
 
 data class Monument(
-    val monumentId: String,
+    val monumentId: Long,
     val title: String,
     val description: String,
     val style: String,

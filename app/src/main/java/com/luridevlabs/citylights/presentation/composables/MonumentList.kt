@@ -216,7 +216,7 @@ class MonumentPreviewParameter : PreviewParameterProvider<Monument> {
     override val values: Sequence<Monument>
         get() = sequenceOf(
             Monument(
-                monumentId = "1",
+                monumentId = 123,
                 title = "name bla bla",
                 address = "status bla bla",
                 style = "species bla bla",

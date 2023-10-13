@@ -9,7 +9,7 @@ class MonumentResponseToMonumentMapper {
 
     fun mapMonument(monument: ApiMonument): Monument {
         return Monument(
-            monument.monumentId.toString(),
+            monument.monumentId,
             monument.title,
             monument.description.orEmpty(),
             monument.style.orEmpty(),
