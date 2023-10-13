@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.data.monument.remote.mapper
 
+import com.google.android.gms.maps.model.LatLng
 import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
@@ -16,7 +17,10 @@ class MonumentResponseToMonumentMapper {
             monument.hours.orEmpty(),
             monument.data.orEmpty(),
             monument.pois.orEmpty(),
-            monument.geometry ?: Geometry(listOf(0.0, 0.0)),
+            LatLng(
+                monument.geometry?.coordinates?.get(1) ?: 0.0,
+                monument.geometry?.coordinates?.get(0) ?: 0.0
+            ),
             monument.price.orEmpty(),
             monument.visitInfo.orEmpty(),
             monument.image.orEmpty(),

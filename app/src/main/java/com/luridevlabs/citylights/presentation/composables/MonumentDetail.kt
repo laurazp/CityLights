@@ -277,7 +277,7 @@ fun MonumentDetail(
 @Composable
 fun DetailMapView(monument: Monument) {
     val markerPosition =
-        LatLng(monument.geometry.coordinates[1], monument.geometry.coordinates[0])
+        monument.position
     //val context = LocalContext.current
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
@@ -287,7 +287,7 @@ fun DetailMapView(monument: Monument) {
         ),
         cameraPositionState = CameraPositionState(
             CameraPosition(
-                LatLng(monument.geometry.coordinates[1], monument.geometry.coordinates[0]),
+                monument.position,
                 16f,
                 0f,
                 0f

@@ -1,6 +1,6 @@
 package com.luridevlabs.citylights.model
 
-import com.luridevlabs.citylights.data.monument.remote.model.Geometry
+import com.google.android.gms.maps.model.LatLng
 
 data class Monument(
     val monumentId: String,
@@ -11,7 +11,7 @@ data class Monument(
     val hours: String,
     val data: String,
     val pois: String,
-    val geometry: Geometry,
+    val position: LatLng,
     val price: String,
     val visitInfo: String,
     val image: String,

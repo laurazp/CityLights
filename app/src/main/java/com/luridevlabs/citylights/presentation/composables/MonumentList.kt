@@ -43,6 +43,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
@@ -224,7 +225,7 @@ class MonumentPreviewParameter : PreviewParameterProvider<Monument> {
                 image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Sm6WtxxfkDF52q2jEViT_m_TdoaEqui3ODP6lZcrMVlARZSYDwl_7y_tMbC9sqOOb-s&usqp=CAU",
                 data = "",
                 description = "",
-                geometry = Geometry(listOf(0.0, 0.0)),
+                position = LatLng(0.0, 0.0),
                 pois = "",
                 price = "",
             )
