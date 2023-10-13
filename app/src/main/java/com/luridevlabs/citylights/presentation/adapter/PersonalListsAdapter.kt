@@ -9,7 +9,7 @@ import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
 import com.luridevlabs.citylights.model.Monument
 
 
-class MyListsAdapter : RecyclerView.Adapter<MyListsAdapter.MonumentListViewHolder>() {
+class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentListViewHolder>() {
 
     private var monumentList: List<Monument> = emptyList()
 

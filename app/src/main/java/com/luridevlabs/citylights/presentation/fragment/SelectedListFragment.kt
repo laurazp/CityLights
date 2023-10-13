@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.myLists
+package com.luridevlabs.citylights.presentation.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
-import com.luridevlabs.citylights.databinding.FragmentMylistsBinding
 import com.luridevlabs.citylights.databinding.FragmentSelectedListBinding
-import com.luridevlabs.citylights.presentation.adapter.MyListsAdapter
+import com.luridevlabs.citylights.presentation.adapter.PersonalListsAdapter
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MyListsState
@@ -19,7 +18,7 @@ class SelectedListFragment : Fragment() {
 
     private lateinit var binding: FragmentSelectedListBinding
 
-    //private val selectedListAdapter = SelectedListAdapter()
+    private val personalListsAdapter = PersonalListsAdapter()
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
@@ -53,7 +52,7 @@ class SelectedListFragment : Fragment() {
             }
             is ResourceState.Success -> {
                 binding.pbSelectedList.visibility = View.GONE
-                //selectedListAdapter.submitList(state.result)
+                personalListsAdapter.submitList(state.result)
             }
             is ResourceState.Error -> {
                 binding.pbSelectedList.visibility = View.GONE
