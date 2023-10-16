@@ -32,7 +32,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentMapBinding
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
-    private var markersList: MutableList<MarkerOptions> = mutableListOf()
     private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,38 +69,22 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //checkPermission()
-
         initContent()
 
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.fcv_map_container) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        //centerMap()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
 
-        markersList.forEach { marker ->
-            googleMap.addMarker(marker)
-        }
-
         centerMap()
-
-        /*if (checkPermissions() && isLocationEnabled()) {
-            //TODO: show user location
-            println("location enabled")
-        } else {
-            println("location disabled")
-            googleMap.setLatLngBoundsForCameraTarget(
-                LatLngBounds(
-                    LatLng(41.65, -0.877),
-                    LatLng(41.65, -0.877)
-                )
-            )
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13f)) //moveCamera
-        }*/
     }
 
     private fun initContent() {
@@ -129,6 +112,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                 binding.pbMapProgressBar.visibility = View.GONE
                 showErrorDialog(state.error)
             }
+            else -> {}
         }
     }
 
@@ -141,7 +125,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                     .title(monument.title)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
 
-                markersList.add(markerOptions)
+                googleMap?.addMarker(markerOptions)
             }
         }
     }
@@ -149,7 +133,6 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     private fun centerMap() {
         when (checkPermission()) {
             PackageManager.PERMISSION_GRANTED -> {
-                //var currentLatLng: LatLng
                 val fusedLocationClient =
                     LocationServices.getFusedLocationProviderClient(requireContext())
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
@@ -211,7 +194,10 @@ class MapFragment: Fragment(), OnMapReadyCallback {
              * except denied for ever
              **/
             if (!granted) {
-                //TODO: showInfoPermissionDialog()
+                //TODO:
+                showInfoPermissionDialog()
+            } else {
+                centerMap()
             }
         }
 
@@ -226,7 +212,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
             }
     }
 
-    private fun showLocationDisabledDialog() {
+    private fun showInfoPermissionDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.locationTitle)
             .setMessage(R.string.locationMessage)
