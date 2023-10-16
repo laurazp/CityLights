@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/personalListsFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/personalListsFragment"
@@ -30,7 +30,20 @@
     <fragment
         android:id="@+id/addNewListFragment"
         android:name="com.luridevlabs.citylights.presentation.fragment.AddNewListFragment"
-        tools:layout="@layout/fragment_add_new_list">
-    </fragment>
+        tools:layout="@layout/fragment_add_new_list"/>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.MapFragment"
+        android:label="MapFragment" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/monumentListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.MonumentListFragment"
+        android:label="fragment_monument_list"
+        tools:layout="@layout/fragment_monument_list" />
 
 </navigation>

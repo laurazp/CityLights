@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/home_menu_item"
+        android:id="@+id/homeFragment"
         android:title="@string/home_menu_item_title"
         android:icon="@drawable/baseline_home_24"/>
     <item
-        android:id="@+id/monuments_menu_item"
+        android:id="@+id/monumentListFragment"
         android:title="@string/monuments_menu_item_title"
         android:icon="@drawable/baseline_monuments_24"/>
     <item
-        android:id="@+id/map_menu_item"
+        android:id="@+id/mapFragment"
         android:title="@string/map_menu_item_title"
         android:icon="@drawable/baseline_location_24"/>
     <item
-        android:id="@+id/myLists_menu_item"
+        android:id="@+id/personalListsFragment"
         android:title="@string/myLists_menu_item_title"
         android:icon="@drawable/baseline_favorite_24"/>
 </menu>
