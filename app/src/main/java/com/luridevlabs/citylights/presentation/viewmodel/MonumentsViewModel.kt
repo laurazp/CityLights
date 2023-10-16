@@ -19,7 +19,8 @@ import kotlin.Exception
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
-typealias MyListsState = ResourceState<List<Monument>>
+typealias AddPersonalListsState = ResourceState<Void?>
+typealias PersonalListsState = ResourceState<List<MonumentList>>
 
 open class MonumentsViewModel (
     private val getMonumentListUseCase: GetMonumentListUseCase,
@@ -31,9 +32,10 @@ open class MonumentsViewModel (
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
 
-    private val myListsMutableLiveData = MutableLiveData<MyListsState>()
-    private lateinit var favoritesList: MutableList<Monument>
-    private lateinit var personalLists: MutableList<MonumentList>
+    private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
+    val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData
+
+    private val personalListsMutableLiveData = MutableLiveData<PersonalListsState>()
 
     fun getMonumentListLiveData(): LiveData<MonumentListState> {
         return monumentListMutableLiveData
@@ -43,8 +45,12 @@ open class MonumentsViewModel (
         return monumentDetailMutableLiveData
     }
 
-    fun getMyListsLiveData(): LiveData<MonumentListState> {
-        return myListsMutableLiveData
+    fun getAddPersonalListLiveData(): LiveData<AddPersonalListsState> {
+        return addPersonalListMutableLiveData
+    }
+
+    fun getPersonalListsLiveData() : LiveData<PersonalListsState> {
+        return personalListsMutableLiveData
     }
 
     /**
@@ -83,7 +89,36 @@ open class MonumentsViewModel (
         }
     }
 
-    fun fetchMyLists() {
-        //TODO("Not yet implemented")
+    fun fetchPersonalLists() {
+        //TODO
+    }
+
+    fun addNewList(listName: String) {
+        //TODO
+        _addPersonalListMutableLiveData.value = ResourceState.Loading()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                //addListUseCase.execute(list)
+
+                withContext(Dispatchers.Main) {
+                    _addPersonalListMutableLiveData.value = ResourceState.Success(null)
+                    _addPersonalListMutableLiveData.value = ResourceState.None()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    _addPersonalListMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    _addPersonalListMutableLiveData.value = ResourceState.None()
+                }
+            }
+        }
+    }
+
+    fun editList() {
+        //TODO
+    }
+
+    fun deleteList() {
+        //TODO
     }
 }

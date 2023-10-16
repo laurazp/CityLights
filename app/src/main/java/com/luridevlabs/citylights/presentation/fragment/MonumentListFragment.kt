@@ -77,6 +77,7 @@ class MonumentListFragment : Fragment() {
                 //binding.pbMonumentList.visibility = View.GONE
                 showErrorDialog(state.error)
             }
+            else -> {}
         }
     }
 

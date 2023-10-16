@@ -11,7 +11,7 @@ import com.luridevlabs.citylights.databinding.FragmentSelectedListBinding
 import com.luridevlabs.citylights.presentation.adapter.PersonalListsAdapter
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import com.luridevlabs.citylights.presentation.viewmodel.MyListsState
+import com.luridevlabs.citylights.presentation.viewmodel.PersonalListsState
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SelectedListFragment : Fragment() {
@@ -36,28 +36,29 @@ class SelectedListFragment : Fragment() {
     }
 
     private fun initContent() {
-        monumentsViewModel.getMyListsLiveData().observe(viewLifecycleOwner) { state ->
+        monumentsViewModel.getPersonalListsLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMyListsState(state)
         }
 
         if (monumentsViewModel.getMonumentListLiveData().value == null) {
-            monumentsViewModel.fetchMyLists()
+            monumentsViewModel.fetchPersonalLists()
         }
     }
 
-    private fun handleMyListsState(state: MyListsState) {
+    private fun handleMyListsState(state: PersonalListsState) {
         when(state) {
             is ResourceState.Loading -> {
                 binding.pbSelectedList.visibility = View.VISIBLE
             }
             is ResourceState.Success -> {
                 binding.pbSelectedList.visibility = View.GONE
-                personalListsAdapter.submitList(state.result)
+                //personalListsAdapter.submitList(state.result)
             }
             is ResourceState.Error -> {
                 binding.pbSelectedList.visibility = View.GONE
                 showErrorDialog(state.error)
             }
+            else -> {}
         }
     }
 

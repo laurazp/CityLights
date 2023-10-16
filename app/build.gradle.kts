@@ -62,6 +62,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
 
     implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("android.arch.persistence.room:runtime:1.1.1")
+    annotationProcessor("android.arch.persistence.room:compiler:1.1.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
