@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentSelectedListBinding
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.adapter.PersonalListsAdapter
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -33,6 +34,13 @@ class SelectedListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initContent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as MainActivity).setTitle("")
+        //TODO: (activity as MainActivity).setTitle(R.string.selected_list_title)
     }
 
     private fun initContent() {

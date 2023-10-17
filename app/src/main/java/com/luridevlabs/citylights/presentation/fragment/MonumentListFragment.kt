@@ -10,7 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.composables.CircularProgressBar
 import com.luridevlabs.citylights.presentation.composables.Navigation
@@ -41,6 +43,12 @@ class MonumentListFragment : Fragment() {
 
         initContent()
         //initComposeUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as MainActivity).setTitle(getString(R.string.monuments_title))
     }
 
     private fun initContent() {

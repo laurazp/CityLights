@@ -28,9 +28,6 @@ class MainActivity: AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        //setMenu()
-        //loadFragment(HomeFragment())
         initView()
     }
 
@@ -60,41 +57,12 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
-    /*private fun setMenu() {
-        binding.bnvBottomNavigationBar.setOnItemSelectedListener {item ->
-            when (item.itemId) {
-                R.id.home_menu_item -> {
-                    loadFragment(HomeFragment())
-                    true
-                }
-                R.id.monuments_menu_item -> {
-                    loadFragment(MonumentListFragment())
-                    true
-                }
-                R.id.map_menu_item -> {
-                    loadFragment(MapFragment())
-                    true
-                }
-                R.id.personalLists_menu_item -> {
-                    loadFragment(PersonalListsFragment())
-                    true
-                }
-                else -> throw IllegalArgumentException("Invalid position")
-            }
-        }
-    }*/
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fcv_main_container, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
     fun navigateTo(action: Int) {
-        findNavController(R.id.fcv_main_container).navigate(action)
-        findNavController(R.id.fcv_main_container).popBackStack()
+        if(action == -1) {
+            findNavController(R.id.fcv_main_container).popBackStack()
+        } else {
+            findNavController(R.id.fcv_main_container).navigate(action)
+        }
     }
 
     fun setTitle(title: String) {

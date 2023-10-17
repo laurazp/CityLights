@@ -32,7 +32,7 @@ class PersonalListsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        (activity as MainActivity).setTitle("Personal lists")
+        (activity as MainActivity).setTitle(getString(R.string.personal_lists_title))
         //TODO: actualizar listas
     }
 

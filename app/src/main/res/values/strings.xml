@@ -2,16 +2,17 @@
     <string name="app_name">CityLights</string>
 
     <!-- Fragments -->
-    <string name="home_fragment">Home</string>
-    <string name="monuments_fragment">Monuments</string>
-    <string name="map_fragment">Map</string>
-    <string name="favorites_fragment">Favorites</string>
+    <string name="home_title">Home</string>
+    <string name="monuments_title">Monuments</string>
+    <string name="map_title">Map</string>
+    <string name="personal_lists_title">Personal lists</string>
+    <string name="add_new_list_title">Add New List</string>
 
     <!-- Menu -->
     <string name="home_menu_item_title">Home</string>
     <string name="monuments_menu_item_title">Monuments</string>
     <string name="map_menu_item_title">Map</string>
-    <string name="myLists_menu_item_title">My lists</string>
+    <string name="myLists_menu_item_title">Personal lists</string>
 
     <!-- Map -->
     <string name="locationMessage">To enjoy the full map functionality go to Settings and activate Location permissions whenever you want.</string>

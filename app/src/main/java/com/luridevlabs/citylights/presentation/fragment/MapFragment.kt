@@ -23,6 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMapBinding
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -79,6 +80,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
 
+        (activity as MainActivity).setTitle(getString(R.string.map_title))
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

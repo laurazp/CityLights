@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentAddNewListBinding
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.viewmodel.AddPersonalListsState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -31,6 +31,12 @@ class AddNewListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as MainActivity).setTitle(getString(R.string.add_new_list_title))
     }
 
     private fun initUI() {
@@ -57,7 +63,6 @@ class AddNewListFragment : Fragment() {
             }
             is ResourceState.Success -> {
                 Toast.makeText(requireContext(), "Success state!", Toast.LENGTH_LONG).show()
-                //this.findNavController().popBackStack()
             }
             is ResourceState.Error -> {
                 //TODO
@@ -72,12 +77,10 @@ class AddNewListFragment : Fragment() {
 
         if (newListName.isNotBlank()) {
             monumentsViewModel.addNewList(newListName)
-            //TODO: volver a PersonalListsFragment
-            childFragmentManager.popBackStack()
         } else {
             //this.findNavController().popBackStack()
-            Toast.makeText(requireContext(), "No se ha podido guardar la lista.", Toast.LENGTH_LONG).show()
-
+            Toast.makeText(requireContext(), "Debe introducir un nombre para poder guardar la lista.", Toast.LENGTH_LONG).show()
         }
+        (activity as MainActivity).navigateTo(-1)
     }
 }
