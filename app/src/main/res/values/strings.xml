@@ -30,5 +30,7 @@
     <string name="add_list">Add list</string>
     <string name="todo_list">ToDo List</string>
     <string name="favorites_list">Favorites List</string>
+    <string name="list_added_text">Lista añadida</string>
+    <string name="list_name_required_text">Debe introducir un nombre para poder guardar la lista.</string>
 
 </resources>

@@ -52,7 +52,6 @@ class AddNewListFragment : Fragment() {
 
         addListButton.setOnClickListener {
             saveList()
-            Toast.makeText(requireContext(), "Lista añadida", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -77,9 +76,10 @@ class AddNewListFragment : Fragment() {
 
         if (newListName.isNotBlank()) {
             monumentsViewModel.addNewList(newListName)
+            Toast.makeText(requireContext(), getString(R.string.list_added_text), Toast.LENGTH_LONG).show()
         } else {
-            //this.findNavController().popBackStack()
-            Toast.makeText(requireContext(), "Debe introducir un nombre para poder guardar la lista.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.list_name_required_text), Toast.LENGTH_LONG).show()
         }
         (activity as MainActivity).navigateTo(-1)
     }
