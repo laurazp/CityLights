@@ -25,12 +25,12 @@ typealias PersonalListsState = ResourceState<List<MonumentList>>
 open class MonumentsViewModel (
     private val getMonumentListUseCase: GetMonumentListUseCase,
     private val getMonumentDetailUseCase: GetMonumentDetailUseCase,
-    private val getComposeMonumentListUseCase: GetMonumentPagingListUseCase
+    private val getMonumentPagingListUseCase: GetMonumentPagingListUseCase
 ) : ViewModel() {
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
-    val monumentsList : Flow<PagingData<Monument>> = getComposeMonumentListUseCase(30)
+    val monumentsList : Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
     val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData

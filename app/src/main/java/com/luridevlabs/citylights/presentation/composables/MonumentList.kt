@@ -1,9 +1,5 @@
 package com.luridevlabs.citylights.presentation.composables
 
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +46,6 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
 import com.luridevlabs.citylights.R
-import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -80,8 +75,7 @@ fun MonumentList(
             CenterAlignedTopAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(0.dp, 0.dp, 0.dp, 4.dp),
+                    .padding(bottom = 4.dp),
                 title = {
                     if (!isSearching) {
                         Text(
@@ -98,6 +92,7 @@ fun MonumentList(
                                 searchString = newSearchString
                             },
                             label = { Text("Search for a monument") },
+                            shape = RectangleShape,
                             maxLines = 1
                         )
                     }
@@ -128,7 +123,6 @@ fun MonumentList(
             ) { monumentIndex ->
                 monuments[monumentIndex]?.let { item ->
                     MonumentListItem(
-                        //navController,
                         monument = item,
                         modifier = Modifier.fillMaxWidth()
                     ) { currentMonument ->
@@ -147,10 +141,9 @@ fun MonumentList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentListItem(
-    //navController: NavController,
     monument: Monument,
     modifier: Modifier = Modifier,
-    onClick: (Monument) -> Unit = {}, //TODO: esto para qué???
+    onClick: (Monument) -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier
