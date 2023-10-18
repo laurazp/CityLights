@@ -23,7 +23,7 @@
         tools:listitem="@layout/row_my_lists_item" />
 
     <ProgressBar
-        android:id="@+id/pb_myLists_progressBar"
+        android:id="@+id/pb_personal_Lists_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"

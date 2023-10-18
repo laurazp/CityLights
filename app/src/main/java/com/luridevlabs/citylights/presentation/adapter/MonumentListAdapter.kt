@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
-import com.luridevlabs.citylights.model.MonumentList
+import com.luridevlabs.citylights.model.Monument
 
-class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentListViewHolder>() {
+class MonumentListAdapter : RecyclerView.Adapter<MonumentListAdapter.MonumentListViewHolder>() {
 
-    private var monumentList: List<MonumentList> = emptyList()
+    private var monumentList: List<Monument> = emptyList()
 
-    private var onClickListener: (MonumentList) -> Unit = {}
+    private var onClickListener: (Monument) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonumentListViewHolder {
         val binding = RowMonumentListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -30,10 +30,20 @@ class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentL
             onClickListener.invoke(item)
         }
 
-        holder.nameTextView.text = item.listName
+        holder.nameTextView.text = item.title
+
+        val imageUrl = if (item.image != null) "${item.image}?w=360" else null
+
+        Glide.with(holder.monumentImageView)
+            .load(imageUrl)
+            .centerCrop()
+            .placeholder(com.luridevlabs.citylights.R.drawable.church_icon)
+            .error(com.luridevlabs.citylights.R.drawable.church_icon)
+            .fallback(ColorDrawable(android.graphics.Color.BLACK))
+            .into(holder.monumentImageView)
     }
 
-    fun submitList(list: List<MonumentList>) {
+    fun submitList(list: List<Monument>) {
         monumentList = list
         notifyDataSetChanged()
     }
@@ -41,6 +51,7 @@ class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentL
     inner class MonumentListViewHolder(binding: RowMonumentListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val rootView = binding.root
         val nameTextView = binding.tvMonumentItemName
+        val monumentImageView = binding.ivMonumentItemImage
     }
 
 }

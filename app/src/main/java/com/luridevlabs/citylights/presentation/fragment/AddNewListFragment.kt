@@ -46,9 +46,9 @@ class AddNewListFragment : Fragment() {
             if (state != null) handleNewListState(state)
         }
 
-        if (monumentsViewModel.getAddPersonalListLiveData().value == null) {
+        /*if (monumentsViewModel.getAddPersonalListLiveData().value == null) {
             monumentsViewModel.fetchPersonalLists()
-        }
+        }*/
 
         addListButton.setOnClickListener {
             saveList()
@@ -58,13 +58,15 @@ class AddNewListFragment : Fragment() {
     private fun handleNewListState(state: AddPersonalListsState) {
         when(state) {
             is ResourceState.Loading -> {
-                //TODO
+                binding.pbPersonalListProgressBar.visibility = View.VISIBLE
             }
             is ResourceState.Success -> {
+                binding.pbPersonalListProgressBar.visibility = View.GONE
                 Toast.makeText(requireContext(), "Success state!", Toast.LENGTH_LONG).show()
             }
             is ResourceState.Error -> {
-                //TODO
+                binding.pbPersonalListProgressBar.visibility = View.GONE
+                //TODO: show dialog
                 Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
             }
             else -> {}
