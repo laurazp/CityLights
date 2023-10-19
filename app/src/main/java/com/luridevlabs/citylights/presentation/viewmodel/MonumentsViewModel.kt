@@ -55,7 +55,7 @@ open class MonumentsViewModel (
 
     /**
      * Mantengo esta función fetchMonuments() sin paginado para obtener todos los monumentos
-     * del tirón y pintarlos en el mapa.
+     * de una sola vez y añadirlos al mapa.
      */
     fun fetchMonuments() {
         monumentListMutableLiveData.value = ResourceState.Loading()
@@ -103,12 +103,10 @@ open class MonumentsViewModel (
 
                 withContext(Dispatchers.Main) {
                     _addPersonalListMutableLiveData.value = ResourceState.Success(null)
-                    _addPersonalListMutableLiveData.value = ResourceState.None()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     _addPersonalListMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
-                    _addPersonalListMutableLiveData.value = ResourceState.None()
                 }
             }
         }

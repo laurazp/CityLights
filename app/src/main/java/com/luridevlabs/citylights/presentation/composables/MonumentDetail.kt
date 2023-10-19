@@ -50,11 +50,16 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberMarkerState
 import com.luridevlabs.citylights.R
+import com.luridevlabs.citylights.R.drawable
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.common.ResourceState
+import com.luridevlabs.citylights.presentation.common.ResourceState.Error
+import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
+import com.luridevlabs.citylights.presentation.common.ResourceState.Success
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import org.koin.androidx.compose.koinViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,8 +90,6 @@ fun MonumentDetail(
                                 contentDescription = "Back"
                             )
                         }
-                    } else {
-                        null
                     }
                 }
             )
@@ -94,13 +97,13 @@ fun MonumentDetail(
     ) { paddingValues ->
 
         when (selectedMonumentState) {
-            is ResourceState.Loading -> {
+            is Loading -> {
                 //TODO: add progress bar
+                Timber.i("gfgfg")
             }
 
-            is ResourceState.Success -> {
-                val selectedMonument =
-                    (selectedMonumentState as ResourceState.Success<Monument>).result
+            is Success -> {
+                val selectedMonument = (selectedMonumentState as Success<Monument>).result
 
                 Column(
                     modifier = Modifier
@@ -129,8 +132,8 @@ fun MonumentDetail(
 
                             AsyncImage(
                                 model = selectedMonument.image,
-                                placeholder = painterResource(R.drawable.church_icon),
-                                error = painterResource(R.drawable.church_icon),
+                                placeholder = painterResource(drawable.church_icon),
+                                error = painterResource(drawable.church_icon),
                                 contentDescription = selectedMonument.title,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -169,9 +172,9 @@ fun MonumentDetail(
                                         imageVector = ImageVector.vectorResource(
                                             id =
                                             if (selectedMonument.isFavorite)
-                                                R.drawable.baseline_favorite_24
+                                                drawable.baseline_favorite_24
                                             else
-                                                R.drawable.baseline_favorite_border_24
+                                                drawable.baseline_favorite_border_24
                                         ),
                                         contentDescription = null,
                                         modifier = Modifier
@@ -270,12 +273,11 @@ fun MonumentDetail(
 
                 }
             }
-
-            is ResourceState.Error -> {
-                //TODO:
+            is Error -> {
+                //TODO: Mostrar mensaje de error
             }
 
-            else -> {}
+            null -> TODO()
         }
     }
 }

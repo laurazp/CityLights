@@ -66,7 +66,6 @@ class SelectedListFragment : Fragment() {
                 binding.pbSelectedList.visibility = View.GONE
                 showErrorDialog(state.error)
             }
-            else -> {}
         }
     }
 

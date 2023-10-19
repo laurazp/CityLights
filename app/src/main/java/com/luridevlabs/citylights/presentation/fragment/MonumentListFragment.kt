@@ -28,7 +28,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class MonumentListFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentListBinding
-    private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,53 +39,7 @@ class MonumentListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initContent()
-        //initComposeUI()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        (activity as MainActivity).setTitle(getString(R.string.monuments_title))
-    }
-
-    private fun initContent() {
-        monumentsViewModel.getMonumentListLiveData().observe(viewLifecycleOwner) { state ->
-            if (state != null) handleMonumentListState(state)
-        }
-
-        if (monumentsViewModel.getMonumentListLiveData().value == null) {
-            monumentsViewModel.fetchMonuments()
-        }
-    }
-
-    private fun handleMonumentListState(state: MonumentListState) {
-        when(state) {
-            is ResourceState.Loading -> {
-                //binding.pbMonumentList.visibility = View.VISIBLE
-                binding.cvListComposeView.setContent {
-                    MaterialTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            CircularProgressBar()
-                        }
-                    }
-                }
-            }
-            is ResourceState.Success -> {
-                //binding.pbMonumentList.visibility = View.GONE
-                initComposeUI()
-                //monumentListAdapter.submitList(state.result)
-            }
-            is ResourceState.Error -> {
-                //binding.pbMonumentList.visibility = View.GONE
-                showErrorDialog(state.error)
-            }
-            else -> {}
-        }
+        initComposeUI()
     }
 
     private fun initComposeUI() {
@@ -100,15 +53,5 @@ class MonumentListFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun showErrorDialog(error: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Error")
-            .setMessage(error)
-            .setPositiveButton("Aceptar", null)
-            .setNegativeButton("Reintentar") { dialog, witch ->
-                monumentsViewModel.fetchMonuments()
-            }
     }
 }

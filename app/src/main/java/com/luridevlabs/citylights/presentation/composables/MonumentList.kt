@@ -81,7 +81,7 @@ fun MonumentList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .padding(0.dp, 0.dp, 0.dp, 4.dp),
+                    .padding(bottom = 4.dp),
                 title = {
                     if (!isSearching) {
                         Text(
