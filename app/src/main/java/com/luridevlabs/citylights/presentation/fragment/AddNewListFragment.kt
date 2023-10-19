@@ -67,7 +67,6 @@ class AddNewListFragment : Fragment() {
                 //TODO
                 Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
             }
-            else -> {}
         }
     }
 

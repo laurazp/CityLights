@@ -2,21 +2,15 @@ package com.luridevlabs.citylights.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.ActivityMainBinding
-import com.luridevlabs.citylights.presentation.fragment.PersonalListsFragment
-import com.luridevlabs.citylights.presentation.fragment.HomeFragment
-import com.luridevlabs.citylights.presentation.fragment.MapFragment
-import com.luridevlabs.citylights.presentation.fragment.MonumentListFragment
-import java.lang.IllegalArgumentException
+
 
 class MainActivity: AppCompatActivity() {
 
@@ -65,6 +59,9 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
+    /* Por si se necesita modificar de manera manual los títulos de los fragmentos en la
+     * AppBar, aunque se incluyen de manera automática a través de los labels del nav_graph
+     */
     fun setTitle(title: String) {
         val activity = this as AppCompatActivity
         val actionBar = activity.supportActionBar

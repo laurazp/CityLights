@@ -21,6 +21,8 @@
 
     <!-- Dialog -->
     <string name="acceptButtonText">Accept</string>
+    <string name="cancelButtonText">Cancel</string>
+    <string name="openSettingsButtonText">Open Settings</string>
     <string name="tryAgainButtonText">Try again</string>
     <string name="errorTitle">Error</string>
 
