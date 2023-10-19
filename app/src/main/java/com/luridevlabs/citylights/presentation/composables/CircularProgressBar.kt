@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -18,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CircularProgressBar(){
-    val progressValue = 0.75f
+    val progressValue = 1.0f
     val infiniteTransition = rememberInfiniteTransition(label = "progressBar")
 
     val progressAnimationValue by infiniteTransition.animateFloat(
@@ -32,8 +33,7 @@ fun CircularProgressBar(){
         ) {
         CircularProgressIndicator(
             modifier = Modifier
-                .width(30.dp)
-                .height(30.dp),
+                .size(30.dp),
             progress = progressAnimationValue)
     }
 }
