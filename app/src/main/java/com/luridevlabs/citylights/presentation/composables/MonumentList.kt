@@ -32,19 +32,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
-import com.google.android.gms.maps.model.LatLng
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -61,13 +60,19 @@ fun MonumentList(
     val monumentViewModel: MonumentsViewModel = koinViewModel()
     val monuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    //val context = LocalContext.current
     var isSearching by remember {
         mutableStateOf(false)
     }
     var searchString by remember {
         mutableStateOf("")
     }
+    var isFiltering by remember {
+        mutableStateOf(false)
+    }
+    //TODO: modificar !!
+    val filteredMonuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
+    //val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(monuments, searchString).collectAsLazyPagingItems()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -108,6 +113,16 @@ fun MonumentList(
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
+                    //TODO: implementar o borrar !!!
+                    IconButton(onClick = {
+                        isFiltering = !isFiltering
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
+                            contentDescription = "Filter",
+                            tint = MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
                 }
             )
         }
@@ -117,18 +132,56 @@ fun MonumentList(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            items(
-                count = monuments.itemCount,
-                key = monuments.itemKey { monument -> monument.monumentId }
-            ) { monumentIndex ->
-                monuments[monumentIndex]?.let { item ->
-                    MonumentListItem(
-                        monument = item,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { currentMonument ->
-                        scope.launch {
-                            withContext(Dispatchers.Main) {
-                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
+            monuments.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item { CircularProgressBar() }
+                    }
+                    loadState.append is LoadState.Loading -> {
+                        item { CircularProgressBar() }
+                    }
+                    loadState.refresh is LoadState.Error ||
+                            loadState.append is LoadState.Error -> {
+                        item { ErrorAlertDialog(
+                            onConfirmation = {},
+                            dialogTitle = stringResource(R.string.list_error_title),
+                            dialogText = stringResource(R.string.list_error_text)
+                        )}
+                    }
+                }
+            }
+            if (isSearching) {
+                items(
+                    count = filteredMonuments.itemCount,
+                    key = filteredMonuments.itemKey { monument: Monument -> monument.monumentId }
+                ) { monumentIndex ->
+                    monuments[monumentIndex]?.let { item ->
+                        MonumentListItem(
+                            monument = item,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { currentMonument ->
+                            scope.launch {
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                items(
+                    count = monuments.itemCount,
+                    key = monuments.itemKey { monument -> monument.monumentId }
+                ) { monumentIndex ->
+                    monuments[monumentIndex]?.let { item ->
+                        MonumentListItem(
+                            monument = item,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { currentMonument ->
+                            scope.launch {
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
+                                }
                             }
                         }
                     }
@@ -209,25 +262,4 @@ fun MonumentListItem(
         }
     }
     Spacer(modifier = Modifier.height(4.dp))
-}
-
-class MonumentPreviewParameter : PreviewParameterProvider<Monument> {
-    override val values: Sequence<Monument>
-        get() = sequenceOf(
-            Monument(
-                monumentId = 123,
-                title = "name bla bla",
-                address = "status bla bla",
-                style = "species bla bla",
-                hours = "type bla bla",
-                visitInfo = "gender bla bla",
-                image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Sm6WtxxfkDF52q2jEViT_m_TdoaEqui3ODP6lZcrMVlARZSYDwl_7y_tMbC9sqOOb-s&usqp=CAU",
-                data = "",
-                description = "",
-                position = LatLng(0.0, 0.0),
-                pois = "",
-                price = "",
-            )
-        )
-
 }

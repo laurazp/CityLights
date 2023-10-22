@@ -7,8 +7,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,13 +29,12 @@ fun CircularProgressBar(){
         targetValue = progressValue,animationSpec = infiniteRepeatable(animation = tween(900)),
         label = "progressBar"
     )
-    Box(modifier = Modifier
-        .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-        ) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .size(30.dp),
-            progress = progressAnimationValue)
-    }
+    CircularProgressIndicator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .wrapContentWidth(
+                Alignment.CenterHorizontally
+            ),
+        progress = progressAnimationValue)
 }

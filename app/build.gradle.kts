@@ -90,7 +90,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.google.maps.android:maps-compose:2.0.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
     implementation("com.airbnb.android:lottie:6.1.0")
 
