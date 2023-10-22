@@ -90,13 +90,13 @@ fun MonumentList(
                     } else {
                         TextField(
                             modifier = Modifier
-                                .padding(end = 12.dp)
+                                .padding(end = 36.dp)
                                 .fillMaxWidth(),
                             value = searchString,
                             onValueChange = { newSearchString ->
                                 searchString = newSearchString
                             },
-                            label = { Text("Search for a monument") },
+                            label = { Text(stringResource(R.string.search_monument_text)) },
                             shape = RectangleShape,
                             maxLines = 1
                         )
@@ -109,7 +109,7 @@ fun MonumentList(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.search_icon_description),
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
@@ -119,7 +119,7 @@ fun MonumentList(
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
-                            contentDescription = "Filter",
+                            contentDescription = stringResource(R.string.filter_icon_description),
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }

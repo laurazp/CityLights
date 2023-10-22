@@ -36,5 +36,8 @@
     <string name="list_name_required_text">Debe introducir un nombre para poder guardar la lista.</string>
     <string name="list_error_title">Error loading the list</string>
     <string name="list_error_text">There was an error loading the list. Please try again.</string>
+    <string name="search_icon_description">Search</string>
+    <string name="filter_icon_description">Filter</string>
+    <string name="search_monument_text">Search for a monument</string>
 
 </resources>
