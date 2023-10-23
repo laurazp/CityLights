@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,6 +74,9 @@ fun MonumentList(
     var isFiltering by remember {
         mutableStateOf(false)
     }
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
     //TODO: modificar !!
     val filteredMonuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
     //val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(monuments, searchString).collectAsLazyPagingItems()
@@ -77,7 +84,7 @@ fun MonumentList(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 4.dp),
@@ -90,7 +97,7 @@ fun MonumentList(
                     } else {
                         TextField(
                             modifier = Modifier
-                                .padding(end = 36.dp)
+                                //.height(28.dp)
                                 .fillMaxWidth(),
                             value = searchString,
                             onValueChange = { newSearchString ->
@@ -116,11 +123,27 @@ fun MonumentList(
                     //TODO: implementar o borrar !!!
                     IconButton(onClick = {
                         isFiltering = !isFiltering
+                        showMenu = !showMenu
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
                             contentDescription = stringResource(R.string.filter_icon_description),
                             tint = MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        modifier = Modifier.width(180.dp))
+                    {
+                        DropdownMenuItem(
+                            text = { Text(text = "Sort by name") },
+                            onClick = { /*TODO*/ },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_sort_24),
+                                    contentDescription = stringResource(R.string.filter_icon_description),)
+                            }
                         )
                     }
                 }
