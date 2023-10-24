@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
+import com.luridevlabs.citylights.domain.usecase.AddPersonalListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
+import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
+import com.luridevlabs.citylights.domain.usecase.GetPersonalListsUseCase
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.model.MonumentList
 import com.luridevlabs.citylights.presentation.common.ResourceState
@@ -15,25 +17,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.Exception
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
-typealias AddPersonalListsState = ResourceState<Void?>
+typealias AddPersonalListsState = ResourceState<Unit?>
 typealias PersonalListsState = ResourceState<List<MonumentList>>
 
-open class MonumentsViewModel (
+open class MonumentsViewModel(
     private val getMonumentListUseCase: GetMonumentListUseCase,
     private val getMonumentDetailUseCase: GetMonumentDetailUseCase,
-    private val getMonumentPagingListUseCase: GetMonumentPagingListUseCase
+    private val getMonumentPagingListUseCase: GetMonumentPagingListUseCase,
+    private val getPersonalListsUseCase: GetPersonalListsUseCase,
+    private val addPersonalListUseCase: AddPersonalListUseCase,
 ) : ViewModel() {
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
-    val monumentsList : Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    val monumentsList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
-    val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData
+    private val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData
 
     private val personalListsMutableLiveData = MutableLiveData<PersonalListsState>()
 
@@ -49,7 +52,7 @@ open class MonumentsViewModel (
         return addPersonalListMutableLiveData
     }
 
-    fun getPersonalListsLiveData() : LiveData<PersonalListsState> {
+    fun getPersonalListsLiveData(): LiveData<PersonalListsState> {
         return personalListsMutableLiveData
     }
 
@@ -79,7 +82,6 @@ open class MonumentsViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val monument = getMonumentDetailUseCase.execute(monumentId)
-
                 withContext(Dispatchers.Main) {
                     monumentDetailMutableLiveData.value = ResourceState.Success(monument)
                 }
@@ -90,23 +92,34 @@ open class MonumentsViewModel (
     }
 
     fun fetchPersonalLists() {
-        //TODO
-    }
-
-    fun addNewList(listName: String) {
-        //TODO
-        _addPersonalListMutableLiveData.value = ResourceState.Loading()
-
+        personalListsMutableLiveData.value = ResourceState.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                //addListUseCase.execute(list)
+                val lists = getPersonalListsUseCase.execute()
 
                 withContext(Dispatchers.Main) {
-                    _addPersonalListMutableLiveData.value = ResourceState.Success(null)
+                    personalListsMutableLiveData.value = ResourceState.Success(lists)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    _addPersonalListMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                }
+            }
+        }
+    }
+
+    fun addNewList(listName: String) {
+        personalListsMutableLiveData.value = ResourceState.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val lists = addPersonalListUseCase.execute(listName)
+
+                withContext(Dispatchers.Main) {
+                    personalListsMutableLiveData.value = ResourceState.Success(lists)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }

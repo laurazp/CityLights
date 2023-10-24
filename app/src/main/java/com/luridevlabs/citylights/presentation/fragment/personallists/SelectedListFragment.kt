@@ -1,16 +1,16 @@
-package com.luridevlabs.citylights.presentation.fragment
+package com.luridevlabs.citylights.presentation.fragment.personallists
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentSelectedListBinding
-import com.luridevlabs.citylights.presentation.MainActivity
-import com.luridevlabs.citylights.presentation.adapter.PersonalListsAdapter
 import com.luridevlabs.citylights.presentation.common.ResourceState
+import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.MonumentListAdapter
+import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.PersonalListsState
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -19,12 +19,12 @@ class SelectedListFragment : Fragment() {
 
     private lateinit var binding: FragmentSelectedListBinding
 
-    private val personalListsAdapter = PersonalListsAdapter()
+    private val monumentListAdapter = MonumentListAdapter()
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSelectedListBinding.inflate(layoutInflater)
         return binding.root
@@ -36,15 +36,8 @@ class SelectedListFragment : Fragment() {
         initContent()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as MainActivity).setTitle("")
-        //TODO: (activity as MainActivity).setTitle(R.string.selected_list_title)
-    }
-
     private fun initContent() {
-        monumentsViewModel.getPersonalListsLiveData().observe(viewLifecycleOwner) { state ->
+        monumentsViewModel.getMonumentListLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleMyListsState(state)
         }
 
@@ -53,15 +46,17 @@ class SelectedListFragment : Fragment() {
         }
     }
 
-    private fun handleMyListsState(state: PersonalListsState) {
-        when(state) {
+    private fun handleMyListsState(state: MonumentListState) {
+        when (state) {
             is ResourceState.Loading -> {
                 binding.pbSelectedList.visibility = View.VISIBLE
             }
+
             is ResourceState.Success -> {
                 binding.pbSelectedList.visibility = View.GONE
-                //personalListsAdapter.submitList(state.result)
+                monumentListAdapter.submitList(state.result)
             }
+
             is ResourceState.Error -> {
                 binding.pbSelectedList.visibility = View.GONE
                 showErrorDialog(state.error)
@@ -74,8 +69,9 @@ class SelectedListFragment : Fragment() {
             .setTitle("Error")
             .setMessage(error)
             .setPositiveButton(R.string.acceptButtonText, null)
-            .setNegativeButton(R.string.tryAgainButtonText) { dialog, witch ->
+            .setNegativeButton(R.string.tryAgainButtonText) { dialog, _ ->
                 monumentsViewModel.fetchMonuments()
+                dialog.dismiss()
             }
     }
 }

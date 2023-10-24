@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment
+package com.luridevlabs.citylights.presentation.fragment.map
 
 import android.Manifest
 import android.annotation.SuppressLint

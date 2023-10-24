@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment
+package com.luridevlabs.citylights.presentation.fragment.monuments
 
 import android.os.Bundle
 import android.view.LayoutInflater

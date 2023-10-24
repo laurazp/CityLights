@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment
+package com.luridevlabs.citylights.presentation.fragment.personallists
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -29,29 +29,16 @@ class AddNewListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUI()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (activity as MainActivity).setTitle(getString(R.string.add_new_list_title))
-    }
-
     private fun initUI() {
-        val addListButton = binding.btnAddNewListButton
-
         monumentsViewModel.getAddPersonalListLiveData().observe(viewLifecycleOwner) { state ->
             if (state != null) handleNewListState(state)
         }
 
-        if (monumentsViewModel.getAddPersonalListLiveData().value == null) {
-            monumentsViewModel.fetchPersonalLists()
-        }
-
-        addListButton.setOnClickListener {
-            saveList()
+        binding.btnAddNewListButton.setOnClickListener {
+            saveNewList()
         }
     }
 
@@ -70,9 +57,9 @@ class AddNewListFragment : Fragment() {
         }
     }
 
-    private fun saveList() {
+    /**Por agilidad no voy a comprobar que ya exista una lista con el mismo nombre*/
+    private fun saveNewList() {
         val newListName = binding.tiePersonalListTitle.text.toString()
-
         if (newListName.isNotBlank()) {
             monumentsViewModel.addNewList(newListName)
             Toast.makeText(requireContext(), getString(R.string.list_added_text), Toast.LENGTH_LONG).show()

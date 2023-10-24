@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     app:defaultNavHost="true"
     app:navGraph="@navigation/nav_graph"
-    tools:context=".presentation.fragment.PersonalListsFragment">
+    tools:context=".presentation.fragment.personallists.PersonalListsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_my_lists_view"
+        android:id="@+id/rv_personal_lists_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -20,10 +20,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="3"
-        tools:listitem="@layout/row_my_lists_item" />
+        tools:listitem="@layout/row_personal_list_item" />
 
     <ProgressBar
-        android:id="@+id/pb_myLists_progressBar"
+        android:id="@+id/pb_personal_lists_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -32,7 +32,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_myLists_addList_button"
+        android:id="@+id/fab_personal_lists_addList_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

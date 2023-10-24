@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/personalListsFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.PersonalListsFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.personallists.PersonalListsFragment"
         android:label="@string/personal_lists_title"
         tools:layout="@layout/fragment_monument_list">
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/selectedListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.SelectedListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.personallists.SelectedListFragment"
         tools:layout="@layout/fragment_monument_detail" >
 
         <argument
@@ -30,21 +30,21 @@
 
     <fragment
         android:id="@+id/addNewListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.AddNewListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.personallists.AddNewListFragment"
         android:label="@string/add_new_list_title"
         tools:layout="@layout/fragment_add_new_list"/>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.MapFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.map.MapFragment"
         android:label="@string/map_title" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.HomeFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.monuments.HomeFragment"
         android:label="@string/home_title"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/monumentListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.MonumentListFragment"
+        android:name="com.luridevlabs.citylights.presentation.fragment.monuments.MonumentListFragment"
         android:label="@string/monuments_title"
         tools:layout="@layout/fragment_monument_list" />
 

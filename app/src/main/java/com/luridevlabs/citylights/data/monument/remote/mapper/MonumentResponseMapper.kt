@@ -2,12 +2,11 @@ package com.luridevlabs.citylights.data.monument.remote.mapper
 
 import com.google.android.gms.maps.model.LatLng
 import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
-import com.luridevlabs.citylights.data.monument.remote.model.Geometry
 import com.luridevlabs.citylights.model.Monument
 
-class MonumentResponseToMonumentMapper {
+class MonumentResponseMapper {
 
-    fun mapMonument(monument: ApiMonument): Monument {
+    fun mapFromRemote(monument: ApiMonument): Monument {
         return Monument(
             monument.monumentId,
             monument.title,

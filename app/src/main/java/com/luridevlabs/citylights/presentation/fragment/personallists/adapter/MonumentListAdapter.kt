@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.adapter
+package com.luridevlabs.citylights.presentation.fragment.personallists.adapter
 
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.MonumentListAdapter.MonumentListViewHolder
 
-
-class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentListViewHolder>() {
+class MonumentListAdapter : RecyclerView.Adapter<MonumentListViewHolder>() {
 
     private var monumentList: List<Monument> = emptyList()
 
@@ -33,7 +33,7 @@ class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentL
 
         holder.nameTextView.text = item.title
 
-        val imageUrl = if (item.image != null) "${item.image}?w=360" else null
+        val imageUrl = "${item.image}?w=360"
 
         Glide.with(holder.monumentImageView)
             .load(imageUrl)
@@ -44,8 +44,8 @@ class PersonalListsAdapter : RecyclerView.Adapter<PersonalListsAdapter.MonumentL
             .into(holder.monumentImageView)
     }
 
-    fun submitList(list: List<Monument>) {
-        monumentList = list
+    fun submitList(monuments: List<Monument>) {
+        this.monumentList = monuments
         notifyDataSetChanged()
     }
 
