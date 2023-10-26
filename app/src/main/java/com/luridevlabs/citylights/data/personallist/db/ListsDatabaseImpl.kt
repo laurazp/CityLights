@@ -23,13 +23,14 @@ class ListsDatabaseImpl(
         return appDatabase.listsDao().getLists().map { mapper.mapFromDatabase(it) }
     }
 
-    fun editList(list: MonumentList): MonumentList {
+    fun editList(list: MonumentList): List<MonumentList> {
         appDatabase.listsDao().editList(mapper.mapToDatabase(list))
-        return mapper.mapFromDatabase(appDatabase.listsDao().getList(list.listId))
+        return appDatabase.listsDao().getLists().map { mapper.mapFromDatabase(it) }
     }
 
-    fun deleteList(listId: Long) {
+    fun deleteList(listId: Long): List<MonumentList> {
         appDatabase.listsDao().deleteList(MonumentListEntity(listId = listId, "", mutableListOf()))
+        return appDatabase.listsDao().getLists().map { mapper.mapFromDatabase(it) }
     }
 
 }

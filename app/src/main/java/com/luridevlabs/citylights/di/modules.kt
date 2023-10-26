@@ -16,6 +16,8 @@ import com.luridevlabs.citylights.data.remote.CityLightsService
 import com.luridevlabs.citylights.domain.MonumentListsRepository
 import com.luridevlabs.citylights.domain.MonumentsRepository
 import com.luridevlabs.citylights.domain.usecase.AddPersonalListUseCase
+import com.luridevlabs.citylights.domain.usecase.DeletePersonalListUseCase
+import com.luridevlabs.citylights.domain.usecase.EditPersonalListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
@@ -58,6 +60,8 @@ val monumentsModule = module {
     factory { GetMonumentPagingListUseCase(get()) }
     factory { GetPersonalListsUseCase(get()) }
     factory { AddPersonalListUseCase(get()) }
+    factory { EditPersonalListUseCase(get()) }
+    factory { DeletePersonalListUseCase(get()) }
 
-    viewModel { MonumentsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MonumentsViewModel(get(), get(), get(), get(), get(), get(), get()) }
 }

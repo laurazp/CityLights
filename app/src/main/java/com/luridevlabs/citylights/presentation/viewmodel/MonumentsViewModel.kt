@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.luridevlabs.citylights.domain.usecase.AddPersonalListUseCase
+import com.luridevlabs.citylights.domain.usecase.DeletePersonalListUseCase
+import com.luridevlabs.citylights.domain.usecase.EditPersonalListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
@@ -29,11 +31,14 @@ open class MonumentsViewModel(
     private val getMonumentPagingListUseCase: GetMonumentPagingListUseCase,
     private val getPersonalListsUseCase: GetPersonalListsUseCase,
     private val addPersonalListUseCase: AddPersonalListUseCase,
+    private val editPersonalListUseCase: EditPersonalListUseCase,
+    private val deletePersonalListUseCase: DeletePersonalListUseCase,
 ) : ViewModel() {
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
-    val monumentsList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    var personalLists: List<MonumentList> = emptyList()
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
     private val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData
@@ -98,6 +103,7 @@ open class MonumentsViewModel(
                 val lists = getPersonalListsUseCase.execute()
 
                 withContext(Dispatchers.Main) {
+                    personalLists = lists
                     personalListsMutableLiveData.value = ResourceState.Success(lists)
                 }
             } catch (e: Exception) {
@@ -115,6 +121,7 @@ open class MonumentsViewModel(
                 val lists = addPersonalListUseCase.execute(listName)
 
                 withContext(Dispatchers.Main) {
+                    personalLists = lists
                     personalListsMutableLiveData.value = ResourceState.Success(lists)
                 }
             } catch (e: Exception) {
@@ -125,11 +132,49 @@ open class MonumentsViewModel(
         }
     }
 
-    fun editList() {
-        //TODO
+    private fun editList(list: MonumentList) {
+        personalListsMutableLiveData.value = ResourceState.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val lists = editPersonalListUseCase.execute(list)
+
+                withContext(Dispatchers.Main) {
+                    personalLists = lists
+                    personalListsMutableLiveData.value = ResourceState.Success(lists)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                }
+            }
+        }
     }
 
-    fun deleteList() {
-        //TODO
+    fun deleteList(listId: Long){
+        personalListsMutableLiveData.value = ResourceState.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val lists = deletePersonalListUseCase.execute(listId)
+
+                withContext(Dispatchers.Main) {
+                    personalLists = lists
+                    personalListsMutableLiveData.value = ResourceState.Success(lists)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                }
+            }
+        }
+    }
+
+    fun removeMonumentInList(list: MonumentList, monument: Monument){
+        list.monuments.remove(monument)
+        editList(list)
+    }
+
+    fun addMonumentToList(list: MonumentList, monument: Monument){
+        list.monuments.add(monument)
+        editList(list)
     }
 }

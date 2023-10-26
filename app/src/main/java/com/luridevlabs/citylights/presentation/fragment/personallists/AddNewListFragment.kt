@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentAddNewListBinding
@@ -40,18 +41,19 @@ class AddNewListFragment : Fragment() {
         binding.btnAddNewListButton.setOnClickListener {
             saveNewList()
         }
+        binding.tiePersonalListTitle.setOnEditorActionListener { editText, actionId, event ->
+            saveNewList()
+            true
+        }
     }
 
     private fun handleNewListState(state: AddPersonalListsState) {
         when(state) {
-            is ResourceState.Loading -> {
-                //TODO
-            }
+            is ResourceState.Loading -> {}
             is ResourceState.Success -> {
                 Toast.makeText(requireContext(), "Success state!", Toast.LENGTH_LONG).show()
             }
             is ResourceState.Error -> {
-                //TODO
                 Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
             }
         }

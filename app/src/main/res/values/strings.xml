@@ -28,7 +28,8 @@
 
     <!-- Personal lists -->
     <string name="add_new_list">Add new list</string>
-    <string name="new_list_name">New list name</string>
+    <string name="new_list_name_hint">Write a name for your personal list</string>
+    <string name="add">Add</string>
     <string name="add_list">Add list</string>
     <string name="todo_list">ToDo List</string>
     <string name="favorites_list">Favorites List</string>

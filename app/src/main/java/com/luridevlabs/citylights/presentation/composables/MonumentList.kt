@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
@@ -62,7 +61,7 @@ fun MonumentList(
     navController: NavController
 ) {
     val monumentViewModel: MonumentsViewModel = koinViewModel()
-    val monuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
+    val monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     //val context = LocalContext.current
     var isSearching by remember {
@@ -78,7 +77,7 @@ fun MonumentList(
         mutableStateOf(false)
     }
     //TODO: modificar !!
-    val filteredMonuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
+    val filteredMonuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
     //val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(monuments, searchString).collectAsLazyPagingItems()
 
     Scaffold(
@@ -189,6 +188,7 @@ fun MonumentList(
                                 }
                             }
                         }
+
                     }
                 }
             } else {
@@ -219,7 +219,7 @@ fun MonumentList(
 fun MonumentListItem(
     monument: Monument,
     modifier: Modifier = Modifier,
-    onClick: (Monument) -> Unit = {}
+    onClick: (Monument) -> Unit = {},
 ) {
     ElevatedCard(
         modifier = modifier

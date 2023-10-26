@@ -5,7 +5,7 @@ import com.luridevlabs.citylights.domain.MonumentListsRepository
 import com.luridevlabs.citylights.model.MonumentList
 
 class ListsDataImpl(
-    private val listsDatabaseImpl: ListsDatabaseImpl
+    private val listsDatabaseImpl: ListsDatabaseImpl,
 ) : MonumentListsRepository {
 
     override fun getPersonalLists(): List<MonumentList> {
@@ -20,12 +20,11 @@ class ListsDataImpl(
         return listsDatabaseImpl.addList(name)
     }
 
-    override fun editPersonalList(list: MonumentList): MonumentList {
+    override fun editPersonalList(list: MonumentList): List<MonumentList> {
         return listsDatabaseImpl.editList(list)
     }
 
-    override fun deletePersonalList(listId: Long) {
-        listsDatabaseImpl.deleteList(listId)
+    override fun deletePersonalList(listId: Long): List<MonumentList> {
+        return listsDatabaseImpl.deleteList(listId)
     }
-
 }
