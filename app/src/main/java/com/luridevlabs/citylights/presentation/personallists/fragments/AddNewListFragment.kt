@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists
+package com.luridevlabs.citylights.presentation.personallists.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

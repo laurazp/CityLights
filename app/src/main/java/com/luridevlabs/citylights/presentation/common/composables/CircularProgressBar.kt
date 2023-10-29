@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.composables
+package com.luridevlabs.citylights.presentation.common.composables
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

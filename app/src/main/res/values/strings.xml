@@ -7,6 +7,7 @@
     <string name="map_title">Map</string>
     <string name="personal_lists_title">Personal lists</string>
     <string name="add_new_list_title">Add New List</string>
+    <string name="pending_title">pillar titulo de setTitle</string>
 
     <!-- Menu -->
     <string name="home_menu_item_title">Home</string>

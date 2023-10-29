@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.composables
+package com.luridevlabs.citylights.presentation.personallists.composables
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -6,14 +6,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.luridevlabs.citylights.presentation.common.composables.MonumentDetail
 
 @Composable
-fun Navigation() {
+fun PersonalListNavigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "monumentList") {
-        composable("monumentList") {
+        startDestination = "personalMonumentList") {
+        composable("personalMonumentList") {
             MonumentList(navController)
         }
         composable(

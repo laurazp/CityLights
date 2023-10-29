@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragment.monuments.MonumentListFragment">
+    tools:context=".presentation.main.fragments.MonumentContainerFragment">
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/cv_list_compose_view"

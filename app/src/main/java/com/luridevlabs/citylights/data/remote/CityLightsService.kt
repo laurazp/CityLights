@@ -2,7 +2,6 @@ package com.luridevlabs.citylights.data.remote
 
 import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.data.monument.remote.model.MonumentsResponse
-import com.luridevlabs.citylights.model.Monument
 import retrofit2.http.GET
 import retrofit2.http.Path
 

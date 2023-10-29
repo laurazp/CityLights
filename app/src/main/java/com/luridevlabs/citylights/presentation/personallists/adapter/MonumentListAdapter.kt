@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists.adapter
+package com.luridevlabs.citylights.presentation.personallists.adapter
 
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.luridevlabs.citylights.databinding.RowMonumentListItemBinding
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.MonumentListAdapter.MonumentListViewHolder
+import com.luridevlabs.citylights.presentation.personallists.adapter.MonumentListAdapter.MonumentListViewHolder
 
 class MonumentListAdapter : RecyclerView.Adapter<MonumentListViewHolder>() {
 

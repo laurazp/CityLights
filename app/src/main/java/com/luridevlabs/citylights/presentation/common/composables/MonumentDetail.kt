@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.composables
+package com.luridevlabs.citylights.presentation.common.composables
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box

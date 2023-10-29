@@ -1,10 +1,12 @@
 package com.luridevlabs.citylights.presentation.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.filter
 import com.luridevlabs.citylights.domain.usecase.AddPersonalListUseCase
 import com.luridevlabs.citylights.domain.usecase.DeletePersonalListUseCase
 import com.luridevlabs.citylights.domain.usecase.EditPersonalListUseCase
@@ -17,6 +19,7 @@ import com.luridevlabs.citylights.model.MonumentList
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -38,11 +41,12 @@ open class MonumentsViewModel(
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    val filteredMonumentList = mutableStateListOf<Monument>()
     var personalLists: List<MonumentList> = emptyList()
+    var selectedListPosition: Int = -1
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
     private val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData
-
     private val personalListsMutableLiveData = MutableLiveData<PersonalListsState>()
 
     fun getMonumentListLiveData(): LiveData<MonumentListState> {
@@ -76,7 +80,10 @@ open class MonumentsViewModel(
                     monumentListMutableLiveData.value = ResourceState.Success(data)
                 }
             } catch (e: Exception) {
-                monumentListMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                withContext(Dispatchers.Main) {
+                    monumentListMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
+                }
             }
         }
     }
@@ -84,17 +91,27 @@ open class MonumentsViewModel(
     fun fetchMonument(monumentId: String) {
         monumentDetailMutableLiveData.value = ResourceState.Loading()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
                 val monument = getMonumentDetailUseCase.execute(monumentId)
                 withContext(Dispatchers.Main) {
                     monumentDetailMutableLiveData.value = ResourceState.Success(monument)
                 }
-            } catch (e: Exception) {
-                monumentDetailMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
             }
+        } catch (e: Exception) {
+            monumentDetailMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
         }
     }
+
+    /*fun getFilteredMonumentsByName(searchString: String): PagingData<Monument> {
+        val filteredList = monumentsList.filter {
+
+            it.title.contains(searchString, ignoreCase = true) ||
+                    it.description.contains(searchString, ignoreCase = true)
+
+        }
+        return  filteredList
+    }*/
 
     fun fetchPersonalLists() {
         personalListsMutableLiveData.value = ResourceState.Loading()
@@ -108,7 +125,8 @@ open class MonumentsViewModel(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }
@@ -126,7 +144,8 @@ open class MonumentsViewModel(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }
@@ -177,4 +196,6 @@ open class MonumentsViewModel(
         list.monuments.add(monument)
         editList(list)
     }
+
+    fun getSelectedPersonalList() = personalLists[selectedListPosition]
 }

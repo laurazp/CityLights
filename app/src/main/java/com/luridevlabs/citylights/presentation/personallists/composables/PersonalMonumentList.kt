@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.composables
+package com.luridevlabs.citylights.presentation.personallists.composables
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +49,8 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
+import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,8 +79,8 @@ fun MonumentList(
         mutableStateOf(false)
     }
     //TODO: modificar !!
-    val filteredMonuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
-    //val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(monuments, searchString).collectAsLazyPagingItems()
+    //val filteredMonuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
+    //val filteredMonuments = (monumentViewModel.getFilteredMonumentsByName(monuments, searchString)).collectAsLazyPagingItems()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -168,14 +170,16 @@ fun MonumentList(
                             onConfirmation = {},
                             dialogTitle = stringResource(R.string.list_error_title),
                             dialogText = stringResource(R.string.list_error_text)
-                        )}
+                        )
+                        }
                     }
                 }
             }
             if (isSearching) {
+                //TODO: cambiar por monumentos buscados
                 items(
-                    count = filteredMonuments.itemCount,
-                    key = filteredMonuments.itemKey { monument: Monument -> monument.monumentId }
+                    count = monuments.itemCount,
+                    key = monuments.itemKey { monument: Monument -> monument.monumentId }
                 ) { monumentIndex ->
                     monuments[monumentIndex]?.let { item ->
                         MonumentListItem(
@@ -188,7 +192,6 @@ fun MonumentList(
                                 }
                             }
                         }
-
                     }
                 }
             } else {
@@ -219,13 +222,13 @@ fun MonumentList(
 fun MonumentListItem(
     monument: Monument,
     modifier: Modifier = Modifier,
-    onClick: (Monument) -> Unit = {},
+    onClick: (Monument) -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier
             .padding(horizontal = 6.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         onClick = { onClick(monument) }
     ) {
         ConstraintLayout(modifier = modifier.padding(4.dp)) {

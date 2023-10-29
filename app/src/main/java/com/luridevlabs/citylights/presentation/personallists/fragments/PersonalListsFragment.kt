@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists
+package com.luridevlabs.citylights.presentation.personallists.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,7 +23,10 @@ class PersonalListsFragment : Fragment() {
 
     private lateinit var binding: FragmentPersonalListsBinding
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
-    private val personalListAdapter = PersonalListAdapter()
+    private val personalListAdapter = PersonalListAdapter(
+        mutableListOf()) {
+            position: Int -> goToPersonalList(position)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -107,4 +110,11 @@ class PersonalListsFragment : Fragment() {
                 dialog.dismiss()
             }
     }
+
+    private fun goToPersonalList(position: Int) {
+        monumentsViewModel.selectedListPosition = position
+        (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_personalListContainerFragment)
+    }
+
+
 }

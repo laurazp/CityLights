@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:defaultNavHost="true"
     app:navGraph="@navigation/nav_graph"
-    tools:context=".presentation.fragment.personallists.PersonalListsFragment">
+    tools:context=".presentation.personallists.fragments.PersonalListsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_personal_lists_view"
