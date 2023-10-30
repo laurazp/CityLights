@@ -72,15 +72,14 @@ fun MonumentList(
     var searchString by remember {
         mutableStateOf("")
     }
+    val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(searchString).collectAsLazyPagingItems()
+
     var isFiltering by remember {
         mutableStateOf(false)
     }
     var showMenu by remember {
         mutableStateOf(false)
     }
-    //TODO: modificar !!
-    val filteredMonuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
-    //val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(monuments, searchString).collectAsLazyPagingItems()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -98,7 +97,6 @@ fun MonumentList(
                     } else {
                         TextField(
                             modifier = Modifier
-                                //.height(28.dp)
                                 .fillMaxWidth(),
                             value = searchString,
                             onValueChange = { newSearchString ->
@@ -176,12 +174,11 @@ fun MonumentList(
                 }
             }
             if (isSearching) {
-                //TODO: cambiar por monumentos buscados
                 items(
-                    count = monuments.itemCount,
-                    key = monuments.itemKey { monument: Monument -> monument.monumentId }
+                    count = filteredMonuments.itemCount,
+                    key = filteredMonuments.itemKey { monument: Monument -> monument.monumentId }
                 ) { monumentIndex ->
-                    monuments[monumentIndex]?.let { item ->
+                    filteredMonuments[monumentIndex]?.let { item ->
                         MonumentListItem(
                             monument = item,
                             modifier = Modifier.fillMaxWidth()

@@ -20,6 +20,7 @@ import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -103,15 +104,16 @@ open class MonumentsViewModel(
         }
     }
 
-    /*fun getFilteredMonumentsByName(searchString: String): PagingData<Monument> {
-        val filteredList = monumentsList.filter {
+    fun getFilteredMonumentsByName(searchString: String): Flow<PagingData<Monument>> {
 
-            it.title.contains(searchString, ignoreCase = true) ||
-                    it.description.contains(searchString, ignoreCase = true)
-
+        val filteredList = monumentsPagingList.map { pagingData ->
+            pagingData.filter { item ->
+                item.title.contains(searchString, ignoreCase = true) ||
+                        item.description.contains(searchString, ignoreCase = true)
+            }
         }
         return  filteredList
-    }*/
+    }
 
     fun fetchPersonalLists() {
         personalListsMutableLiveData.value = ResourceState.Loading()
