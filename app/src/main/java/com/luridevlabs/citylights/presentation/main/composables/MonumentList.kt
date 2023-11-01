@@ -189,7 +189,6 @@ fun MonumentList(
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -210,7 +209,6 @@ fun MonumentList(
                                 }
                             }
                         }
-
                     }
                 }
             } else {

@@ -1,6 +1,5 @@
 package com.luridevlabs.citylights.presentation.viewmodel
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,11 +20,7 @@ import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -113,8 +108,7 @@ open class MonumentsViewModel(
 
         val filteredList = monumentsPagingList.map { pagingData ->
             pagingData.filter { item ->
-                item.title.contains(searchString, ignoreCase = true) /*||
-                        item.description.contains(searchString, ignoreCase = true)*/
+                item.title.contains(searchString, ignoreCase = true)
             }
         }
         return  filteredList.debounce(200)
