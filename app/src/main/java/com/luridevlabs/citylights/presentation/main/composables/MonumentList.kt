@@ -74,6 +74,7 @@ fun MonumentList(
     }
     val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(searchString).collectAsLazyPagingItems()
 
+    val alphabeticallySortedMonuments = monumentViewModel.sortMonumentsByName().collectAsLazyPagingItems()
     var isFiltering by remember {
         mutableStateOf(false)
     }
@@ -119,9 +120,7 @@ fun MonumentList(
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
-                    //TODO: implementar o borrar !!!
                     IconButton(onClick = {
-                        isFiltering = !isFiltering
                         showMenu = !showMenu
                     }) {
                         Icon(
@@ -137,7 +136,7 @@ fun MonumentList(
                     {
                         DropdownMenuItem(
                             text = { Text(text = "Sort by name") },
-                            onClick = { /*TODO*/ },
+                            onClick = { isFiltering = !isFiltering },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.baseline_sort_24),
@@ -173,6 +172,28 @@ fun MonumentList(
                     }
                 }
             }
+            //Prueba ordenar por nombre ----------------------
+            if(isFiltering) {
+                items(
+                    count = alphabeticallySortedMonuments.itemCount,
+                    key = alphabeticallySortedMonuments.itemKey { monument: Monument -> monument.monumentId }
+                ) { monumentIndex ->
+                    alphabeticallySortedMonuments[monumentIndex]?.let { item ->
+                        MonumentListItem(
+                            monument = item,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { currentMonument ->
+                            scope.launch {
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
             if (isSearching) {
                 items(
                     count = filteredMonuments.itemCount,
