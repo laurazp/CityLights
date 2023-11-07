@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.luridevlabs.citylights.R
 
@@ -27,7 +28,8 @@ fun ErrorAlertDialog(
         icon = {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.baseline_error_outline_24),
-                contentDescription = "Error Icon")
+                contentDescription = stringResource(R.string.error_icon)
+            )
         },
         title = {
             Text(text = dialogTitle)
@@ -44,7 +46,7 @@ fun ErrorAlertDialog(
                     onConfirmation()
                 }
             ) {
-                Text("Try Again")
+                Text(stringResource(R.string.try_again))
             }
         },
         dismissButton = {
@@ -53,7 +55,7 @@ fun ErrorAlertDialog(
                     shouldDismiss.value = true
                 }
             ) {
-                Text("Dismiss")
+                Text(stringResource(R.string.dismiss))
             }
         }
     )

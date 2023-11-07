@@ -13,7 +13,7 @@
     <fragment
         android:id="@+id/personalListContainerFragment"
         android:name="com.luridevlabs.citylights.presentation.personallists.fragments.PersonalListContainerFragment"
-        android:label="@string/add_new_list_title"
+        android:label="@string/personal_lists_title"
         tools:layout="@layout/fragment_monument_list"/>
     <fragment
         android:id="@+id/mapFragment"

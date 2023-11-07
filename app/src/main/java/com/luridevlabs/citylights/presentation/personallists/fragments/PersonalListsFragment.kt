@@ -13,11 +13,10 @@ import com.luridevlabs.citylights.databinding.FragmentPersonalListsBinding
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.common.ResourceState
-import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.PersonalListAdapter
+import com.luridevlabs.citylights.presentation.personallists.adapter.PersonalListAdapter
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.PersonalListsState
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import java.util.UUID
 
 class PersonalListsFragment : Fragment() {
 
@@ -52,6 +51,7 @@ class PersonalListsFragment : Fragment() {
             (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_addNewListFragment)
         }
 
+        //TODO: borrar cuando no se necesite !!
         binding.fabPersonalListsAddRandomMonumentButton.setOnClickListener {
             monumentsViewModel.addMonumentToList(
                 monumentsViewModel.personalLists[0],
@@ -68,7 +68,7 @@ class PersonalListsFragment : Fragment() {
                     "",
                     "",
                     "",
-                    true
+                    false
                 )
             )
         }
@@ -115,6 +115,4 @@ class PersonalListsFragment : Fragment() {
         monumentsViewModel.selectedListPosition = position
         (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_personalListContainerFragment)
     }
-
-
 }

@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists.adapter
+package com.luridevlabs.citylights.presentation.personallists.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.RowPersonalListItemBinding
 import com.luridevlabs.citylights.model.MonumentList
-import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.PersonalListAdapter.PersonalListViewHolder
+import com.luridevlabs.citylights.presentation.personallists.adapter.PersonalListAdapter.PersonalListViewHolder
 
 class PersonalListAdapter(
 

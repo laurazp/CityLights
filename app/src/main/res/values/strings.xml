@@ -42,5 +42,9 @@
     <string name="search_icon_description">Search</string>
     <string name="filter_icon_description">Filter</string>
     <string name="search_monument_text">Search for a monument</string>
+    <string name="back_icon_description">Back</string>
+    <string name="try_again">Try Again</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="error_icon">Error Icon</string>
 
 </resources>
