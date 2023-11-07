@@ -1,6 +1,5 @@
-package com.luridevlabs.citylights.presentation.common.composables
+package com.luridevlabs.citylights.presentation.main.composables
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +27,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,27 +56,26 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.R.drawable
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
 import com.luridevlabs.citylights.presentation.common.ResourceState.Success
+import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
-import org.koin.androidx.compose.koinViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentDetail(
     navController: NavController,
+    monumentViewModel: MonumentsViewModel,
     monumentId: String
 ) {
-    val monumentViewModel: MonumentsViewModel = koinViewModel()
     val context = LocalContext.current
     //val scope = rememberCoroutineScope()
 
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
     monumentViewModel.fetchMonument(monumentId)
+    monumentViewModel.fetchPersonalLists()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -81,7 +83,6 @@ fun MonumentDetail(
             TopAppBar(
                 modifier = Modifier
                     .fillMaxWidth(),
-                    //.padding(bottom = 4.dp),
                 title = { Text("") },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
                 navigationIcon = {
@@ -89,7 +90,7 @@ fun MonumentDetail(
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(R.string.back_icon_description),
                                 tint = MaterialTheme.colorScheme.onSecondary
                             )
                         }
@@ -102,11 +103,13 @@ fun MonumentDetail(
         when (selectedMonumentState) {
             is Loading -> {
                 //TODO: add progress bar
-                Timber.i("gfgfg")
+                CircularProgressBar()
+                //Timber.i("gfgfg")
             }
 
             is Success -> {
                 val selectedMonument = (selectedMonumentState as Success<Monument>).result
+                var isFavorite by remember { mutableStateOf(selectedMonument.isFavorite) }
 
                 Column(
                     modifier = Modifier
@@ -155,26 +158,40 @@ fun MonumentDetail(
                                         start.linkTo(parent.start)
                                         end.linkTo(parent.end)
                                     },
-                                verticalAlignment = Alignment.CenterVertically,
-                                //TODO: separar del título !!!
-                                //horizontalArrangement = Arrangement.End
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = selectedMonument.title,
                                     modifier = Modifier
-                                        .padding(6.dp),
+                                        .padding(6.dp)
+                                        .weight(1f),
                                     style = MaterialTheme.typography.titleLarge
                                 )
                                 IconButton(
                                     onClick = {
-                                        //TODO: Add favorite when onClick
-                                        Toast.makeText(context, "Add to favorites!", Toast.LENGTH_LONG).show()
+                                        isFavorite = !isFavorite
+                                        selectedMonument.isFavorite = !selectedMonument.isFavorite
+
+                                        if (!monumentViewModel.isMonumentInList(
+                                                monumentViewModel.personalLists[0],
+                                                selectedMonument
+                                        )) {
+                                            monumentViewModel.addMonumentToList(
+                                                monumentViewModel.personalLists[0],
+                                                selectedMonument)
+                                        } else {
+                                            monumentViewModel.removeMonumentFromList(
+                                                monumentViewModel.personalLists[0],
+                                                selectedMonument)
+                                        }
                                     },
                                 ) {
                                     Icon(
                                         imageVector = ImageVector.vectorResource(
                                             id =
-                                            if (selectedMonument.isFavorite)
+                                            if (monumentViewModel.isMonumentInList(
+                                                    monumentViewModel.personalLists[0],
+                                                    selectedMonument))
                                                 drawable.baseline_favorite_24
                                             else
                                                 drawable.baseline_favorite_border_24
@@ -305,7 +322,6 @@ fun DetailMapView(monument: Monument) {
             )
         )
     ) {
-        //TODO: mostrar pin en el mapa
         Marker(
             state = rememberMarkerState(position = markerPosition),
             title = monument.title,
