@@ -10,7 +10,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.personallists.composables.PersonalListNavigation
+import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 /**
  * Como la navegación y las clases más globales están realizadas en vista clásica
@@ -20,6 +23,7 @@ import com.luridevlabs.citylights.presentation.personallists.composables.Persona
 class PersonalListContainerFragment : Fragment() {
 
     private lateinit var binding: FragmentMonumentListBinding
+    private val monumentsViewModel: MonumentsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +45,7 @@ class PersonalListContainerFragment : Fragment() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PersonalListNavigation()
+                    PersonalListNavigation(monumentsViewModel)
                 }
             }
         }

@@ -6,16 +6,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.luridevlabs.citylights.presentation.common.composables.MonumentDetail
+import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 
 @Composable
-fun PersonalListNavigation() {
+fun PersonalListNavigation(viewModel: MonumentsViewModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = "personalMonumentList") {
-        composable("personalMonumentList") {
-            MonumentList(navController)
+        composable("personalMonumentList") { //backStackEntry ->
+            //val listId = backStackEntry.arguments?.getString("listId")
+            //requireNotNull(listId)
+            PersonalMonumentList(navController, viewModel)
         }
         composable(
             route = "monumentDetail/{monumentId}",
@@ -25,7 +27,8 @@ fun PersonalListNavigation() {
         ) { backStackEntry ->
             val monumentId = backStackEntry.arguments?.getString("monumentId")
             requireNotNull(monumentId)
-            MonumentDetail(navController, monumentId)
+            //TODO: cambiar¿?
+            PersonalListMonumentDetail(navController, viewModel, monumentId)
         }
     }
 }
