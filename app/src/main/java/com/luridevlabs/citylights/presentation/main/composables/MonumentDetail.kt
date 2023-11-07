@@ -60,6 +60,7 @@ import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
 import com.luridevlabs.citylights.presentation.common.ResourceState.Success
 import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
+import com.luridevlabs.citylights.presentation.personallists.composables.AddToPersonalListsDialog
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 
@@ -73,9 +74,15 @@ fun MonumentDetail(
     val context = LocalContext.current
     //val scope = rememberCoroutineScope()
 
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
     monumentViewModel.fetchMonument(monumentId)
     monumentViewModel.fetchPersonalLists()
+
+    val personalLists = monumentViewModel.personalLists
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -104,7 +111,6 @@ fun MonumentDetail(
             is Loading -> {
                 //TODO: add progress bar
                 CircularProgressBar()
-                //Timber.i("gfgfg")
             }
 
             is Success -> {
@@ -167,6 +173,47 @@ fun MonumentDetail(
                                         .weight(1f),
                                     style = MaterialTheme.typography.titleLarge
                                 )
+                                /**
+                                 * Add to personal list button
+                                 */
+                                IconButton(
+                                    onClick = {
+                                        showDialog = !showDialog
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(
+                                            id = drawable.baseline_add_24
+                                        ),
+                                        contentDescription = stringResource(R.string.add_to_personal_list),
+                                        modifier = Modifier
+                                            .width(24.dp)
+                                            .height(24.dp)
+                                    )
+                                }
+                                AddToPersonalListsDialog(
+                                    onListClick = { list ->
+                                        //TODO: añadir monumento a lista
+                                        monumentViewModel.addMonumentToList(list, selectedMonument)
+                                    },
+                                    dialogTitle = stringResource(R.string.choose_list_to_add_text),
+                                    personalLists = personalLists
+                                )
+
+                                /*(
+                                    expanded = showDialog,
+                                    lists = personalLists,
+                                    onDismiss = { showDialog = false },
+                                    onListClick = {
+                                                  //TODO: Añadir monumento a esa lista
+                                    },
+                                    onAddListClick = { },
+                                    dialogTitle = "Elige una lista para añadir el monumento"
+                                )*/
+
+                                /**
+                                 * Add to favorites button
+                                 */
                                 IconButton(
                                     onClick = {
                                         isFavorite = !isFavorite
@@ -196,7 +243,7 @@ fun MonumentDetail(
                                             else
                                                 drawable.baseline_favorite_border_24
                                         ),
-                                        contentDescription = null,
+                                        contentDescription = stringResource(R.string.add_to_favorites),
                                         modifier = Modifier
                                             .width(24.dp)
                                             .height(24.dp)

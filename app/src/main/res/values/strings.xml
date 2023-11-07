@@ -46,5 +46,8 @@
     <string name="try_again">Try Again</string>
     <string name="dismiss">Dismiss</string>
     <string name="error_icon">Error Icon</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="add_to_personal_list">Add to personal list</string>
+    <string name="choose_list_to_add_text">Choose a list to add this monument to:</string>
 
 </resources>
