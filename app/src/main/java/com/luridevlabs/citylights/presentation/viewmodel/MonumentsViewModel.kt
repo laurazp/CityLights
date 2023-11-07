@@ -43,7 +43,7 @@ open class MonumentsViewModel(
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
     val filteredMonumentList = mutableStateListOf<Monument>()
-    var personalLists: List<MonumentList> = emptyList()
+    var personalLists: List<MonumentList> = mutableStateListOf()
     var selectedListPosition: Int = -1
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
@@ -203,14 +203,23 @@ open class MonumentsViewModel(
         }
     }
 
-    fun removeMonumentInList(list: MonumentList, monument: Monument){
+    fun isMonumentInList(list: MonumentList, monument: Monument): Boolean {
+        return list.monuments.contains(monument)
+    }
+
+    fun removeMonumentFromList(list: MonumentList, monument: Monument){
         list.monuments.remove(monument)
         editList(list)
     }
 
     fun addMonumentToList(list: MonumentList, monument: Monument){
-        list.monuments.add(monument)
-        editList(list)
+        if (!list.monuments.contains(monument)) {
+            list.monuments.add(monument)
+            editList(list)
+        } else {
+            return
+        }
+
     }
 
     fun getSelectedPersonalList() = personalLists[selectedListPosition]

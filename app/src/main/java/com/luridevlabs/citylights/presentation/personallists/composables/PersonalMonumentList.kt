@@ -6,81 +6,49 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
-import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonumentList(
-    navController: NavController
+fun PersonalMonumentList(
+    navController: NavController,
+    monumentViewModel: MonumentsViewModel
 ) {
-    val monumentViewModel: MonumentsViewModel = koinViewModel()
-    val monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
+    val personalListId = monumentViewModel.selectedListPosition
+    val listTitle = monumentViewModel.personalLists[personalListId].listName
+    val monuments = monumentViewModel.personalLists[personalListId].monuments
     val scope = rememberCoroutineScope()
-    //val context = LocalContext.current
-    var isSearching by remember {
-        mutableStateOf(false)
-    }
-    var searchString by remember {
-        mutableStateOf("")
-    }
-    var isFiltering by remember {
-        mutableStateOf(false)
-    }
-    var showMenu by remember {
-        mutableStateOf(false)
-    }
-    //TODO: modificar !!
-    //val filteredMonuments = monumentViewModel.monumentsList.collectAsLazyPagingItems()
-    //val filteredMonuments = (monumentViewModel.getFilteredMonumentsByName(monuments, searchString)).collectAsLazyPagingItems()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -90,63 +58,24 @@ fun MonumentList(
                     .fillMaxWidth()
                     .padding(bottom = 4.dp),
                 title = {
-                    if (!isSearching) {
-                        Text(
-                            text = "",
-                            color = MaterialTheme.colorScheme.onSecondary
-                        )
-                    } else {
-                        TextField(
-                            modifier = Modifier
-                                //.height(28.dp)
-                                .fillMaxWidth(),
-                            value = searchString,
-                            onValueChange = { newSearchString ->
-                                searchString = newSearchString
-                            },
-                            label = { Text(stringResource(R.string.search_monument_text)) },
-                            shape = RectangleShape,
-                            maxLines = 1
+                    Text(
+                        text = listTitle,
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                },
+                /*navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back_icon_description),
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
-                },
+
+                },*/
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
                 actions = {
-                    IconButton(onClick = {
-                        isSearching = !isSearching
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search_icon_description),
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                    //TODO: implementar o borrar !!!
-                    IconButton(onClick = {
-                        isFiltering = !isFiltering
-                        showMenu = !showMenu
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
-                            contentDescription = stringResource(R.string.filter_icon_description),
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false },
-                        modifier = Modifier.width(180.dp))
-                    {
-                        DropdownMenuItem(
-                            text = { Text(text = "Sort by name") },
-                            onClick = { /*TODO*/ },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_sort_24),
-                                    contentDescription = stringResource(R.string.filter_icon_description),)
-                            }
-                        )
-                    }
+                    /* TODO */
                 }
             )
         }
@@ -156,59 +85,16 @@ fun MonumentList(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            monuments.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        item { CircularProgressBar() }
-                    }
-                    loadState.append is LoadState.Loading -> {
-                        item { CircularProgressBar() }
-                    }
-                    loadState.refresh is LoadState.Error ||
-                            loadState.append is LoadState.Error -> {
-                        item { ErrorAlertDialog(
-                            onConfirmation = {},
-                            dialogTitle = stringResource(R.string.list_error_title),
-                            dialogText = stringResource(R.string.list_error_text)
-                        )
-                        }
-                    }
-                }
-            }
-            if (isSearching) {
-                //TODO: cambiar por monumentos buscados
-                items(
-                    count = monuments.itemCount,
-                    key = monuments.itemKey { monument: Monument -> monument.monumentId }
-                ) { monumentIndex ->
-                    monuments[monumentIndex]?.let { item ->
-                        MonumentListItem(
-                            monument = item,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { currentMonument ->
-                            scope.launch {
-                                withContext(Dispatchers.Main) {
-                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                items(
-                    count = monuments.itemCount,
-                    key = monuments.itemKey { monument -> monument.monumentId }
-                ) { monumentIndex ->
-                    monuments[monumentIndex]?.let { item ->
-                        MonumentListItem(
-                            monument = item,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { currentMonument ->
-                            scope.launch {
-                                withContext(Dispatchers.Main) {
-                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                                }
-                            }
+            items(
+                monuments
+            ) { item ->
+                MonumentListItem(
+                    monument = item,
+                    modifier = Modifier.fillMaxWidth()
+                ) { currentMonument ->
+                    scope.launch {
+                        withContext(Dispatchers.Main) {
+                            navController.navigate("monumentDetail/${currentMonument.monumentId}")
                         }
                     }
                 }
