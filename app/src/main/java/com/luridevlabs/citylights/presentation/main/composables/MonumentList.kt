@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,6 +55,7 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
 import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -71,6 +73,8 @@ fun MonumentList(
     val monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
 
     var isSearching by remember {
         mutableStateOf(false)
@@ -183,7 +187,29 @@ fun MonumentList(
                     }
                 }
             }
-            //Prueba ordenar por nombre ----------------------
+
+
+            when (selectedMonumentState) {
+                is ResourceState.Loading -> {
+                    //TODO: add progress bar
+                }
+
+                is ResourceState.Success -> {
+                    val selectedMonument =
+                        (selectedMonumentState as ResourceState.Success<Monument>).result
+
+
+                }
+
+                is ResourceState.Error -> {
+                    //TODO: Mostrar mensaje de error
+                }
+
+                else -> {}
+            }
+
+
+            //TODO: Prueba ordenar por nombre ----------------------
             if(isFiltering) {
                 items(
                     count = alphabeticallySortedMonuments.itemCount,
@@ -234,6 +260,8 @@ fun MonumentList(
                         ) { currentMonument ->
                             scope.launch {
                                 withContext(Dispatchers.Main) {
+                                    //TODO: state para observar monument y que no navegue hasta que sea success
+                                    //monumentViewModel.fetchMonument(currentMonument.monumentId.toString())
                                     navController.navigate("monumentDetail/${currentMonument.monumentId}")
                                 }
                             }

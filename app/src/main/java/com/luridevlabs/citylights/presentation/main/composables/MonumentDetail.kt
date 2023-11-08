@@ -60,6 +60,7 @@ import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
 import com.luridevlabs.citylights.presentation.common.ResourceState.Success
 import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
+import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
 import com.luridevlabs.citylights.presentation.personallists.composables.AddToPersonalListsDialog
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -78,8 +79,9 @@ fun MonumentDetail(
         mutableStateOf(false)
     }
 
-    val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
+    //TODO: revisar doble parpadeo --> MonumentList
     monumentViewModel.fetchMonument(monumentId)
+    val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
     monumentViewModel.fetchPersonalLists()
 
     val personalLists = monumentViewModel.personalLists
@@ -342,12 +344,17 @@ fun MonumentDetail(
             }
             is Error -> {
                 //TODO: Mostrar mensaje de error
+                ErrorAlertDialog(
+                    onConfirmation = { /*TODO*/ },
+                    dialogTitle = "",
+                    dialogText = "")
             }
 
-            null -> TODO()
+            null -> {}
+
+            }
         }
     }
-}
 
 @Composable
 fun DetailMapView(monument: Monument) {
