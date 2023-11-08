@@ -5,6 +5,7 @@ import com.luridevlabs.citylights.data.MonumentsPaging
 import com.luridevlabs.citylights.data.database.AppDatabase
 import com.luridevlabs.citylights.data.database.DatabaseConstants.DATABASE_NAME
 import com.luridevlabs.citylights.data.monument.MonumentsDataImpl
+import com.luridevlabs.citylights.data.monument.local.MonumentsDatabaseImpl
 import com.luridevlabs.citylights.data.monument.remote.MonumentsRemoteImpl
 import com.luridevlabs.citylights.data.monument.remote.mapper.MonumentResponseMapper
 import com.luridevlabs.citylights.data.personallist.ListsDataImpl
@@ -23,7 +24,6 @@ import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetPersonalListsUseCase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -48,10 +48,10 @@ val monumentsModule = module {
     factory { MonumentEntityMapper() }
     factory { MonumentListEntityMapper(get()) }
 
-
+    factory { MonumentsDatabaseImpl(get()) }
     factory { MonumentsRemoteImpl(get(), get()) }
     factory { ListsDatabaseImpl(get(named("appDatabase")), get()) }
-    factory<MonumentsRepository> { MonumentsDataImpl(get()) }
+    factory<MonumentsRepository> { MonumentsDataImpl(get(), get()) }
     factory<MonumentListsRepository> { ListsDataImpl(get()) }
 
     factory { MonumentsPaging(get()) }
