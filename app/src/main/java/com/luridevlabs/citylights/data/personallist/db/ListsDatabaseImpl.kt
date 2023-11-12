@@ -1,6 +1,7 @@
 package com.luridevlabs.citylights.data.personallist.db
 
 import com.luridevlabs.citylights.data.database.AppDatabase
+import com.luridevlabs.citylights.data.database.DatabaseConstants
 import com.luridevlabs.citylights.data.personallist.db.mapper.MonumentListEntityMapper
 import com.luridevlabs.citylights.data.personallist.db.model.MonumentListEntity
 import com.luridevlabs.citylights.model.MonumentList
@@ -9,6 +10,10 @@ class ListsDatabaseImpl(
     private val appDatabase: AppDatabase,
     private val mapper: MonumentListEntityMapper
 ) {
+
+    fun initFavoriteList() {
+        if(appDatabase.listsDao().getLists().isNullOrEmpty()) addList(DatabaseConstants.FAVORITE_LIST_NAME)
+    }
 
     fun getLists(): List<MonumentList> {
         return appDatabase.listsDao().getLists().map { mapper.mapFromDatabase(it) }

@@ -14,6 +14,7 @@ import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetPersonalListsUseCase
+import com.luridevlabs.citylights.domain.usecase.InitFavoriteListUseCase
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.model.MonumentList
 import com.luridevlabs.citylights.presentation.common.ResourceState
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
@@ -30,6 +32,7 @@ typealias AddPersonalListsState = ResourceState<Unit?>
 typealias PersonalListsState = ResourceState<List<MonumentList>>
 
 open class MonumentsViewModel(
+    private val initFavoriteListUseCase: InitFavoriteListUseCase,
     private val getMonumentListUseCase: GetMonumentListUseCase,
     private val getMonumentDetailUseCase: GetMonumentDetailUseCase,
     private val getMonumentPagingListUseCase: GetMonumentPagingListUseCase,
@@ -42,8 +45,12 @@ open class MonumentsViewModel(
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+<<<<<<< Updated upstream
     val filteredMonumentList = mutableStateListOf<Monument>()
     var personalLists: List<MonumentList> = mutableStateListOf()
+=======
+    var personalLists: List<MonumentList> = emptyList()
+>>>>>>> Stashed changes
     var selectedListPosition: Int = -1
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
@@ -104,6 +111,7 @@ open class MonumentsViewModel(
         }
     }
 
+<<<<<<< Updated upstream
     fun getFilteredMonumentsByName(searchString: String): Flow<PagingData<Monument>> {
 
         val filteredList = monumentsPagingList.map { pagingData ->
@@ -129,6 +137,18 @@ open class MonumentsViewModel(
         return list.sortedWith { item1, item2 -> item1.compareTo(item2) }
     }*/
     
+=======
+    fun initFavoritesList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                initFavoriteListUseCase.execute()
+            } catch (e: Throwable) {
+                Timber.e("ERROR INITIALIZING FAVORITES LIST: $e")
+            }
+        }
+    }
+
+>>>>>>> Stashed changes
     fun fetchPersonalLists() {
         personalListsMutableLiveData.value = ResourceState.Loading()
         viewModelScope.launch(Dispatchers.IO) {
@@ -185,7 +205,10 @@ open class MonumentsViewModel(
         }
     }
 
-    fun deleteList(listId: Long){
+    /** Habría que permitir eliminar las listas creadas pero lo dejo para
+     * una futura versión si continúo esta app.
+     */
+    fun deleteList(listId: Long) {
         personalListsMutableLiveData.value = ResourceState.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -203,15 +226,20 @@ open class MonumentsViewModel(
         }
     }
 
+<<<<<<< Updated upstream
     fun isMonumentInList(list: MonumentList, monument: Monument): Boolean {
         return list.monuments.contains(monument)
     }
 
     fun removeMonumentFromList(list: MonumentList, monument: Monument){
+=======
+    fun removeMonumentInList(list: MonumentList, monument: Monument) {
+>>>>>>> Stashed changes
         list.monuments.remove(monument)
         editList(list)
     }
 
+<<<<<<< Updated upstream
     fun addMonumentToList(list: MonumentList, monument: Monument){
         if (!list.monuments.contains(monument)) {
             list.monuments.add(monument)
@@ -220,6 +248,11 @@ open class MonumentsViewModel(
             return
         }
 
+=======
+    fun addMonumentToList(list: MonumentList, monument: Monument) {
+        list.monuments.add(monument)
+        editList(list)
+>>>>>>> Stashed changes
     }
 
     fun getSelectedPersonalList() = personalLists[selectedListPosition]

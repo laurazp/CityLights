@@ -8,6 +8,9 @@ class ListsDataImpl(
     private val listsDatabaseImpl: ListsDatabaseImpl,
 ) : MonumentListsRepository {
 
+    override fun initFavoriteList() {
+        return listsDatabaseImpl.initFavoriteList()
+    }
     override fun getPersonalLists(): List<MonumentList> {
         return listsDatabaseImpl.getLists()
     }

@@ -23,6 +23,7 @@ import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetPersonalListsUseCase
+import com.luridevlabs.citylights.domain.usecase.InitFavoriteListUseCase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -55,6 +56,7 @@ val monumentsModule = module {
     factory<MonumentListsRepository> { ListsDataImpl(get()) }
 
     factory { MonumentsPaging(get()) }
+    factory { InitFavoriteListUseCase(get()) }
     factory { GetMonumentListUseCase(get()) }
     factory { GetMonumentDetailUseCase(get()) }
     factory { GetMonumentPagingListUseCase(get()) }
@@ -63,5 +65,5 @@ val monumentsModule = module {
     factory { EditPersonalListUseCase(get()) }
     factory { DeletePersonalListUseCase(get()) }
 
-    viewModel { MonumentsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MonumentsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 }
