@@ -24,11 +24,7 @@ class PersonalListsFragment : Fragment() {
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
     private val personalListAdapter = PersonalListAdapter(
         mutableListOf()) {
-<<<<<<< Updated upstream:app/src/main/java/com/luridevlabs/citylights/presentation/personallists/fragments/PersonalListsFragment.kt
             position: Int -> goToPersonalList(position)
-=======
-        position: Int -> goToList(position)
->>>>>>> Stashed changes:app/src/main/java/com/luridevlabs/citylights/presentation/fragment/personallists/PersonalListsFragment.kt
     }
 
     override fun onCreateView(
@@ -115,14 +111,8 @@ class PersonalListsFragment : Fragment() {
             }
     }
 
-<<<<<<< Updated upstream:app/src/main/java/com/luridevlabs/citylights/presentation/personallists/fragments/PersonalListsFragment.kt
     private fun goToPersonalList(position: Int) {
         monumentsViewModel.selectedListPosition = position
         (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_personalListContainerFragment)
-=======
-    private fun goToList(position: Int) {
-        monumentsViewModel.selectedListPosition = position
-        (activity as MainActivity).navigateTo(-1)
->>>>>>> Stashed changes:app/src/main/java/com/luridevlabs/citylights/presentation/fragment/personallists/PersonalListsFragment.kt
     }
 }

@@ -45,12 +45,8 @@ open class MonumentsViewModel(
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
-<<<<<<< Updated upstream
     val filteredMonumentList = mutableStateListOf<Monument>()
     var personalLists: List<MonumentList> = mutableStateListOf()
-=======
-    var personalLists: List<MonumentList> = emptyList()
->>>>>>> Stashed changes
     var selectedListPosition: Int = -1
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
@@ -111,7 +107,6 @@ open class MonumentsViewModel(
         }
     }
 
-<<<<<<< Updated upstream
     fun getFilteredMonumentsByName(searchString: String): Flow<PagingData<Monument>> {
 
         val filteredList = monumentsPagingList.map { pagingData ->
@@ -137,7 +132,6 @@ open class MonumentsViewModel(
         return list.sortedWith { item1, item2 -> item1.compareTo(item2) }
     }*/
     
-=======
     fun initFavoritesList() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -148,7 +142,6 @@ open class MonumentsViewModel(
         }
     }
 
->>>>>>> Stashed changes
     fun fetchPersonalLists() {
         personalListsMutableLiveData.value = ResourceState.Loading()
         viewModelScope.launch(Dispatchers.IO) {
@@ -226,33 +219,24 @@ open class MonumentsViewModel(
         }
     }
 
-<<<<<<< Updated upstream
     fun isMonumentInList(list: MonumentList, monument: Monument): Boolean {
         return list.monuments.contains(monument)
     }
 
     fun removeMonumentFromList(list: MonumentList, monument: Monument){
-=======
-    fun removeMonumentInList(list: MonumentList, monument: Monument) {
->>>>>>> Stashed changes
         list.monuments.remove(monument)
         editList(list)
     }
 
-<<<<<<< Updated upstream
     fun addMonumentToList(list: MonumentList, monument: Monument){
-        if (!list.monuments.contains(monument)) {
+        if (list.monuments.none { it.monumentId == monument.monumentId }) {
             list.monuments.add(monument)
+            monumentDetailMutableLiveData.value = ResourceState.Success(monument)
             editList(list)
+
         } else {
             return
         }
-
-=======
-    fun addMonumentToList(list: MonumentList, monument: Monument) {
-        list.monuments.add(monument)
-        editList(list)
->>>>>>> Stashed changes
     }
 
     fun getSelectedPersonalList() = personalLists[selectedListPosition]

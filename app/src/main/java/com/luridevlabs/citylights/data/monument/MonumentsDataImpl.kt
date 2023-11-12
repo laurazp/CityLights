@@ -18,7 +18,9 @@ class MonumentsDataImpl (
 
     override suspend fun getMonument(monumentId: String): Monument {
         val monument = monumentsRemoteImpl.getMonument(monumentId)
-        monument.isFavorite = listsDatabaseImpl.getList(1).monuments.contains(monument)
+        monument.isFavorite = listsDatabaseImpl.getList(1).monuments.any {
+            it.monumentId == monument.monumentId
+        }
         return monument
     }
 }

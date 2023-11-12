@@ -64,6 +64,7 @@ import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDial
 import com.luridevlabs.citylights.presentation.personallists.composables.AddToPersonalListsDialog
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
+import kotlinx.coroutines.selects.select
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,7 +160,7 @@ fun MonumentDetail(
                                         end.linkTo(parent.end)
                                     }
                             )
-                            Row (
+                            Row(
                                 modifier = Modifier
                                     .constrainAs(titleView) {
                                         top.linkTo(photoView.bottom, 8.dp)
@@ -218,38 +219,26 @@ fun MonumentDetail(
                                  */
                                 IconButton(
                                     onClick = {
-                                        isFavorite = !isFavorite
-                                        selectedMonument.isFavorite = !selectedMonument.isFavorite
+                                        //isFavorite = !isFavorite
+                                        //selectedMonument.isFavorite = !selectedMonument.isFavorite
 
-                                        if (!monumentViewModel.isMonumentInList(
-                                                monumentViewModel.personalLists[0],
-                                                selectedMonument
-                                        )) {
-                                            monumentViewModel.addMonumentToList(
-                                                monumentViewModel.personalLists[0],
-                                                selectedMonument)
-                                        } else {
+                                        if (selectedMonument.isFavorite) {
+                                            isFavorite = false
                                             monumentViewModel.removeMonumentFromList(
                                                 monumentViewModel.personalLists[0],
-                                                selectedMonument)
+                                                selectedMonument
+                                            )
+                                        } else {
+                                            selectedMonument.isFavorite = true
+                                            isFavorite = true
+                                            monumentViewModel.addMonumentToList(
+                                                monumentViewModel.personalLists[0],
+                                                selectedMonument
+                                            )
                                         }
                                     },
                                 ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(
-                                            id =
-                                            if (monumentViewModel.isMonumentInList(
-                                                    monumentViewModel.personalLists[0],
-                                                    selectedMonument))
-                                                drawable.baseline_favorite_24
-                                            else
-                                                drawable.baseline_favorite_border_24
-                                        ),
-                                        contentDescription = stringResource(R.string.add_to_favorites),
-                                        modifier = Modifier
-                                            .width(24.dp)
-                                            .height(24.dp)
-                                    )
+                                    FavoriteIcon(isFavorite)
                                 }
                             }
                             Text(
@@ -283,9 +272,9 @@ fun MonumentDetail(
                             Row(
                                 modifier = Modifier
                                     .constrainAs(addressView) {
-                                    top.linkTo(styleView.bottom, 12.dp)
-                                    start.linkTo(parent.start)
-                                },
+                                        top.linkTo(styleView.bottom, 12.dp)
+                                        start.linkTo(parent.start)
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -342,19 +331,21 @@ fun MonumentDetail(
 
                 }
             }
+
             is Error -> {
                 //TODO: Mostrar mensaje de error
                 ErrorAlertDialog(
                     onConfirmation = { /*TODO*/ },
                     dialogTitle = "",
-                    dialogText = "")
+                    dialogText = ""
+                )
             }
 
             null -> {}
 
-            }
         }
     }
+}
 
 @Composable
 fun DetailMapView(monument: Monument) {
@@ -382,4 +373,20 @@ fun DetailMapView(monument: Monument) {
             icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
         )
     }
+}
+
+@Composable
+fun FavoriteIcon(isFavorite: Boolean) {
+    Icon(
+        imageVector = ImageVector.vectorResource(
+            id = if (isFavorite)
+                drawable.baseline_favorite_24
+            else
+                drawable.baseline_favorite_border_24
+        ),
+        contentDescription = stringResource(R.string.add_to_favorites),
+        modifier = Modifier
+            .width(24.dp)
+            .height(24.dp)
+    )
 }
