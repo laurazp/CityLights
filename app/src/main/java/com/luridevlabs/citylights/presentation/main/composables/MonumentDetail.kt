@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,7 +65,6 @@ import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDial
 import com.luridevlabs.citylights.presentation.personallists.composables.AddToPersonalListsDialog
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import kotlinx.coroutines.selects.select
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,15 +76,14 @@ fun MonumentDetail(
     val context = LocalContext.current
     //val scope = rememberCoroutineScope()
 
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+//    var showDialog by remember {
+//        mutableStateOf(false)
+//    }
 
-    //TODO: revisar doble parpadeo --> MonumentList
     monumentViewModel.fetchMonument(monumentId)
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
-    monumentViewModel.fetchPersonalLists()
 
+    monumentViewModel.fetchPersonalLists()
     val personalLists = monumentViewModel.personalLists
 
     Scaffold(
@@ -112,13 +111,17 @@ fun MonumentDetail(
 
         when (selectedMonumentState) {
             is Loading -> {
-                //TODO: add progress bar
+                //TODO ¿?
+                println("LOOOOOOOAAAAAADIIIIIING")
                 CircularProgressBar()
             }
 
             is Success -> {
+                //TODO ¿¿??
+                println("SUUUUUUUUUUUCCCEESSSSSSS")
                 val selectedMonument = (selectedMonumentState as Success<Monument>).result
                 var isFavorite by remember { mutableStateOf(selectedMonument.isFavorite) }
+                var showDialog by remember { mutableStateOf(false) }
 
                 Column(
                     modifier = Modifier
@@ -126,7 +129,9 @@ fun MonumentDetail(
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    //InfoCard
+                    /**
+                     * InfoCard
+                     */
                     ElevatedCard(
                         modifier = Modifier
                             .padding(6.dp)
@@ -181,7 +186,7 @@ fun MonumentDetail(
                                  */
                                 IconButton(
                                     onClick = {
-                                        showDialog = !showDialog
+                                        showDialog = true
                                     },
                                 ) {
                                     Icon(
@@ -193,35 +198,30 @@ fun MonumentDetail(
                                             .width(24.dp)
                                             .height(24.dp)
                                     )
-                                }
-                                AddToPersonalListsDialog(
-                                    onListClick = { list ->
-                                        //TODO: añadir monumento a lista
-                                        monumentViewModel.addMonumentToList(list, selectedMonument)
-                                    },
-                                    dialogTitle = stringResource(R.string.choose_list_to_add_text),
-                                    personalLists = personalLists
-                                )
 
-                                /*(
-                                    expanded = showDialog,
-                                    lists = personalLists,
-                                    onDismiss = { showDialog = false },
-                                    onListClick = {
-                                                  //TODO: Añadir monumento a esa lista
-                                    },
-                                    onAddListClick = { },
-                                    dialogTitle = "Elige una lista para añadir el monumento"
-                                )*/
+                                    if(showDialog){
+                                        AddToPersonalListsDialog(
+                                            onListClick = { list ->
+                                                monumentViewModel.addMonumentToList(
+                                                    list,
+                                                    selectedMonument
+                                                )
+                                                showDialog = false
+                                            },
+                                            onDismissClick = {
+                                                showDialog = false
+                                            },
+                                            dialogTitle = stringResource(R.string.choose_list_to_add_text),
+                                            personalLists = personalLists
+                                        )
+                                    }
+                                }
 
                                 /**
                                  * Add to favorites button
                                  */
                                 IconButton(
                                     onClick = {
-                                        //isFavorite = !isFavorite
-                                        //selectedMonument.isFavorite = !selectedMonument.isFavorite
-
                                         if (selectedMonument.isFavorite) {
                                             isFavorite = false
                                             monumentViewModel.removeMonumentFromList(
@@ -310,7 +310,10 @@ fun MonumentDetail(
                         modifier = Modifier
                             .height(4.dp)
                     )
-                    //MapCard
+
+                    /**
+                     * MapCard
+                     */
                     ElevatedCard(
                         modifier = Modifier
                             .padding(6.dp)

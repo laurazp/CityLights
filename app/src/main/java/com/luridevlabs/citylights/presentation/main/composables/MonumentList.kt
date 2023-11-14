@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -82,9 +83,12 @@ fun MonumentList(
     var searchString by remember {
         mutableStateOf("")
     }
-    val filteredMonuments = monumentViewModel.getFilteredMonumentsByName(searchString).collectAsLazyPagingItems()
+    val filteredMonuments =
+        monumentViewModel.getFilteredMonumentsByName(searchString).collectAsLazyPagingItems()
 
-    val alphabeticallySortedMonuments = monumentViewModel.sortMonumentsByName().collectAsLazyPagingItems()
+    val alphabeticallySortedMonuments =
+        monumentViewModel.sortMonumentsByName().collectAsLazyPagingItems()
+
     var isFiltering by remember {
         mutableStateOf(false)
     }
@@ -119,7 +123,7 @@ fun MonumentList(
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
-                                onDone = {keyboardController?.hide()}
+                                onDone = { keyboardController?.hide() }
                             )
                         )
                     }
@@ -147,7 +151,8 @@ fun MonumentList(
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
-                        modifier = Modifier.width(180.dp))
+                        modifier = Modifier.width(180.dp)
+                    )
                     {
                         DropdownMenuItem(
                             text = { Text(text = "Sort by name") },
@@ -155,7 +160,8 @@ fun MonumentList(
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.baseline_sort_24),
-                                    contentDescription = stringResource(R.string.filter_icon_description),)
+                                    contentDescription = stringResource(R.string.filter_icon_description),
+                                )
                             }
                         )
                     }
@@ -173,44 +179,28 @@ fun MonumentList(
                     loadState.refresh is LoadState.Loading -> {
                         item { CircularProgressBar() }
                     }
+
                     loadState.append is LoadState.Loading -> {
                         item { CircularProgressBar() }
                     }
+
                     loadState.refresh is LoadState.Error ||
                             loadState.append is LoadState.Error -> {
-                        item { ErrorAlertDialog(
-                            onConfirmation = {},
-                            dialogTitle = stringResource(R.string.list_error_title),
-                            dialogText = stringResource(R.string.list_error_text)
-                        )
+                        item {
+                            ErrorAlertDialog(
+                                onConfirmation = {},
+                                dialogTitle = stringResource(R.string.list_error_title),
+                                dialogText = stringResource(R.string.list_error_text)
+                            )
                         }
                     }
                 }
             }
 
-
-            when (selectedMonumentState) {
-                is ResourceState.Loading -> {
-                    //TODO: add progress bar
-                }
-
-                is ResourceState.Success -> {
-                    val selectedMonument =
-                        (selectedMonumentState as ResourceState.Success<Monument>).result
-
-
-                }
-
-                is ResourceState.Error -> {
-                    //TODO: Mostrar mensaje de error
-                }
-
-                else -> {}
-            }
-
-
-            //TODO: Prueba ordenar por nombre ----------------------
-            if(isFiltering) {
+            /**
+             * Test: Ordenar monumentos alfabéticamente por nombre
+             */
+            if (isFiltering) {
                 items(
                     count = alphabeticallySortedMonuments.itemCount,
                     key = alphabeticallySortedMonuments.itemKey { monument: Monument -> monument.monumentId }
@@ -230,6 +220,9 @@ fun MonumentList(
                 }
             }
 
+            /**
+             * Búsqueda de monumentos por nombre
+             */
             if (isSearching) {
                 items(
                     count = filteredMonuments.itemCount,
@@ -260,8 +253,6 @@ fun MonumentList(
                         ) { currentMonument ->
                             scope.launch {
                                 withContext(Dispatchers.Main) {
-                                    //TODO: state para observar monument y que no navegue hasta que sea success
-                                    //monumentViewModel.fetchMonument(currentMonument.monumentId.toString())
                                     navController.navigate("monumentDetail/${currentMonument.monumentId}")
                                 }
                             }
@@ -345,3 +336,14 @@ fun MonumentListItem(
     }
     Spacer(modifier = Modifier.height(4.dp))
 }
+
+
+
+/*
+when (selectedMonumentState) {
+   is ResourceState.Success -> {
+       navController.navigate("monumentDetail/${currentMonument.monumentId}")
+   }
+   else -> {}
+   }
+*/
