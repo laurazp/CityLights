@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentPersonalListsBinding
-import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.personallists.adapter.PersonalListAdapter
@@ -49,28 +47,6 @@ class PersonalListsFragment : Fragment() {
 
         binding.fabPersonalListsAddButton.setOnClickListener {
             (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_addNewListFragment)
-        }
-
-        //TODO: borrar cuando no se necesite !!
-        binding.fabPersonalListsAddRandomMonumentButton.setOnClickListener {
-            monumentsViewModel.addMonumentToList(
-                monumentsViewModel.personalLists[0],
-                Monument(
-                    Math.random().toLong(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    LatLng(0.0,0.0),
-                    "",
-                    "",
-                    "",
-                    false
-                )
-            )
         }
     }
 
