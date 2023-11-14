@@ -1,6 +1,5 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -73,13 +71,6 @@ fun MonumentDetail(
     monumentViewModel: MonumentsViewModel,
     monumentId: String
 ) {
-    val context = LocalContext.current
-    //val scope = rememberCoroutineScope()
-
-//    var showDialog by remember {
-//        mutableStateOf(false)
-//    }
-
     monumentViewModel.fetchMonument(monumentId)
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
 
@@ -111,14 +102,10 @@ fun MonumentDetail(
 
         when (selectedMonumentState) {
             is Loading -> {
-                //TODO ¿?
-                println("LOOOOOOOAAAAAADIIIIIING")
                 CircularProgressBar()
             }
 
             is Success -> {
-                //TODO ¿¿??
-                println("SUUUUUUUUUUUCCCEESSSSSSS")
                 val selectedMonument = (selectedMonumentState as Success<Monument>).result
                 var isFavorite by remember { mutableStateOf(selectedMonument.isFavorite) }
                 var showDialog by remember { mutableStateOf(false) }
@@ -261,7 +248,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Estilo:  ",
+                                    text = stringResource(R.string.monument_style_title),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -278,7 +265,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Dirección:  ",
+                                    text = stringResource(R.string.monument_address_title),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -295,7 +282,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.Top
                             ) {
                                 Text(
-                                    text = "Horario:  ",
+                                    text = stringResource(R.string.monument_hours_title),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -336,11 +323,12 @@ fun MonumentDetail(
             }
 
             is Error -> {
-                //TODO: Mostrar mensaje de error
                 ErrorAlertDialog(
-                    onConfirmation = { /*TODO*/ },
-                    dialogTitle = "",
-                    dialogText = ""
+                    onConfirmation = {
+                        monumentViewModel.fetchMonument(monumentId)
+                    },
+                    dialogTitle = stringResource(R.string.errorTitle),
+                    dialogText = stringResource(R.string.error_loading_detail_text)
                 )
             }
 
@@ -354,7 +342,6 @@ fun MonumentDetail(
 fun DetailMapView(monument: Monument) {
     val markerPosition =
         monument.position
-    //val context = LocalContext.current
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         uiSettings = MapUiSettings(zoomControlsEnabled = true),
