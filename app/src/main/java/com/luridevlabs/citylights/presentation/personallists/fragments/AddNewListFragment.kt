@@ -1,12 +1,11 @@
 package com.luridevlabs.citylights.presentation.personallists.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentAddNewListBinding
 import com.luridevlabs.citylights.presentation.MainActivity
@@ -47,6 +46,10 @@ class AddNewListFragment : Fragment() {
         }
     }
 
+    /**
+     * De momento no voy a controlar ningún error, pero lo dejo
+     * para un futuro desarrollo de la app.
+     **/
     private fun handleNewListState(state: AddPersonalListsState) {
         when(state) {
             is ResourceState.Loading -> {}

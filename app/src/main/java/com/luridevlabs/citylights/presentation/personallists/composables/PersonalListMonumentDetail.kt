@@ -117,7 +117,6 @@ fun PersonalListMonumentDetail(
                         styleView,
                         addressView,
                         hoursView
-                    //TODO: añadir todos los campos
                     ) = createRefs()
 
                     AsyncImage(
@@ -214,7 +213,6 @@ fun PersonalListMonumentDetail(
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
-                    //TODO: Add all the fields
                 }
             }
             Spacer(

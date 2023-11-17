@@ -45,7 +45,6 @@ open class MonumentsViewModel(
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
     val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
-    val filteredMonumentList = mutableStateListOf<Monument>()
     var personalLists: List<MonumentList> = mutableStateListOf()
     var selectedListPosition: Int = -1
 
@@ -128,10 +127,6 @@ open class MonumentsViewModel(
          return sortedMonuments
     }
 
-    /*fun <T : Comparable<T>> orderAlphabetically(list: List<T>): List<T> {
-        return list.sortedWith { item1, item2 -> item1.compareTo(item2) }
-    }*/
-    
     fun initFavoritesList() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -199,7 +194,7 @@ open class MonumentsViewModel(
     }
 
     /** Habría que permitir eliminar las listas creadas pero lo dejo para
-     * una futura versión si continúo esta app.
+     * una futura versión de la app.
      */
     fun deleteList(listId: Long) {
         personalListsMutableLiveData.value = ResourceState.Loading()
@@ -217,10 +212,6 @@ open class MonumentsViewModel(
                 }
             }
         }
-    }
-
-    fun isMonumentInList(list: MonumentList, monument: Monument): Boolean {
-        return list.monuments.contains(monument)
     }
 
     fun removeMonumentFromList(list: MonumentList, monument: Monument){

@@ -37,5 +37,4 @@ class ListsDatabaseImpl(
         appDatabase.listsDao().deleteList(MonumentListEntity(listId = listId, "", mutableListOf()))
         return appDatabase.listsDao().getLists().map { mapper.mapFromDatabase(it) }
     }
-
 }

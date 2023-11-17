@@ -1,6 +1,5 @@
 package com.luridevlabs.citylights.presentation.personallists.composables
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,8 +33,6 @@ fun AddToPersonalListsDialog(
     dialogTitle: String,
     personalLists: List<MonumentList>
 ) {
-    val context = LocalContext.current
-
     val shouldDismiss = remember {
         mutableStateOf(false)
     }
@@ -99,80 +95,3 @@ fun AddToPersonalListsDialog(
         }
     )
 }
-
-
-
-
-
-    /*
-    expanded:Boolean,
-    lists: List<String>,
-    onDismiss: () -> Unit,
-    onListClick: (String) -> Unit,
-    onAddListClick: () -> Unit,
-    dialogTitle: String
-
-    /*onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String*/
-) {
-    val shouldDismiss = remember {
-        mutableStateOf(false)
-    }
-
-    if (shouldDismiss.value) return
-
-    AlertDialog(onDismissRequest = {
-        onDismiss
-        //shouldDismiss.value = true
-    }) {
-        Column {
-            Text(text = dialogTitle)
-
-            Spacer(Modifier.height(20.dp))
-
-            lists.forEach { list ->
-                Row(
-                    Modifier
-                        .clickable(onClick = { onListClick(list) })
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(horizontal = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Spacer(Modifier.width(20.dp))
-
-                    Text(text = list)
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .clickable(onClick = onAddListClick)
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .padding(horizontal = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(color = Color.LightGray),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(24.dp),
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Opción para añadir cuenta"
-                    )
-                }
-                Spacer(Modifier.width(20.dp))
-                Text(text = "Añadir a lista")
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-    }
-}*/

@@ -40,7 +40,6 @@ class PersonalListAdapter(
     }
 
     inner class PersonalListViewHolder(binding: RowPersonalListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
         val rootView = binding.root
         val listName = binding.tvPersonalListTitle
         val monumentNumber = binding.tvPersonalListMonuments

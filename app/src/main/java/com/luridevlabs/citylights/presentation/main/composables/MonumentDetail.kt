@@ -132,7 +132,6 @@ fun MonumentDetail(
                                 styleView,
                                 addressView,
                                 hoursView
-                            //TODO: añadir todos los campos
                             ) = createRefs()
 
                             AsyncImage(
@@ -283,7 +282,6 @@ fun MonumentDetail(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
-                            //TODO: Add all the fields
                         }
                     }
                     Spacer(

@@ -12,7 +12,6 @@ import com.luridevlabs.citylights.data.personallist.db.ListsDatabaseImpl
 import com.luridevlabs.citylights.data.personallist.db.mapper.MonumentEntityMapper
 import com.luridevlabs.citylights.data.personallist.db.mapper.MonumentListEntityMapper
 import com.luridevlabs.citylights.data.remote.ApiClient
-import com.luridevlabs.citylights.data.remote.CityLightsService
 import com.luridevlabs.citylights.domain.MonumentListsRepository
 import com.luridevlabs.citylights.domain.MonumentsRepository
 import com.luridevlabs.citylights.domain.usecase.AddPersonalListUseCase
@@ -30,7 +29,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val baseModule = module {
-    single<CityLightsService> { ApiClient.retrofit.create(CityLightsService::class.java) }
+    single { ApiClient.createApiClient() }
 }
 
 val monumentsModule = module {

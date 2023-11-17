@@ -14,9 +14,7 @@ fun PersonalListNavigation(viewModel: MonumentsViewModel) {
     NavHost(
         navController = navController,
         startDestination = "personalMonumentList") {
-        composable("personalMonumentList") { //backStackEntry ->
-            //val listId = backStackEntry.arguments?.getString("listId")
-            //requireNotNull(listId)
+        composable("personalMonumentList") {
             PersonalMonumentList(navController, viewModel)
         }
         composable(
@@ -27,7 +25,6 @@ fun PersonalListNavigation(viewModel: MonumentsViewModel) {
         ) { backStackEntry ->
             val monumentId = backStackEntry.arguments?.getString("monumentId")
             requireNotNull(monumentId)
-            //TODO: cambiar¿?
             PersonalListMonumentDetail(navController, viewModel, monumentId)
         }
     }

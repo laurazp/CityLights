@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.luridevlabs.citylights.data.MonumentsPaging
 
-
 open class GetMonumentPagingListUseCase(
     private val pagingSource: MonumentsPaging
 ) {

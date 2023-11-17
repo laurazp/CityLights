@@ -21,7 +21,7 @@ interface ListsDao {
     fun editList(list: MonumentListEntity)
 
     @Insert
-    fun addList(list: MonumentListEntity): Long  //Recojo el id autogenerado de la nueva lista
+    fun addList(list: MonumentListEntity): Long
 
     @Delete
     fun deleteList(list: MonumentListEntity)

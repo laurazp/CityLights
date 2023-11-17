@@ -43,8 +43,8 @@ class MainActivity: AppCompatActivity() {
             NavigationUI.onNavDestinationSelected(menuItem, navController)
             for (i in 0 until navView.menu.size()) {
                 val menu = navView.menu
-                val menuItem = menu.getItem(i)
-                menuItem.actionView?.isActivated = menuItem.itemId == menuItem.itemId
+                val item = menu.getItem(i)
+                menuItem.actionView?.isActivated = menuItem.itemId == item.itemId
             }
             true
         }
@@ -61,15 +61,5 @@ class MainActivity: AppCompatActivity() {
         } else {
             findNavController(R.id.fcv_main_container).navigate(action)
         }
-    }
-
-    /**
-     * Por si se necesita modificar de manera manual la visibilidad de la ActionBar
-     **/
-    fun showActionBar(showBar: Boolean) {
-        val activity = this as AppCompatActivity
-
-        if (showBar) activity.supportActionBar?.show()
-        else activity.supportActionBar?.hide()
     }
 }

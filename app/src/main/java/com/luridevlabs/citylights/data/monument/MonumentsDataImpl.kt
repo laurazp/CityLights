@@ -2,8 +2,6 @@ package com.luridevlabs.citylights.data.monument
 
 import com.luridevlabs.citylights.data.monument.remote.MonumentsRemoteImpl
 import com.luridevlabs.citylights.data.personallist.db.ListsDatabaseImpl
-import com.luridevlabs.citylights.data.personallist.db.dao.ListsDao
-import com.luridevlabs.citylights.data.personallist.db.model.MonumentListEntity
 import com.luridevlabs.citylights.domain.MonumentsRepository
 import com.luridevlabs.citylights.model.Monument
 

@@ -17,7 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 /**
  * Como la navegación y las clases más globales están realizadas en vista clásica
  * pero quería implementar también algunas pantallas mediante funciones Composables,
- * he incluido este Fragment como contenedor para la ComposeView donde los implementaré.
+ * he incluido este Fragment como contenedor para la ComposeView.
  */
 class PersonalListContainerFragment : Fragment() {
 

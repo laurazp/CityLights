@@ -19,7 +19,6 @@ open class MonumentsPaging(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Monument> =
         try {
             val page = params.key ?: 1
-            val limit = params.loadSize
             Timber.tag("Paging").i("Page: $page")
             val response = repository.getMonuments(
                 page = page,

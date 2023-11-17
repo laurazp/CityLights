@@ -81,7 +81,7 @@ class PersonalListsFragment : Fragment() {
 
     private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Error")
+            .setTitle(R.string.errorTitle)
             .setMessage(error)
             .setPositiveButton(R.string.acceptButtonText, null)
             .setNegativeButton(R.string.tryAgainButtonText) { dialog, _ ->
