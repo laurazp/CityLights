@@ -1,6 +1,5 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,7 +54,6 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
 import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -74,8 +71,6 @@ fun MonumentList(
     val monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
 
     var isSearching by remember {
         mutableStateOf(false)
@@ -198,63 +193,27 @@ fun MonumentList(
             }
 
             /**
-             * Test: Ordenar monumentos alfabéticamente por nombre
+             * Lista de monumentos en función de si se está buscando por nombre,
+             * si se quiere ordenar los monumentos alfabéticamente por nombre
+             * o simplemente mostrar la lista completa de monumentos.
              */
-            if (isFiltering) {
-                items(
-                    count = alphabeticallySortedMonuments.itemCount,
-                    key = alphabeticallySortedMonuments.itemKey { monument: Monument -> monument.monumentId }
-                ) { monumentIndex ->
-                    alphabeticallySortedMonuments[monumentIndex]?.let { item ->
-                        MonumentListItem(
-                            monument = item,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { currentMonument ->
-                            scope.launch {
-                                withContext(Dispatchers.Main) {
-                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            val monumentList =
+                if (isSearching) filteredMonuments
+                else if (isFiltering) alphabeticallySortedMonuments
+                else monuments
 
-            /**
-             * Búsqueda de monumentos por nombre
-             */
-            if (isSearching) {
-                items(
-                    count = filteredMonuments.itemCount,
-                    key = filteredMonuments.itemKey { monument: Monument -> monument.monumentId }
-                ) { monumentIndex ->
-                    filteredMonuments[monumentIndex]?.let { item ->
-                        MonumentListItem(
-                            monument = item,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { currentMonument ->
-                            scope.launch {
-                                withContext(Dispatchers.Main) {
-                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                items(
-                    count = monuments.itemCount,
-                    key = monuments.itemKey { monument -> monument.monumentId }
-                ) { monumentIndex ->
-                    monuments[monumentIndex]?.let { item ->
-                        MonumentListItem(
-                            monument = item,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { currentMonument ->
-                            scope.launch {
-                                withContext(Dispatchers.Main) {
-                                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                                }
+            items(
+                count = monumentList.itemCount,
+                key = monumentList.itemKey { monument: Monument -> monument.monumentId }
+            ) { monumentIndex ->
+                monumentList[monumentIndex]?.let { item ->
+                    MonumentListItem(
+                        monument = item,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { currentMonument ->
+                        scope.launch {
+                            withContext(Dispatchers.Main) {
+                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
                             }
                         }
                     }
@@ -316,10 +275,8 @@ fun MonumentListItem(
             Icon(
                 imageVector = ImageVector.vectorResource(
                     id =
-                    if (monument.isFavorite)
-                        R.drawable.baseline_favorite_24
-                    else
-                        R.drawable.baseline_favorite_border_24
+                    if (monument.isFavorite) R.drawable.baseline_favorite_24
+                    else R.drawable.baseline_favorite_border_24
                 ),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,
@@ -336,14 +293,3 @@ fun MonumentListItem(
     }
     Spacer(modifier = Modifier.height(4.dp))
 }
-
-
-
-/*
-when (selectedMonumentState) {
-   is ResourceState.Success -> {
-       navController.navigate("monumentDetail/${currentMonument.monumentId}")
-   }
-   else -> {}
-   }
-*/

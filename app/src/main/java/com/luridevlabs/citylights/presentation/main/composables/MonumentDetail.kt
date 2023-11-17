@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -71,7 +72,7 @@ fun MonumentDetail(
     monumentViewModel: MonumentsViewModel,
     monumentId: String
 ) {
-    monumentViewModel.fetchMonument(monumentId)
+
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
 
     monumentViewModel.fetchPersonalLists()
@@ -334,6 +335,9 @@ fun MonumentDetail(
 
             null -> {}
 
+        }
+        LaunchedEffect(key1 = "loading") {
+            monumentViewModel.fetchMonument(monumentId)
         }
     }
 }
