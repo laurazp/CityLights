@@ -173,7 +173,7 @@ fun PersonalListMonumentDetail(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(R.string.style_text),
+                            text = stringResource(R.string.monument_style_title),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
@@ -190,7 +190,7 @@ fun PersonalListMonumentDetail(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(R.string.address_text),
+                            text = stringResource(R.string.monument_address_title),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
@@ -207,7 +207,7 @@ fun PersonalListMonumentDetail(
                         verticalAlignment = Alignment.Top
                     ) {
                         Text(
-                            text = stringResource(R.string.hours_text),
+                            text = stringResource(R.string.monument_hours_title),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(

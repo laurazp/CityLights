@@ -54,5 +54,5 @@
     <string name="list_monument_number">Monuments: %d</string>
     <string name="list_added_text">List added</string>
     <string name="list_name_required_text">You must enter a name to be able to save the list.</string>
-
+    
 </resources>
