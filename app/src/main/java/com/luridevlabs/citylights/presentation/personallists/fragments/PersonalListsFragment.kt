@@ -21,8 +21,9 @@ class PersonalListsFragment : Fragment() {
     private lateinit var binding: FragmentPersonalListsBinding
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
     private val personalListAdapter = PersonalListAdapter(
-        mutableListOf()) {
-            position: Int -> goToPersonalList(position)
+        mutableListOf()
+    ) { position: Int ->
+        goToPersonalList(position)
     }
 
     override fun onCreateView(
@@ -61,14 +62,16 @@ class PersonalListsFragment : Fragment() {
     }
 
     private fun handleMyListsState(state: PersonalListsState) {
-        when(state) {
+        when (state) {
             is ResourceState.Loading -> {
                 binding.pbPersonalListsProgressBar.visibility = View.VISIBLE
             }
+
             is ResourceState.Success -> {
                 binding.pbPersonalListsProgressBar.visibility = View.GONE
                 personalListAdapter.submitList(state.result)
             }
+
             is ResourceState.Error -> {
                 binding.pbPersonalListsProgressBar.visibility = View.GONE
                 showErrorDialog(state.error)

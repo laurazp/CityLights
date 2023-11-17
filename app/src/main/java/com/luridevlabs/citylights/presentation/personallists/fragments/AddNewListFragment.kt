@@ -59,7 +59,10 @@ class AddNewListFragment : Fragment() {
         }
     }
 
-    /**Por agilidad no voy a comprobar que ya exista una lista con el mismo nombre*/
+    /**
+     * Aunque tendría que comprobar si ya existe una lista con el mismo nombre,
+     * no voy a hacerlo por falta de tiempo.
+     **/
     private fun saveNewList() {
         val newListName = binding.tiePersonalListTitle.text.toString()
         if (newListName.isNotBlank()) {
