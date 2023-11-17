@@ -122,6 +122,7 @@ fun MonumentList(
                 actions = {
                     IconButton(onClick = {
                         isSearching = !isSearching
+                        searchString = ""
                     }) {
                         Icon(
                             imageVector = Icons.Default.Search,
