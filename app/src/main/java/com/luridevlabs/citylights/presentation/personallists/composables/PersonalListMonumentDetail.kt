@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,15 +24,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -51,12 +49,13 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.R.drawable
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 
 /**
  * Debería haber reutilizado el MonumentDetail, pero al obtener los datos desde Room, no necesitaba
- * la gestión de estados, ni la obtención de detalles mediante una llamada a la API porque ya los tengo
+ * la gestión de estados, ni la obtención de detalles mediante una llamada a la API porque ya están
  * disponibles en el viewModel.
  */
 
@@ -82,7 +81,10 @@ fun PersonalListMonumentDetail(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
                 navigationIcon = {
                     if (navController.previousBackStackEntry != null) {
-                        IconButton(onClick = { navController.navigateUp() }) {
+                        IconButton(onClick = {
+                            (context as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                            navController.navigateUp()
+                        }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.back_icon_description),
@@ -150,38 +152,6 @@ fun PersonalListMonumentDetail(
                                 .weight(1f),
                             style = MaterialTheme.typography.titleLarge
                         )
-                        IconButton(
-                            onClick = {
-                                selectedMonument.isFavorite = !selectedMonument.isFavorite
-
-                                if (!monumentViewModel.isMonumentInList(
-                                        monumentViewModel.personalLists[0],
-                                        selectedMonument
-                                    )) {
-                                    monumentViewModel.addMonumentToList(
-                                        monumentViewModel.personalLists[0],
-                                        selectedMonument)
-                                } else {
-                                    monumentViewModel.removeMonumentFromList(
-                                        monumentViewModel.personalLists[0],
-                                        selectedMonument)
-                                }
-                            },
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    id =
-                                    if (selectedMonument.isFavorite)
-                                        drawable.baseline_favorite_24
-                                    else
-                                        drawable.baseline_favorite_border_24
-                                ),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp)
-                            )
-                        }
                     }
                     Text(
                         text = selectedMonument.description,
@@ -203,7 +173,7 @@ fun PersonalListMonumentDetail(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Estilo:  ",
+                            text = stringResource(R.string.style_text),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
@@ -220,7 +190,7 @@ fun PersonalListMonumentDetail(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Dirección:  ",
+                            text = stringResource(R.string.address_text),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
@@ -237,7 +207,7 @@ fun PersonalListMonumentDetail(
                         verticalAlignment = Alignment.Top
                     ) {
                         Text(
-                            text = "Horario:  ",
+                            text = stringResource(R.string.hours_text),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
@@ -278,7 +248,7 @@ fun PersonalListMonumentDetail(
 fun DetailMapView(monument: Monument) {
     val markerPosition =
         monument.position
-    //val context = LocalContext.current
+
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         uiSettings = MapUiSettings(zoomControlsEnabled = true),

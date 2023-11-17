@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.personallists.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +36,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,6 +48,7 @@ fun PersonalMonumentList(
     navController: NavController,
     monumentViewModel: MonumentsViewModel
 ) {
+    val context = LocalContext.current
     val personalListId = monumentViewModel.selectedListPosition
     val listTitle = monumentViewModel.personalLists[personalListId].listName
     val monuments = monumentViewModel.personalLists[personalListId].monuments
@@ -63,20 +67,8 @@ fun PersonalMonumentList(
                         color = MaterialTheme.colorScheme.onSecondary
                     )
                 },
-                /*navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back_icon_description),
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                    }
-
-                },*/
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
-                actions = {
-                    /* TODO */
-                }
+                actions = {}
             )
         }
     ) { paddingValues ->
@@ -93,12 +85,20 @@ fun PersonalMonumentList(
                     modifier = Modifier.fillMaxWidth()
                 ) { currentMonument ->
                     scope.launch {
+                        (context as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
                         withContext(Dispatchers.Main) {
                             navController.navigate("monumentDetail/${currentMonument.monumentId}")
                         }
                     }
                 }
             }
+        }
+    }
+
+    BackHandler {
+        scope.launch {
+            (context as MainActivity).navigateTo(-1)
         }
     }
 }
@@ -155,10 +155,8 @@ fun MonumentListItem(
             Icon(
                 imageVector = ImageVector.vectorResource(
                     id =
-                    if (monument.isFavorite)
-                        R.drawable.baseline_favorite_24
-                    else
-                        R.drawable.baseline_favorite_border_24
+                    if (monument.isFavorite) R.drawable.baseline_favorite_24
+                    else R.drawable.baseline_favorite_border_24
                 ),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,

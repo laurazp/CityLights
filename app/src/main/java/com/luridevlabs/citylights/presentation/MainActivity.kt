@@ -6,11 +6,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.ActivityMainBinding
-
 
 class MainActivity: AppCompatActivity() {
 
@@ -50,6 +50,11 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.fcv_main_container)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
     fun navigateTo(action: Int) {
         if(action == -1) {
             findNavController(R.id.fcv_main_container).popBackStack()
@@ -58,12 +63,13 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
-    /* Por si se necesita modificar de manera manual los títulos de los fragmentos en la
-     * AppBar, aunque se incluyen de manera automática a través de los labels del nav_graph
-     */
-    fun setTitle(title: String) {
+    /**
+     * Por si se necesita modificar de manera manual la visibilidad de la ActionBar
+     **/
+    fun showActionBar(showBar: Boolean) {
         val activity = this as AppCompatActivity
-        val actionBar = activity.supportActionBar
-        actionBar?.title = title
+
+        if (showBar) activity.supportActionBar?.show()
+        else activity.supportActionBar?.hide()
     }
 }
