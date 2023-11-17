@@ -5,7 +5,6 @@ import com.luridevlabs.citylights.data.MonumentsPaging
 import com.luridevlabs.citylights.data.database.AppDatabase
 import com.luridevlabs.citylights.data.database.DatabaseConstants.DATABASE_NAME
 import com.luridevlabs.citylights.data.monument.MonumentsDataImpl
-import com.luridevlabs.citylights.data.monument.local.MonumentsDatabaseImpl
 import com.luridevlabs.citylights.data.monument.remote.MonumentsRemoteImpl
 import com.luridevlabs.citylights.data.monument.remote.mapper.MonumentResponseMapper
 import com.luridevlabs.citylights.data.personallist.ListsDataImpl
@@ -49,7 +48,6 @@ val monumentsModule = module {
     factory { MonumentEntityMapper() }
     factory { MonumentListEntityMapper(get()) }
 
-    factory { MonumentsDatabaseImpl(get()) }
     factory { MonumentsRemoteImpl(get(), get()) }
     factory { ListsDatabaseImpl(get(named("appDatabase")), get()) }
     factory<MonumentsRepository> { MonumentsDataImpl(get(), get()) }
