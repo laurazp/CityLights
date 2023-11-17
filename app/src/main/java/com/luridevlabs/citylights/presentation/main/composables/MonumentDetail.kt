@@ -72,7 +72,6 @@ fun MonumentDetail(
     monumentViewModel: MonumentsViewModel,
     monumentId: String
 ) {
-
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
 
     monumentViewModel.fetchPersonalLists()
@@ -117,9 +116,7 @@ fun MonumentDetail(
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    /**
-                     * InfoCard
-                     */
+                    // InfoCard
                     ElevatedCard(
                         modifier = Modifier
                             .padding(6.dp)
@@ -169,9 +166,7 @@ fun MonumentDetail(
                                         .weight(1f),
                                     style = MaterialTheme.typography.titleLarge
                                 )
-                                /**
-                                 * Add to personal list button
-                                 */
+                                // Add to personal list button
                                 IconButton(
                                     onClick = {
                                         showDialog = true
@@ -204,10 +199,7 @@ fun MonumentDetail(
                                         )
                                     }
                                 }
-
-                                /**
-                                 * Add to favorites button
-                                 */
+                                // Add to favorites button
                                 IconButton(
                                     onClick = {
                                         if (selectedMonument.isFavorite) {
@@ -298,10 +290,7 @@ fun MonumentDetail(
                         modifier = Modifier
                             .height(4.dp)
                     )
-
-                    /**
-                     * MapCard
-                     */
+                    // MapCard
                     ElevatedCard(
                         modifier = Modifier
                             .padding(6.dp)
@@ -319,7 +308,6 @@ fun MonumentDetail(
                             DetailMapView(selectedMonument)
                         }
                     }
-
                 }
             }
 
@@ -334,7 +322,6 @@ fun MonumentDetail(
             }
 
             null -> {}
-
         }
         LaunchedEffect(key1 = "loading") {
             monumentViewModel.fetchMonument(monumentId)

@@ -38,9 +38,7 @@ import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,13 +82,8 @@ fun PersonalMonumentList(
                     monument = item,
                     modifier = Modifier.fillMaxWidth()
                 ) { currentMonument ->
-                    scope.launch {
-                        (context as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
-                        withContext(Dispatchers.Main) {
-                            navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                        }
-                    }
+                    (context as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    navController.navigate("monumentDetail/${currentMonument.monumentId}")
                 }
             }
         }

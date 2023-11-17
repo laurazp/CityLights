@@ -211,11 +211,7 @@ fun MonumentList(
                         monument = item,
                         modifier = Modifier.fillMaxWidth()
                     ) { currentMonument ->
-                        scope.launch {
-                            withContext(Dispatchers.Main) {
-                                navController.navigate("monumentDetail/${currentMonument.monumentId}")
-                            }
-                        }
+                        navController.navigate("monumentDetail/${currentMonument.monumentId}")
                     }
                 }
             }
