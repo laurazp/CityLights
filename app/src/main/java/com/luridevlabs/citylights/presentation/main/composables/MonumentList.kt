@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -41,9 +44,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
@@ -53,6 +58,7 @@ import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.common.composables.ApiInfoAlertDialog
 import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
 import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
@@ -86,8 +92,13 @@ fun MonumentList(
         mutableStateOf(false)
     }
 
+    var showAPIInfoDialog by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        //containerColor = Color.Cyan,
         topBar = {
             TopAppBar(
                 modifier = Modifier
@@ -155,11 +166,32 @@ fun MonumentList(
                                 )
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text(text = "Show API info") },
+                            onClick = { showAPIInfoDialog = !showAPIInfoDialog },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_info_24),
+                                    contentDescription = stringResource(R.string.show_api_info),
+                                )
+                            }
+                        )
                     }
                 }
             )
         }
     ) { paddingValues ->
+
+        if (showAPIInfoDialog) {
+            ApiInfoAlertDialog(
+                onDismissRequest = {
+                    showAPIInfoDialog = false
+                } ,
+                dialogTitle = stringResource(R.string.api_info_title),
+                dialogText = stringResource(R.string.api_info_description)
+            )
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -225,15 +257,19 @@ fun MonumentListItem(
     ElevatedCard(
         modifier = modifier
             .padding(horizontal = 6.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp,
+            hoveredElevation = 16.dp,
+            pressedElevation = 20.dp
+        ),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         onClick = { onClick(monument) }
     ) {
-        ConstraintLayout(modifier = modifier.padding(4.dp)) {
+        ConstraintLayout(modifier = modifier.padding(8.dp)) {
             val (
                 nameView,
                 photoView,
-                favoriteView
             ) = createRefs()
             AsyncImage(
                 model = monument.image,
@@ -242,7 +278,7 @@ fun MonumentListItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(CircleShape)
                     .size(70.dp)
                     .constrainAs(photoView) {
                         top.linkTo(parent.top, 4.dp)
@@ -255,31 +291,15 @@ fun MonumentListItem(
                 modifier = Modifier
                     .constrainAs(nameView) {
                         top.linkTo(parent.top)
-                        start.linkTo(photoView.end, 8.dp)
+                        start.linkTo(photoView.end, 12.dp)
                         bottom.linkTo(parent.bottom)
-                        end.linkTo(favoriteView.start)
+                        end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
                     },
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 18.sp,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Icon(
-                imageVector = ImageVector.vectorResource(
-                    id =
-                    if (monument.isFavorite) R.drawable.baseline_favorite_24
-                    else R.drawable.baseline_favorite_border_24
-                ),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .constrainAs(favoriteView) {
-                        start.linkTo(nameView.end, 8.dp)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(nameView.bottom)
-                        width = Dimension.value(20.dp)
-                        height = Dimension.fillToConstraints
-                    }
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold
             )
         }
     }
