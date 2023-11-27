@@ -139,10 +139,11 @@ fun MonumentDetail(
                                 placeholder = painterResource(drawable.church_icon),
                                 error = painterResource(drawable.church_icon),
                                 contentDescription = selectedMonument.title,
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.FillWidth,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .clip(RoundedCornerShape(12.dp))
                                     .fillMaxWidth()
+                                    .height(250.dp)
                                     .constrainAs(photoView) {
                                         top.linkTo(parent.top)
                                         start.linkTo(parent.start)
