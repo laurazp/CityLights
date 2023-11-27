@@ -113,18 +113,23 @@ open class MonumentsViewModel(
                 item.title.contains(searchString, ignoreCase = true)
             }
         }
-        return  filteredList.debounce(200)
+        return filteredList.debounce(200)
     }
 
-     fun sortMonumentsByName(): Flow<PagingData<Monument>> {
+    fun sortMonumentsByName(): Flow<PagingData<Monument>> {
         val sortedMonuments = monumentsPagingList
             .map {
-                //(it as List<Monument>)
                 it.filter { item ->
-                    item.title.startsWith("m", true)
+                    item.title.startsWith("a", true)
                 }
+
+                /*(it as List<Monument>).sortedWith(Comparator { obj1, obj2 ->
+
+                    obj1.title.compareTo(obj2?.title!!, ignoreCase = true)
+
+                })*/
             }
-         return sortedMonuments
+        return sortedMonuments
     }
 
     fun initFavoritesList() {
@@ -187,7 +192,8 @@ open class MonumentsViewModel(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }
@@ -208,18 +214,19 @@ open class MonumentsViewModel(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }
     }
 
-    fun removeMonumentFromList(list: MonumentList, monument: Monument){
+    fun removeMonumentFromList(list: MonumentList, monument: Monument) {
         list.monuments.remove(monument)
         editList(list)
     }
 
-    fun addMonumentToList(list: MonumentList, monument: Monument){
+    fun addMonumentToList(list: MonumentList, monument: Monument) {
         if (list.monuments.none { it.monumentId == monument.monumentId }) {
             list.monuments.add(monument)
             monumentDetailMutableLiveData.value = ResourceState.Success(monument)
