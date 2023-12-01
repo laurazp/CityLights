@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -84,14 +86,14 @@ fun MonumentDetail(
                 modifier = Modifier
                     .fillMaxWidth(),
                 title = { Text("") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 navigationIcon = {
                     if (navController.previousBackStackEntry != null) {
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.back_icon_description),
-                                tint = MaterialTheme.colorScheme.onSecondary
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -115,6 +117,14 @@ fun MonumentDetail(
                         .fillMaxSize()
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.tertiary,
+                                    MaterialTheme.colorScheme.tertiaryContainer
+                                )
+                            )
+                        )
                 ) {
                     // InfoCard
                     ElevatedCard(
@@ -122,7 +132,7 @@ fun MonumentDetail(
                             .padding(6.dp)
                             .fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         ConstraintLayout(modifier = Modifier.padding(8.dp)) {
                             val (
@@ -182,7 +192,7 @@ fun MonumentDetail(
                                             .height(24.dp)
                                     )
 
-                                    if(showDialog){
+                                    if (showDialog) {
                                         AddToPersonalListsDialog(
                                             onListClick = { list ->
                                                 monumentViewModel.addMonumentToList(
@@ -296,7 +306,7 @@ fun MonumentDetail(
                             .fillMaxWidth()
                             .height(350.dp),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
                     ) {
                         Box(
                             modifier = Modifier
@@ -350,7 +360,7 @@ fun DetailMapView(monument: Monument) {
         Marker(
             state = rememberMarkerState(position = markerPosition),
             title = monument.title,
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
         )
     }
 }

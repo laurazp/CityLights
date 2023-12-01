@@ -27,9 +27,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMapBinding
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
 import com.luridevlabs.citylights.presentation.common.ResourceState.Success
-import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -105,7 +105,7 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                 val markerOptions = MarkerOptions()
                     .position(monument.position)
                     .title(monument.title)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
 
                 googleMap?.addMarker(markerOptions)
             }

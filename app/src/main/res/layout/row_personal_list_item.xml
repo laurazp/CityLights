@@ -5,7 +5,6 @@
     android:id="@+id/cv_personal_list_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@color/light_gray"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -15,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
+        android:background="@drawable/personal_list_card_background"
         android:orientation="vertical">
 
         <TextView
@@ -27,7 +26,7 @@
             android:gravity="start"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/dark_purple_gray"
+            android:textColor="@color/white"
             android:layout_margin="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +40,7 @@
             android:layout_marginStart="16dp"
             android:gravity="start"
             android:textSize="18sp"
-            android:textColor="@color/dark_purple_gray"
+            android:textColor="@color/white"
             android:layout_margin="8dp"
             app:layout_constraintStart_toStartOf="@id/tv_personal_list_title"
             app:layout_constraintTop_toBottomOf="@id/tv_personal_list_title"

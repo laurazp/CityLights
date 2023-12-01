@@ -1,5 +1,9 @@
 package com.luridevlabs.citylights.presentation.main.composables
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,10 +18,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,9 +36,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -96,7 +102,6 @@ fun MonumentList(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        //containerColor = Color.Cyan,
         topBar = {
             TopAppBar(
                 modifier = Modifier
@@ -127,7 +132,7 @@ fun MonumentList(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 actions = {
                     IconButton(onClick = {
                         isSearching = !isSearching
@@ -184,60 +189,74 @@ fun MonumentList(
             ApiInfoAlertDialog(
                 onDismissRequest = {
                     showAPIInfoDialog = false
-                } ,
+                },
                 dialogTitle = stringResource(R.string.api_info_title),
                 dialogText = stringResource(R.string.api_info_description)
             )
         }
 
-        LazyColumn(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+                .background(color = MaterialTheme.colorScheme.background)
         ) {
-            monuments.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        item { CircularProgressBar() }
-                    }
 
-                    loadState.append is LoadState.Loading -> {
-                        item { CircularProgressBar() }
-                    }
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                monuments.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            item { CircularProgressBar() }
+                        }
 
-                    loadState.refresh is LoadState.Error ||
-                            loadState.append is LoadState.Error -> {
-                        item {
-                            ErrorAlertDialog(
-                                onConfirmation = {},
-                                dialogTitle = stringResource(R.string.list_error_title),
-                                dialogText = stringResource(R.string.list_error_text)
-                            )
+                        loadState.append is LoadState.Loading -> {
+                            item { CircularProgressBar() }
+                        }
+
+                        loadState.refresh is LoadState.Error ||
+                                loadState.append is LoadState.Error -> {
+                            item {
+                                ErrorAlertDialog(
+                                    onConfirmation = {},
+                                    dialogTitle = stringResource(R.string.list_error_title),
+                                    dialogText = stringResource(R.string.list_error_text)
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            /**
-             * Lista de monumentos en función de si se está buscando por nombre,
-             * si se quiere ordenar los monumentos alfabéticamente por nombre
-             * o simplemente mostrar la lista completa de monumentos.
-             */
-            val monumentList =
-                if (isSearching) filteredMonuments
-                else if (isFiltering) alphabeticallySortedMonuments
-                else monuments
+                /**
+                 * Lista de monumentos en función de si se está buscando por nombre,
+                 * si se quiere ordenar los monumentos alfabéticamente por nombre
+                 * o simplemente mostrar la lista completa de monumentos.
+                 */
+                /**
+                 * Lista de monumentos en función de si se está buscando por nombre,
+                 * si se quiere ordenar los monumentos alfabéticamente por nombre
+                 * o simplemente mostrar la lista completa de monumentos.
+                 */
+                val monumentList =
+                    if (isSearching) filteredMonuments
+                    else if (isFiltering) alphabeticallySortedMonuments
+                    else monuments
 
-            items(
-                count = monumentList.itemCount,
-                key = monumentList.itemKey { monument: Monument -> monument.monumentId }
-            ) { monumentIndex ->
-                monumentList[monumentIndex]?.let { item ->
-                    MonumentListItem(
-                        monument = item,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { currentMonument ->
-                        navController.navigate("monumentDetail/${currentMonument.monumentId}")
+                items(
+                    count = monumentList.itemCount,
+                    key = monumentList.itemKey { monument: Monument -> monument.monumentId }
+                ) { monumentIndex ->
+                    monumentList[monumentIndex]?.let { item ->
+                        MonumentListItem(
+                            monument = item,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { currentMonument ->
+                            navController.navigate("monumentDetail/${currentMonument.monumentId}")
+                        }
                     }
                 }
             }
@@ -252,53 +271,67 @@ fun MonumentListItem(
     modifier: Modifier = Modifier,
     onClick: (Monument) -> Unit = {},
 ) {
-    ElevatedCard(
+    Card(
         modifier = modifier
-            .padding(horizontal = 6.dp),
-        shape = RoundedCornerShape(24.dp),
+            .padding(horizontal = 12.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp,
             hoveredElevation = 16.dp,
             pressedElevation = 20.dp
         ),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         onClick = { onClick(monument) }
     ) {
-        ConstraintLayout(modifier = modifier.padding(8.dp)) {
-            val (
-                nameView,
-                photoView,
-            ) = createRefs()
-            AsyncImage(
-                model = monument.image,
-                placeholder = painterResource(R.drawable.church_icon),
-                error = painterResource(R.drawable.church_icon),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(70.dp)
-                    .constrainAs(photoView) {
-                        top.linkTo(parent.top, 4.dp)
-                        bottom.linkTo(parent.bottom, 4.dp)
-                        start.linkTo(parent.start, 4.dp)
-                    }
-            )
-            Text(
-                text = monument.title,
-                modifier = Modifier
-                    .constrainAs(nameView) {
-                        top.linkTo(parent.top)
-                        start.linkTo(photoView.end, 12.dp)
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
-                        width = Dimension.fillToConstraints
-                    },
-                fontSize = 18.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold
-            )
+        Column(
+            modifier = Modifier
+                .background(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.tertiary,
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        )
+                    )
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ConstraintLayout(modifier = modifier.padding(8.dp)) {
+                val (
+                    nameView,
+                    photoView,
+                ) = createRefs()
+                AsyncImage(
+                    model = monument.image,
+                    placeholder = painterResource(R.drawable.church_icon),
+                    error = painterResource(R.drawable.church_icon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(70.dp)
+                        .constrainAs(photoView) {
+                            top.linkTo(parent.top, 4.dp)
+                            bottom.linkTo(parent.bottom, 4.dp)
+                            start.linkTo(parent.start, 4.dp)
+                        }
+                )
+                Text(
+                    text = monument.title,
+                    modifier = Modifier
+                        .constrainAs(nameView) {
+                            top.linkTo(parent.top)
+                            start.linkTo(photoView.end, 12.dp)
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                        },
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(4.dp))

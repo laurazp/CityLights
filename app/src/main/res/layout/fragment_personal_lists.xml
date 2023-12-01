@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:padding="12dp"
-        android:background="@color/dark_purple_gray"
+        android:background="@color/primary_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +39,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/melon"
         android:contentDescription="@string/add_new_list"
         android:src="@drawable/baseline_add_24"
+        android:tintMode="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

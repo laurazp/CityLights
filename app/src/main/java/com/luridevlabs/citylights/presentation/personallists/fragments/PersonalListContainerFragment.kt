@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import com.luridevlabs.citylights.databinding.FragmentMonumentListBinding
 import com.luridevlabs.citylights.presentation.personallists.composables.PersonalListNavigation
+import com.luridevlabs.citylights.presentation.theme.CustomAppTheme
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -39,7 +40,7 @@ class PersonalListContainerFragment : Fragment() {
 
     private fun initComposeUI() {
         binding.cvListComposeView.setContent {
-            MaterialTheme {
+            CustomAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

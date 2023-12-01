@@ -1,5 +1,6 @@
 package com.luridevlabs.citylights.presentation.personallists.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -77,17 +79,19 @@ fun PersonalListMonumentDetail(
                 modifier = Modifier
                     .fillMaxWidth(),
                 title = { Text("") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 navigationIcon = {
                     if (navController.previousBackStackEntry != null) {
                         IconButton(onClick = {
-                            (context as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                            (context as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
+                                true
+                            )
                             navController.navigateUp()
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.back_icon_description),
-                                tint = MaterialTheme.colorScheme.onSecondary
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -100,6 +104,14 @@ fun PersonalListMonumentDetail(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
+                .background(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.tertiary,
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        )
+                    )
+                )
         ) {
             //InfoCard
             ElevatedCard(
@@ -107,7 +119,7 @@ fun PersonalListMonumentDetail(
                     .padding(6.dp)
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 ConstraintLayout(modifier = Modifier.padding(8.dp)) {
                     val (
@@ -227,7 +239,7 @@ fun PersonalListMonumentDetail(
                     .fillMaxWidth()
                     .height(350.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
             ) {
                 Box(
                     modifier = Modifier
