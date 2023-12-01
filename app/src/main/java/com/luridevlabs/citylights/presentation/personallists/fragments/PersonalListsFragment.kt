@@ -1,19 +1,17 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists
+package com.luridevlabs.citylights.presentation.personallists.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentPersonalListsBinding
 import com.luridevlabs.citylights.presentation.MainActivity
 import com.luridevlabs.citylights.presentation.common.ResourceState
-import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.MonumentListAdapter
-import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.PersonalListAdapter
+import com.luridevlabs.citylights.presentation.personallists.adapter.PersonalListAdapter
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.PersonalListsState
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -22,7 +20,11 @@ class PersonalListsFragment : Fragment() {
 
     private lateinit var binding: FragmentPersonalListsBinding
     private val monumentsViewModel: MonumentsViewModel by activityViewModel()
-    private val personalListAdapter = PersonalListAdapter()
+    private val personalListAdapter = PersonalListAdapter(
+        mutableListOf()
+    ) { position: Int ->
+        goToPersonalList(position)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +46,10 @@ class PersonalListsFragment : Fragment() {
             b.rvPersonalListsView.adapter = personalListAdapter
         }
 
-        binding.fabPersonalListsAddListButton.setOnClickListener {
+        binding.fabPersonalListsAddButton.setOnClickListener {
             (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_addNewListFragment)
         }
     }
-
 
     private fun initContent() {
         monumentsViewModel.getPersonalListsLiveData().observe(viewLifecycleOwner) { state ->
@@ -61,14 +62,16 @@ class PersonalListsFragment : Fragment() {
     }
 
     private fun handleMyListsState(state: PersonalListsState) {
-        when(state) {
+        when (state) {
             is ResourceState.Loading -> {
                 binding.pbPersonalListsProgressBar.visibility = View.VISIBLE
             }
+
             is ResourceState.Success -> {
                 binding.pbPersonalListsProgressBar.visibility = View.GONE
                 personalListAdapter.submitList(state.result)
             }
+
             is ResourceState.Error -> {
                 binding.pbPersonalListsProgressBar.visibility = View.GONE
                 showErrorDialog(state.error)
@@ -78,12 +81,17 @@ class PersonalListsFragment : Fragment() {
 
     private fun showErrorDialog(error: String) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Error")
+            .setTitle(R.string.errorTitle)
             .setMessage(error)
             .setPositiveButton(R.string.acceptButtonText, null)
             .setNegativeButton(R.string.tryAgainButtonText) { dialog, _ ->
                 monumentsViewModel.fetchPersonalLists()
                 dialog.dismiss()
             }
+    }
+
+    private fun goToPersonalList(position: Int) {
+        monumentsViewModel.selectedListPosition = position
+        (activity as MainActivity).navigateTo(R.id.action_personalListsFragment_to_personalListContainerFragment)
     }
 }

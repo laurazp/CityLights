@@ -6,11 +6,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.ActivityMainBinding
-
 
 class MainActivity: AppCompatActivity() {
 
@@ -31,7 +31,6 @@ class MainActivity: AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.homeFragment,
                 R.id.monumentListFragment,
                 R.id.mapFragment,
                 R.id.personalListsFragment
@@ -44,11 +43,16 @@ class MainActivity: AppCompatActivity() {
             NavigationUI.onNavDestinationSelected(menuItem, navController)
             for (i in 0 until navView.menu.size()) {
                 val menu = navView.menu
-                val menuItem = menu.getItem(i)
-                menuItem.actionView?.isActivated = menuItem.itemId == menuItem.itemId
+                val item = menu.getItem(i)
+                menuItem.actionView?.isActivated = menuItem.itemId == item.itemId
             }
             true
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.fcv_main_container)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     fun navigateTo(action: Int) {
@@ -57,14 +61,5 @@ class MainActivity: AppCompatActivity() {
         } else {
             findNavController(R.id.fcv_main_container).navigate(action)
         }
-    }
-
-    /* Por si se necesita modificar de manera manual los títulos de los fragmentos en la
-     * AppBar, aunque se incluyen de manera automática a través de los labels del nav_graph
-     */
-    fun setTitle(title: String) {
-        val activity = this as AppCompatActivity
-        val actionBar = activity.supportActionBar
-        actionBar?.title = title
     }
 }

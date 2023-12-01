@@ -1,11 +1,11 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists
+package com.luridevlabs.citylights.presentation.personallists.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentAddNewListBinding
 import com.luridevlabs.citylights.presentation.MainActivity
@@ -40,24 +40,32 @@ class AddNewListFragment : Fragment() {
         binding.btnAddNewListButton.setOnClickListener {
             saveNewList()
         }
+        binding.tiePersonalListTitle.setOnEditorActionListener { editText, actionId, event ->
+            saveNewList()
+            true
+        }
     }
 
+    /**
+     * De momento no voy a controlar ningún error, pero lo dejo
+     * para un futuro desarrollo de la app.
+     **/
     private fun handleNewListState(state: AddPersonalListsState) {
         when(state) {
-            is ResourceState.Loading -> {
-                //TODO
-            }
+            is ResourceState.Loading -> {}
             is ResourceState.Success -> {
                 Toast.makeText(requireContext(), "Success state!", Toast.LENGTH_LONG).show()
             }
             is ResourceState.Error -> {
-                //TODO
                 Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    /**Por agilidad no voy a comprobar que ya exista una lista con el mismo nombre*/
+    /**
+     * Aunque tendría que comprobar si ya existe una lista con el mismo nombre,
+     * no voy a hacerlo por falta de tiempo.
+     **/
     private fun saveNewList() {
         val newListName = binding.tiePersonalListTitle.text.toString()
         if (newListName.isNotBlank()) {

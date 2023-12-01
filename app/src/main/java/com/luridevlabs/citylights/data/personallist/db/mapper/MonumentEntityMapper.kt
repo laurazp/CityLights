@@ -1,7 +1,6 @@
 package com.luridevlabs.citylights.data.personallist.db.mapper
 
 import com.google.android.gms.maps.model.LatLng
-import com.luridevlabs.citylights.data.monument.remote.model.ApiMonument
 import com.luridevlabs.citylights.data.personallist.db.model.MonumentEntity
 import com.luridevlabs.citylights.model.Monument
 

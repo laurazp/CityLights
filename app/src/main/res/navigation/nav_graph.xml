@@ -3,49 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
-
-    <fragment
-        android:id="@+id/personalListsFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.personallists.PersonalListsFragment"
-        android:label="@string/personal_lists_title"
-        tools:layout="@layout/fragment_monument_list">
-        <action
-            android:id="@+id/action_personalListsFragment_to_selectedListFragment"
-            app:destination="@id/selectedListFragment" />
-        <action
-            android:id="@+id/action_personalListsFragment_to_addNewListFragment"
-            app:destination="@id/addNewListFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/selectedListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.personallists.SelectedListFragment"
-        tools:layout="@layout/fragment_monument_detail" >
-
-        <argument
-            android:name="listName"
-            app:argType="string" />
-    </fragment>
+    app:startDestination="@id/monumentListFragment">
 
     <fragment
         android:id="@+id/addNewListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.personallists.AddNewListFragment"
+        android:name="com.luridevlabs.citylights.presentation.personallists.fragments.AddNewListFragment"
         android:label="@string/add_new_list_title"
         tools:layout="@layout/fragment_add_new_list"/>
     <fragment
+        android:id="@+id/personalListContainerFragment"
+        android:name="com.luridevlabs.citylights.presentation.personallists.fragments.PersonalListContainerFragment"
+        android:label="@string/personal_lists_title"
+        tools:layout="@layout/fragment_monument_list"/>
+    <fragment
         android:id="@+id/mapFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.map.MapFragment"
+        android:name="com.luridevlabs.citylights.presentation.map.MapFragment"
         android:label="@string/map_title" />
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.monuments.HomeFragment"
-        android:label="@string/home_title"
-        tools:layout="@layout/fragment_home" />
-    <fragment
         android:id="@+id/monumentListFragment"
-        android:name="com.luridevlabs.citylights.presentation.fragment.monuments.MonumentListFragment"
+        android:name="com.luridevlabs.citylights.presentation.main.fragments.MonumentContainerFragment"
         android:label="@string/monuments_title"
         tools:layout="@layout/fragment_monument_list" />
+    <fragment
+        android:id="@+id/personalListsFragment"
+        android:name="com.luridevlabs.citylights.presentation.personallists.fragments.PersonalListsFragment"
+        android:label="@string/personal_lists_title"
+        tools:layout="@layout/fragment_monument_list">
+        <action
+            android:id="@+id/action_personalListsFragment_to_addNewListFragment"
+            app:destination="@id/addNewListFragment" />
+        <action
+            android:id="@+id/action_personalListsFragment_to_personalListContainerFragment"
+            app:destination="@id/personalListContainerFragment" />
+    </fragment>
 
 </navigation>

@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment.personallists.adapter
+package com.luridevlabs.citylights.presentation.personallists.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.RowPersonalListItemBinding
 import com.luridevlabs.citylights.model.MonumentList
-import com.luridevlabs.citylights.presentation.fragment.personallists.adapter.PersonalListAdapter.PersonalListViewHolder
+import com.luridevlabs.citylights.presentation.personallists.adapter.PersonalListAdapter.PersonalListViewHolder
 
-class PersonalListAdapter : RecyclerView.Adapter<PersonalListViewHolder>() {
+class PersonalListAdapter(
 
-    private var personalLists: List<MonumentList> = mutableListOf()
-    private var onClickListener: (MonumentList) -> Unit = {}
+    private var personalLists: List<MonumentList> = mutableListOf(),
+    private var onClickListener: (Int) -> Unit,
+) : RecyclerView.Adapter<PersonalListViewHolder>() {
 
     fun submitList(list: List<MonumentList>) {
         personalLists = list
@@ -31,7 +32,7 @@ class PersonalListAdapter : RecyclerView.Adapter<PersonalListViewHolder>() {
         val item = personalLists[position]
 
         holder.rootView.setOnClickListener {
-            onClickListener.invoke(item)
+            onClickListener.invoke(position)
         }
 
         holder.listName.text = item.listName
@@ -39,7 +40,6 @@ class PersonalListAdapter : RecyclerView.Adapter<PersonalListViewHolder>() {
     }
 
     inner class PersonalListViewHolder(binding: RowPersonalListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
         val rootView = binding.root
         val listName = binding.tvPersonalListTitle
         val monumentNumber = binding.tvPersonalListMonuments

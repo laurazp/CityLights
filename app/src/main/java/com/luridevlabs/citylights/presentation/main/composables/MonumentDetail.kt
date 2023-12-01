@@ -1,6 +1,6 @@
-package com.luridevlabs.citylights.presentation.composables
+package com.luridevlabs.citylights.presentation.main.composables
 
-import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,15 +26,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,27 +58,26 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.R.drawable
 import com.luridevlabs.citylights.model.Monument
-import com.luridevlabs.citylights.presentation.common.ResourceState
 import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
 import com.luridevlabs.citylights.presentation.common.ResourceState.Success
+import com.luridevlabs.citylights.presentation.common.composables.CircularProgressBar
+import com.luridevlabs.citylights.presentation.common.composables.ErrorAlertDialog
+import com.luridevlabs.citylights.presentation.personallists.composables.AddToPersonalListsDialog
 import com.luridevlabs.citylights.presentation.utils.capitalizeLowercase
-import org.koin.androidx.compose.koinViewModel
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentDetail(
     navController: NavController,
+    monumentViewModel: MonumentsViewModel,
     monumentId: String
 ) {
-    val monumentViewModel: MonumentsViewModel = koinViewModel()
-    val context = LocalContext.current
-    //val scope = rememberCoroutineScope()
-
     val selectedMonumentState by monumentViewModel.getMonumentDetailLiveData().observeAsState()
-    monumentViewModel.fetchMonument(monumentId)
+
+    monumentViewModel.fetchPersonalLists()
+    val personalLists = monumentViewModel.personalLists
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -81,16 +85,15 @@ fun MonumentDetail(
             TopAppBar(
                 modifier = Modifier
                     .fillMaxWidth(),
-                    //.padding(bottom = 4.dp),
                 title = { Text("") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 navigationIcon = {
                     if (navController.previousBackStackEntry != null) {
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                tint = MaterialTheme.colorScheme.onSecondary
+                                contentDescription = stringResource(R.string.back_icon_description),
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -101,26 +104,35 @@ fun MonumentDetail(
 
         when (selectedMonumentState) {
             is Loading -> {
-                //TODO: add progress bar
-                Timber.i("gfgfg")
+                CircularProgressBar()
             }
 
             is Success -> {
                 val selectedMonument = (selectedMonumentState as Success<Monument>).result
+                var isFavorite by remember { mutableStateOf(selectedMonument.isFavorite) }
+                var showDialog by remember { mutableStateOf(false) }
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.tertiary,
+                                    MaterialTheme.colorScheme.tertiaryContainer
+                                )
+                            )
+                        )
                 ) {
-                    //InfoCard
+                    // InfoCard
                     ElevatedCard(
                         modifier = Modifier
                             .padding(6.dp)
                             .fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         ConstraintLayout(modifier = Modifier.padding(8.dp)) {
                             val (
@@ -130,7 +142,6 @@ fun MonumentDetail(
                                 styleView,
                                 addressView,
                                 hoursView
-                            //TODO: añadir todos los campos
                             ) = createRefs()
 
                             AsyncImage(
@@ -138,52 +149,86 @@ fun MonumentDetail(
                                 placeholder = painterResource(drawable.church_icon),
                                 error = painterResource(drawable.church_icon),
                                 contentDescription = selectedMonument.title,
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.FillWidth,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .clip(RoundedCornerShape(12.dp))
                                     .fillMaxWidth()
+                                    .height(250.dp)
                                     .constrainAs(photoView) {
                                         top.linkTo(parent.top)
                                         start.linkTo(parent.start)
                                         end.linkTo(parent.end)
                                     }
                             )
-                            Row (
+                            Row(
                                 modifier = Modifier
                                     .constrainAs(titleView) {
                                         top.linkTo(photoView.bottom, 8.dp)
                                         start.linkTo(parent.start)
                                         end.linkTo(parent.end)
                                     },
-                                verticalAlignment = Alignment.CenterVertically,
-                                //TODO: separar del título !!!
-                                //horizontalArrangement = Arrangement.End
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = selectedMonument.title,
                                     modifier = Modifier
-                                        .padding(6.dp),
+                                        .padding(6.dp)
+                                        .weight(1f),
                                     style = MaterialTheme.typography.titleLarge
                                 )
+                                // Add to personal list button
                                 IconButton(
                                     onClick = {
-                                        //TODO: Add favorite when onClick
-                                        Toast.makeText(context, "Add to favorites!", Toast.LENGTH_LONG).show()
+                                        showDialog = true
                                     },
                                 ) {
                                     Icon(
                                         imageVector = ImageVector.vectorResource(
-                                            id =
-                                            if (selectedMonument.isFavorite)
-                                                drawable.baseline_favorite_24
-                                            else
-                                                drawable.baseline_favorite_border_24
+                                            id = drawable.baseline_add_24
                                         ),
-                                        contentDescription = null,
+                                        contentDescription = stringResource(R.string.add_to_personal_list),
                                         modifier = Modifier
                                             .width(24.dp)
                                             .height(24.dp)
                                     )
+
+                                    if (showDialog) {
+                                        AddToPersonalListsDialog(
+                                            onListClick = { list ->
+                                                monumentViewModel.addMonumentToList(
+                                                    list,
+                                                    selectedMonument
+                                                )
+                                                showDialog = false
+                                            },
+                                            onDismissClick = {
+                                                showDialog = false
+                                            },
+                                            dialogTitle = stringResource(R.string.choose_list_to_add_text),
+                                            personalLists = personalLists
+                                        )
+                                    }
+                                }
+                                // Add to favorites button
+                                IconButton(
+                                    onClick = {
+                                        if (selectedMonument.isFavorite) {
+                                            isFavorite = false
+                                            monumentViewModel.removeMonumentFromList(
+                                                monumentViewModel.personalLists[0],
+                                                selectedMonument
+                                            )
+                                        } else {
+                                            selectedMonument.isFavorite = true
+                                            isFavorite = true
+                                            monumentViewModel.addMonumentToList(
+                                                monumentViewModel.personalLists[0],
+                                                selectedMonument
+                                            )
+                                        }
+                                    },
+                                ) {
+                                    FavoriteIcon(isFavorite)
                                 }
                             }
                             Text(
@@ -206,7 +251,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Estilo:  ",
+                                    text = stringResource(R.string.monument_style_title),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -217,13 +262,13 @@ fun MonumentDetail(
                             Row(
                                 modifier = Modifier
                                     .constrainAs(addressView) {
-                                    top.linkTo(styleView.bottom, 12.dp)
-                                    start.linkTo(parent.start)
-                                },
+                                        top.linkTo(styleView.bottom, 12.dp)
+                                        start.linkTo(parent.start)
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Dirección:  ",
+                                    text = stringResource(R.string.monument_address_title),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -240,7 +285,7 @@ fun MonumentDetail(
                                 verticalAlignment = Alignment.Top
                             ) {
                                 Text(
-                                    text = "Horario:  ",
+                                    text = stringResource(R.string.monument_hours_title),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                                 Text(
@@ -248,21 +293,20 @@ fun MonumentDetail(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
-                            //TODO: Add all the fields
                         }
                     }
                     Spacer(
                         modifier = Modifier
                             .height(4.dp)
                     )
-                    //MapCard
+                    // MapCard
                     ElevatedCard(
                         modifier = Modifier
                             .padding(6.dp)
                             .fillMaxWidth()
                             .height(350.dp),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
                     ) {
                         Box(
                             modifier = Modifier
@@ -273,14 +317,23 @@ fun MonumentDetail(
                             DetailMapView(selectedMonument)
                         }
                     }
-
                 }
             }
+
             is Error -> {
-                //TODO: Mostrar mensaje de error
+                ErrorAlertDialog(
+                    onConfirmation = {
+                        monumentViewModel.fetchMonument(monumentId)
+                    },
+                    dialogTitle = stringResource(R.string.errorTitle),
+                    dialogText = stringResource(R.string.error_loading_detail_text)
+                )
             }
 
-            null -> TODO()
+            null -> {}
+        }
+        LaunchedEffect(key1 = "loading") {
+            monumentViewModel.fetchMonument(monumentId)
         }
     }
 }
@@ -289,7 +342,6 @@ fun MonumentDetail(
 fun DetailMapView(monument: Monument) {
     val markerPosition =
         monument.position
-    //val context = LocalContext.current
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         uiSettings = MapUiSettings(zoomControlsEnabled = true),
@@ -305,11 +357,26 @@ fun DetailMapView(monument: Monument) {
             )
         )
     ) {
-        //TODO: mostrar pin en el mapa
         Marker(
             state = rememberMarkerState(position = markerPosition),
             title = monument.title,
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
         )
     }
+}
+
+@Composable
+fun FavoriteIcon(isFavorite: Boolean) {
+    Icon(
+        imageVector = ImageVector.vectorResource(
+            id = if (isFavorite)
+                drawable.baseline_favorite_24
+            else
+                drawable.baseline_favorite_border_24
+        ),
+        contentDescription = stringResource(R.string.add_to_favorites),
+        modifier = Modifier
+            .width(24.dp)
+            .height(24.dp)
+    )
 }

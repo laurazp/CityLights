@@ -1,22 +1,30 @@
 package com.luridevlabs.citylights.presentation.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.filter
 import com.luridevlabs.citylights.domain.usecase.AddPersonalListUseCase
+import com.luridevlabs.citylights.domain.usecase.DeletePersonalListUseCase
+import com.luridevlabs.citylights.domain.usecase.EditPersonalListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentDetailUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetMonumentPagingListUseCase
 import com.luridevlabs.citylights.domain.usecase.GetPersonalListsUseCase
+import com.luridevlabs.citylights.domain.usecase.InitFavoriteListUseCase
 import com.luridevlabs.citylights.model.Monument
 import com.luridevlabs.citylights.model.MonumentList
 import com.luridevlabs.citylights.presentation.common.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 typealias MonumentListState = ResourceState<List<Monument>>
 typealias MonumentDetailState = ResourceState<Monument>
@@ -24,20 +32,24 @@ typealias AddPersonalListsState = ResourceState<Unit?>
 typealias PersonalListsState = ResourceState<List<MonumentList>>
 
 open class MonumentsViewModel(
+    private val initFavoriteListUseCase: InitFavoriteListUseCase,
     private val getMonumentListUseCase: GetMonumentListUseCase,
     private val getMonumentDetailUseCase: GetMonumentDetailUseCase,
     private val getMonumentPagingListUseCase: GetMonumentPagingListUseCase,
     private val getPersonalListsUseCase: GetPersonalListsUseCase,
     private val addPersonalListUseCase: AddPersonalListUseCase,
+    private val editPersonalListUseCase: EditPersonalListUseCase,
+    private val deletePersonalListUseCase: DeletePersonalListUseCase,
 ) : ViewModel() {
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
-    val monumentsList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    var personalLists: List<MonumentList> = mutableStateListOf()
+    var selectedListPosition: Int = -1
 
     private val _addPersonalListMutableLiveData = MutableLiveData<AddPersonalListsState>()
     private val addPersonalListMutableLiveData: MutableLiveData<AddPersonalListsState> get() = _addPersonalListMutableLiveData
-
     private val personalListsMutableLiveData = MutableLiveData<PersonalListsState>()
 
     fun getMonumentListLiveData(): LiveData<MonumentListState> {
@@ -71,7 +83,10 @@ open class MonumentsViewModel(
                     monumentListMutableLiveData.value = ResourceState.Success(data)
                 }
             } catch (e: Exception) {
-                monumentListMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                withContext(Dispatchers.Main) {
+                    monumentListMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
+                }
             }
         }
     }
@@ -79,14 +94,50 @@ open class MonumentsViewModel(
     fun fetchMonument(monumentId: String) {
         monumentDetailMutableLiveData.value = ResourceState.Loading()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
                 val monument = getMonumentDetailUseCase.execute(monumentId)
                 withContext(Dispatchers.Main) {
                     monumentDetailMutableLiveData.value = ResourceState.Success(monument)
                 }
-            } catch (e: Exception) {
-                monumentDetailMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+            }
+        } catch (e: Exception) {
+            monumentDetailMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+        }
+    }
+
+    fun getFilteredMonumentsByName(searchString: String): Flow<PagingData<Monument>> {
+
+        val filteredList = monumentsPagingList.map { pagingData ->
+            pagingData.filter { item ->
+                item.title.contains(searchString, ignoreCase = true)
+            }
+        }
+        return filteredList.debounce(200)
+    }
+
+    fun sortMonumentsByName(): Flow<PagingData<Monument>> {
+        val sortedMonuments = monumentsPagingList
+            .map {
+                it.filter { item ->
+                    item.title.startsWith("a", true)
+                }
+
+                /*(it as List<Monument>).sortedWith(Comparator { obj1, obj2 ->
+
+                    obj1.title.compareTo(obj2?.title!!, ignoreCase = true)
+
+                })*/
+            }
+        return sortedMonuments
+    }
+
+    fun initFavoritesList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                initFavoriteListUseCase.execute()
+            } catch (e: Throwable) {
+                Timber.e("ERROR INITIALIZING FAVORITES LIST: $e")
             }
         }
     }
@@ -98,11 +149,13 @@ open class MonumentsViewModel(
                 val lists = getPersonalListsUseCase.execute()
 
                 withContext(Dispatchers.Main) {
+                    personalLists = lists
                     personalListsMutableLiveData.value = ResourceState.Success(lists)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }
@@ -115,21 +168,74 @@ open class MonumentsViewModel(
                 val lists = addPersonalListUseCase.execute(listName)
 
                 withContext(Dispatchers.Main) {
+                    personalLists = lists
                     personalListsMutableLiveData.value = ResourceState.Success(lists)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    personalListsMutableLiveData.value = ResourceState.Error(e.localizedMessage.orEmpty())
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
                 }
             }
         }
     }
 
-    fun editList() {
-        //TODO
+    private fun editList(list: MonumentList) {
+        personalListsMutableLiveData.value = ResourceState.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val lists = editPersonalListUseCase.execute(list)
+
+                withContext(Dispatchers.Main) {
+                    personalLists = lists
+                    personalListsMutableLiveData.value = ResourceState.Success(lists)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
+                }
+            }
+        }
     }
 
-    fun deleteList() {
-        //TODO
+    /** Habría que permitir eliminar las listas creadas pero lo dejo para
+     * una futura versión de la app.
+     */
+    fun deleteList(listId: Long) {
+        personalListsMutableLiveData.value = ResourceState.Loading()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val lists = deletePersonalListUseCase.execute(listId)
+
+                withContext(Dispatchers.Main) {
+                    personalLists = lists
+                    personalListsMutableLiveData.value = ResourceState.Success(lists)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    personalListsMutableLiveData.value =
+                        ResourceState.Error(e.localizedMessage.orEmpty())
+                }
+            }
+        }
     }
+
+    fun removeMonumentFromList(list: MonumentList, monument: Monument) {
+        list.monuments.remove(monument)
+        editList(list)
+    }
+
+    fun addMonumentToList(list: MonumentList, monument: Monument) {
+        if (list.monuments.none { it.monumentId == monument.monumentId }) {
+            list.monuments.add(monument)
+            monumentDetailMutableLiveData.value = ResourceState.Success(monument)
+            editList(list)
+
+        } else {
+            return
+        }
+    }
+
+    fun getSelectedPersonalList() = personalLists[selectedListPosition]
 }

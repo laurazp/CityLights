@@ -1,4 +1,4 @@
-package com.luridevlabs.citylights.presentation.fragment.map
+package com.luridevlabs.citylights.presentation.map
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,9 +27,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luridevlabs.citylights.R
 import com.luridevlabs.citylights.databinding.FragmentMapBinding
 import com.luridevlabs.citylights.model.Monument
+import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.common.ResourceState.Loading
 import com.luridevlabs.citylights.presentation.common.ResourceState.Success
-import com.luridevlabs.citylights.presentation.common.ResourceState.Error
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentListState
 import com.luridevlabs.citylights.presentation.viewmodel.MonumentsViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -105,13 +105,12 @@ class MapFragment: Fragment(), OnMapReadyCallback {
                 val markerOptions = MarkerOptions()
                     .position(monument.position)
                     .title(monument.title)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
 
                 googleMap?.addMarker(markerOptions)
             }
         }
     }
-
 
     private fun centerMap(location: LatLng, zoom: Float = 12f) {
         googleMap?.moveCamera(
@@ -166,9 +165,9 @@ class MapFragment: Fragment(), OnMapReadyCallback {
     private val geoLocationRequestContract =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             /**
-             * Si se solicita el permiso de ubicación y se concede se vuelven a comprobar para
-             * recuperar la localización y centrar el mapa. Si se rechazan se muestra un mensaje
-             * de información que permite ir a los ajustes
+             * Si se solicita el permiso de ubicación y se concede, se vuelven a comprobar para
+             * recuperar la localización y centrar el mapa. Si se rechazan, se muestra un mensaje
+             * de información que permite ir a los ajustes.
              **/
             if (granted) {
                 checkPermissions()
@@ -227,8 +226,8 @@ class MapFragment: Fragment(), OnMapReadyCallback {
 
     //region Preferences
     /** Creo que las preferencias deberían ir en los repositorios de data con Room
-     * y Retrofit pero al utilizarse sólo aquí puntualmente me ahorro el flujo de
-     * Clean y de casos de uso por avanzar más rápida en el proyecto
+     * y Retrofit, pero al utilizarse sólo aquí, aunque no es muy "Clean", lo he
+     * hecho así para poder avanzar más rápida en el proyecto.
      */
     private fun setLocationDialogShown() {
         val sharedPreferences = requireContext().getSharedPreferences("city_lights_preferences", Context.MODE_PRIVATE)

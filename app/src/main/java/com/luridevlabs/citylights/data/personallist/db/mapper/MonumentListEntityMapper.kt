@@ -7,7 +7,6 @@ class MonumentListEntityMapper(
     private val monumentEntityMapper: MonumentEntityMapper
 ) {
 
-
     fun mapToDatabase(model: MonumentList): MonumentListEntity {
         return MonumentListEntity(
             model.listId,
