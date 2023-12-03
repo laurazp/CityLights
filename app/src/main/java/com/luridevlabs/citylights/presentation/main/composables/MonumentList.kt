@@ -74,7 +74,7 @@ fun MonumentList(
     navController: NavController
 ) {
     val monumentViewModel: MonumentsViewModel = koinViewModel()
-    val monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
+    var monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var isSearching by remember {
@@ -97,6 +97,10 @@ fun MonumentList(
     }
 
     var showAPIInfoDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var needsToRefresh by remember {
         mutableStateOf(false)
     }
 
@@ -134,6 +138,7 @@ fun MonumentList(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 actions = {
+                    // Search button
                     IconButton(onClick = {
                         isSearching = !isSearching
                         searchString = ""
@@ -144,6 +149,7 @@ fun MonumentList(
                             tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
+                    // Dropdown Menu button
                     IconButton(onClick = {
                         showMenu = !showMenu
                     }) {
@@ -161,7 +167,10 @@ fun MonumentList(
                     {
                         DropdownMenuItem(
                             text = { Text(text = "Sort by name") },
-                            onClick = { isFiltering = !isFiltering },
+                            onClick = {
+                                isFiltering = !isFiltering
+                                showMenu = false
+                            },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.baseline_sort_24),
@@ -171,7 +180,10 @@ fun MonumentList(
                         )
                         DropdownMenuItem(
                             text = { Text(text = "Show API info") },
-                            onClick = { showAPIInfoDialog = !showAPIInfoDialog },
+                            onClick = {
+                                showAPIInfoDialog = !showAPIInfoDialog
+                                showMenu = false
+                            },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.baseline_info_24),
@@ -195,6 +207,11 @@ fun MonumentList(
             )
         }
 
+        if (needsToRefresh) {
+            monuments = monumentViewModel.monumentsPagingList.collectAsLazyPagingItems()
+            println("Refreshed!")
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -210,11 +227,8 @@ fun MonumentList(
             ) {
                 monuments.apply {
                     when {
-                        loadState.refresh is LoadState.Loading -> {
-                            item { CircularProgressBar() }
-                        }
-
-                        loadState.append is LoadState.Loading -> {
+                        loadState.refresh is LoadState.Loading ||
+                                loadState.append is LoadState.Loading-> {
                             item { CircularProgressBar() }
                         }
 
@@ -222,7 +236,10 @@ fun MonumentList(
                                 loadState.append is LoadState.Error -> {
                             item {
                                 ErrorAlertDialog(
-                                    onConfirmation = {},
+                                    onConfirmation = {
+                                        needsToRefresh = true
+                                        println("Refreshed!")
+                                    },
                                     dialogTitle = stringResource(R.string.list_error_title),
                                     dialogText = stringResource(R.string.list_error_text)
                                 )
@@ -236,15 +253,13 @@ fun MonumentList(
                  * si se quiere ordenar los monumentos alfabéticamente por nombre
                  * o simplemente mostrar la lista completa de monumentos.
                  */
-                /**
-                 * Lista de monumentos en función de si se está buscando por nombre,
-                 * si se quiere ordenar los monumentos alfabéticamente por nombre
-                 * o simplemente mostrar la lista completa de monumentos.
-                 */
                 val monumentList =
-                    if (isSearching) filteredMonuments
-                    else if (isFiltering) alphabeticallySortedMonuments
-                    else monuments
+                    when {
+                        isSearching -> filteredMonuments
+                        isFiltering -> alphabeticallySortedMonuments
+                        needsToRefresh -> monuments
+                        else -> monuments
+                    }
 
                 items(
                     count = monumentList.itemCount,

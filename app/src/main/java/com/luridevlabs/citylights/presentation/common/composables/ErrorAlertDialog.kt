@@ -44,6 +44,7 @@ fun ErrorAlertDialog(
             TextButton(
                 onClick = {
                     onConfirmation()
+                    shouldDismiss.value = true
                 }
             ) {
                 Text(stringResource(R.string.try_again))

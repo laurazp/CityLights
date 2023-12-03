@@ -116,18 +116,18 @@ open class MonumentsViewModel(
         return filteredList.debounce(200)
     }
 
+    /**
+     * Dejo esta funcionalidad pendiente de terminar de implementar para poder
+     * ordenar alfabéticamente la lista de monumentos (ya que la función
+     * actualmente no hace lo que buscaba). Pero así también aparecen un par
+     * de opciones en el Dropdown menu.
+     */
     fun sortMonumentsByName(): Flow<PagingData<Monument>> {
         val sortedMonuments = monumentsPagingList
-            .map {
-                it.filter { item ->
+            .map { pagingData ->
+                pagingData.filter { item ->
                     item.title.startsWith("a", true)
                 }
-
-                /*(it as List<Monument>).sortedWith(Comparator { obj1, obj2 ->
-
-                    obj1.title.compareTo(obj2?.title!!, ignoreCase = true)
-
-                })*/
             }
         return sortedMonuments
     }
@@ -199,8 +199,8 @@ open class MonumentsViewModel(
         }
     }
 
-    /** Habría que permitir eliminar las listas creadas pero lo dejo para
-     * una futura versión de la app.
+    /** Habría que permitir eliminar las listas creadas pero, por falta de
+     *  tiempo, lo dejo para una futura versión de la app.
      */
     fun deleteList(listId: Long) {
         personalListsMutableLiveData.value = ResourceState.Loading()
