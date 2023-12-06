@@ -8,7 +8,6 @@ class GetMonumentListUseCase(
 ) {
 
     suspend fun execute(): List<Monument> {
-        val page: Int = 0
-        return monumentsRepository.getMonuments(page)
+        return monumentsRepository.getMonuments()
     }
 }

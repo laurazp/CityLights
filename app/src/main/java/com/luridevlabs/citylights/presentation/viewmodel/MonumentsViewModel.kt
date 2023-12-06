@@ -44,7 +44,7 @@ open class MonumentsViewModel(
 
     private val monumentListMutableLiveData = MutableLiveData<MonumentListState>()
     private val monumentDetailMutableLiveData = MutableLiveData<MonumentDetailState>()
-    val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase(30)
+    val monumentsPagingList: Flow<PagingData<Monument>> = getMonumentPagingListUseCase()
     var personalLists: List<MonumentList> = mutableStateListOf()
     var selectedListPosition: Int = -1
 
